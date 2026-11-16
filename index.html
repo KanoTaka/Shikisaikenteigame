@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>いろ検クエスト</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow column, like a pocket colour-chip book; screens swap in place. Signature motif = the 24-hue PCCS strip. */
+:root {
+  --paper: #F3F4F7;
+  --card: #FFFFFF;
+  --ink: #1A1C26;
+  --muted: #5E6374;
+  --line: #DADDE6;
+  --accent: #2C3E9E;
+  --accent-ink: #FFFFFF;
+  --ok: #0B8A57;
+  --ok-bg: #E2F5EC;
+  --ng: #C93434;
+  --ng-bg: #FBE6E6;
+  --chip-edge: rgba(26, 28, 38, .12);
+  --font-display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12141B; --card: #1C1F2A; --ink: #ECEEF4; --muted: #A2A7B8; --line: #2E3242;
+    --accent: #93A5FF; --accent-ink: #12141B; --ok: #43CF92; --ok-bg: #143327; --ng: #FF7A7A; --ng-bg: #3A1A1D;
+    --chip-edge: rgba(255, 255, 255, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12141B; --card: #1C1F2A; --ink: #ECEEF4; --muted: #A2A7B8; --line: #2E3242;
+  --accent: #93A5FF; --accent-ink: #12141B; --ok: #43CF92; --ok-bg: #143327; --ng: #FF7A7A; --ng-bg: #3A1A1D;
+  --chip-edge: rgba(255, 255, 255, .14); color-scheme: dark;
+}
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+}
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.app {
+  max-width: 560px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px 40px;
+}
+.strip { display: grid; grid-template-columns: repeat(24, 1fr); height: 10px; border-radius: 5px; overflow: hidden; }
+.strip span { display: block; }
+
+/* ---------- home ---------- */
+.hero { display: grid; gap: 14px; padding-block: 18px 22px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+.logo { font-family: var(--font-display); font-weight: 400; font-size: clamp(38px, 11vw, 54px); line-height: 1.05; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+.logo .dot { display: inline-block; width: .5em; height: .5em; border-radius: 3px; vertical-align: .12em; margin-left: .08em; background: #E60033; transition: background .6s; }
+.lede { margin: 0; color: var(--muted); font-size: 15px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.stat b { display: block; font-family: var(--font-mono); font-size: 20px; font-variant-numeric: tabular-nums; }
+.stat small { color: var(--muted); font-size: 12px; }
+
+.section-h { font-family: var(--font-display); font-weight: 400; font-size: 18px; margin: 26px 0 10px; }
+.modes { display: grid; gap: 10px; }
+.mode {
+  display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center;
+  width: 100%; text-align: left; cursor: pointer;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r);
+  padding: 12px 14px; transition: transform .12s, border-color .12s;
+}
+.mode:hover { border-color: var(--accent); }
+.mode:active { transform: scale(.98); }
+.mode-swatch { width: 56px; height: 56px; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border: 1px solid var(--chip-edge); }
+.mode-swatch span { display: block; }
+.mode h3 { margin: 0; font-size: 17px; font-weight: 700; }
+.mode p { margin: 2px 0 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
+.mode .best { font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-align: right; white-space: nowrap; }
+.mode .best b { display: block; font-size: 16px; color: var(--ink); }
+.mode.featured { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.mode.featured p, .mode.featured .best, .mode.featured .best b { color: var(--accent-ink); opacity: .9; }
+
+.learn-btn {
+  margin-top: 10px; width: 100%; cursor: pointer; padding: 14px; border-radius: var(--r);
+  background: transparent; border: 1.5px dashed var(--line); font-weight: 700; color: var(--ink);
+}
+.learn-btn:hover { border-color: var(--accent); }
+.foot { margin-top: 26px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.toggles { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.pill { cursor: pointer; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+
+/* ---------- quiz ---------- */
+.topbar { display: flex; align-items: center; gap: 10px; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--paper); padding-block: 8px; z-index: 5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.icon-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); cursor: pointer; font-size: 18px; line-height: 1; flex: none; }
+.progress { flex: 1; display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.progress i { height: 8px; border-radius: 4px; background: var(--line); }
+.progress i.ok { background: var(--ok); }
+.progress i.ng { background: var(--ng); }
+.progress i.now { background: var(--accent); }
+.score { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 64px; text-align: right; position: relative; }
+.pop { position: absolute; right: 0; top: -6px; font-size: 13px; color: var(--ok); animation: pop .9s ease-out forwards; pointer-events: none; white-space: nowrap; }
+@keyframes pop { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-22px); } }
+
+.qmeta { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+.combo { color: var(--accent); font-weight: 600; }
+.qcard { margin-top: 8px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 16px; }
+.qtag { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--paper); color: var(--muted); }
+.qtext { font-size: 18px; font-weight: 700; margin: 10px 0 0; line-height: 1.5; text-wrap: pretty; }
+.visual { margin-top: 14px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.chip { border-radius: 12px; border: 1px solid var(--chip-edge); }
+.chip.big { width: min(200px, 60vw); aspect-ratio: 1; max-width: 100%; }
+.chip.mid { width: 72px; height: 72px; }
+.chip-col { display: grid; gap: 4px; justify-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.tone-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
+.tone-row .chip { aspect-ratio: 1; width: 100%; }
+.notation { font-family: var(--font-mono); font-size: 26px; font-weight: 600; text-align: center; letter-spacing: .04em; }
+
+.choices { display: grid; gap: 10px; margin-top: 14px; }
+.choices.swatches { grid-template-columns: 1fr 1fr; }
+.choice {
+  cursor: pointer; text-align: left; width: 100%;
+  background: var(--card); border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 13px 14px; font-size: 16px; font-weight: 500; line-height: 1.4;
+  display: flex; gap: 10px; align-items: center; transition: transform .1s, border-color .12s, background .12s;
+}
+.choice:hover:not(:disabled) { border-color: var(--accent); }
+.choice:active:not(:disabled) { transform: scale(.98); }
+.choice:disabled { cursor: default; }
+.choice .k { font-family: var(--font-mono); font-size: 12px; color: var(--muted); width: 18px; flex: none; }
+.choice.sw { display: grid; padding: 8px; gap: 6px; }
+.choice.sw .chip { width: 100%; aspect-ratio: 1.6; }
+.choice.sw .cap { font-size: 13px; min-height: 1.4em; text-align: center; color: var(--muted); }
+.choice.right { border-color: var(--ok); background: var(--ok-bg); }
+.choice.wrong { border-color: var(--ng); background: var(--ng-bg); }
+.choice.dim { opacity: .55; }
+.shake { animation: shake .35s; }
+@keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+
+.feedback { margin-top: 14px; border-radius: var(--r); padding: 14px 16px; border: 1.5px solid; }
+.feedback.ok { border-color: var(--ok); background: var(--ok-bg); }
+.feedback.ng { border-color: var(--ng); background: var(--ng-bg); }
+.feedback h4 { margin: 0 0 4px; font-size: 16px; }
+.feedback.ok h4 { color: var(--ok); }
+.feedback.ng h4 { color: var(--ng); }
+.feedback p { margin: 0; font-size: 14.5px; }
+.feedback .mini { display: inline-block; width: 1em; height: 1em; border-radius: 3px; vertical-align: -.15em; border: 1px solid var(--chip-edge); margin: 0 2px; }
+.primary {
+  margin-top: 12px; width: 100%; cursor: pointer; border: 0; border-radius: 12px; padding: 14px;
+  background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 16px;
+}
+.primary:active { transform: scale(.98); }
+.ghost { margin-top: 10px; width: 100%; cursor: pointer; border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 13px; font-weight: 700; }
+
+/* ---------- result ---------- */
+.result { text-align: center; padding-top: 18px; }
+.result .big { font-family: var(--font-display); font-size: 64px; line-height: 1; margin: 12px 0 4px; font-variant-numeric: tabular-nums; }
+.result .rank { font-weight: 700; font-size: 20px; margin: 4px 0; }
+.result .sub { color: var(--muted); font-size: 14px; margin: 0; }
+.result-chips { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin: 20px 0 6px; }
+.result-chips i { aspect-ratio: 1; border-radius: 6px; display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; color: #fff; }
+.review { text-align: left; margin-top: 18px; display: grid; gap: 8px; }
+.review-item { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.review-item b { color: var(--ng); }
+
+/* ---------- learn ---------- */
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-top: 12px; scrollbar-width: none; }
+.tab { flex: none; cursor: pointer; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 14px; font-size: 14px; font-weight: 700; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.panel { margin-top: 14px; }
+.panel h3 { font-size: 16px; margin: 18px 0 6px; }
+.panel p { margin: 6px 0; font-size: 14.5px; }
+.hue-pick { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 8px 0 12px; }
+.hue-pick button { aspect-ratio: 1; border-radius: 6px; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.hue-pick button[aria-pressed="true"] { border-color: var(--ink); }
+.tonemap { display: grid; grid-template-columns: 24px repeat(4, 1fr); grid-template-rows: repeat(8, 30px); gap: 4px; }
+.tonemap .t { border-radius: 8px; display: grid; place-items: center; font-family: var(--font-mono); font-size: 12px; font-weight: 600; border: 1px solid var(--chip-edge); cursor: pointer; padding: 0; }
+.tonemap .axis { writing-mode: vertical-rl; font-size: 11px; color: var(--muted); display: grid; place-items: center; }
+.tonemap-x { display: grid; grid-template-columns: 24px 1fr; font-size: 11px; color: var(--muted); margin-top: 4px; }
+.tone-info { margin-top: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14px; min-height: 64px; }
+.wheel-wrap { display: grid; place-items: center; }
+.wheel-wrap svg { width: min(340px, 100%); height: auto; }
+.wheel-wrap text { font-family: var(--font-mono); font-size: 9px; fill: var(--ink); }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 500; }
+.names { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.name-card { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
+.name-card .chip { width: 40px; height: 40px; border-radius: 8px; }
+.name-card b { font-size: 14px; display: block; line-height: 1.3; }
+.name-card small { color: var(--muted); font-size: 11px; font-family: var(--font-mono); }
+.mixbox { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
+.mixbox svg { width: 150px; height: 140px; }
+.mixbox figcaption { text-align: center; font-size: 13px; font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="strip" id="strip-top" aria-hidden="true"></div>
+    <div class="hero">
+      <span class="eyebrow">色彩検定 3級・2級レベル</span>
+      <h1 class="logo">いろ検<br>クエスト<span class="dot" id="logo-dot"></span></h1>
+      <p class="lede">10問1セット。色を見て、選んで、解説を読む。トーン・色相環・慣用色名・配色技法をスマホでサクッと覚えよう。</p>
+      <div class="stats">
+        <div class="stat"><b id="st-total">0</b><small>解いた問題</small></div>
+        <div class="stat"><b id="st-rate">–</b><small>正答率</small></div>
+        <div class="stat"><b id="st-streak">0</b><small>最高コンボ</small></div>
+      </div>
+    </div>
+
+    <h2 class="section-h">あそぶ</h2>
+    <div class="modes" id="modes"></div>
+    <button class="learn-btn" id="go-learn" type="button">まなぶ ― トーン図・色相環・慣用色名図鑑を見る</button>
+
+    <div class="toggles">
+      <button class="pill" id="snd-toggle" type="button" aria-pressed="true">効果音: ON</button>
+    </div>
+    <p class="foot">画面の色はPCCS色票・JIS慣用色名の近似値です。端末の画面設定で見え方は変わります。試験対策には公式テキストもあわせて使ってください。</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" hidden>
+    <div class="topbar">
+      <button class="icon-btn" id="quit" type="button" aria-label="ホームにもどる">←</button>
+      <div class="progress" id="progress" aria-hidden="true"></div>
+      <div class="score" id="score" aria-live="polite">0</div>
+    </div>
+    <div class="qmeta"><span id="qnum">Q1 / 10</span><span class="combo" id="combo"></span></div>
+    <div class="qcard">
+      <span class="qtag" id="qtag"></span>
+      <p class="qtext" id="qtext"></p>
+      <div class="visual" id="visual"></div>
+    </div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback" hidden aria-live="polite">
+      <h4 id="fb-title"></h4>
+      <p id="fb-body"></p>
+    </div>
+    <button class="primary" id="next" type="button" hidden>次の問題へ</button>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" hidden>
+    <div class="strip" id="strip-res" aria-hidden="true"></div>
+    <div class="result">
+      <span class="eyebrow" id="res-mode"></span>
+      <div class="big" id="res-correct"></div>
+      <p class="rank" id="res-rank"></p>
+      <p class="sub" id="res-sub"></p>
+      <div class="result-chips" id="res-chips"></div>
+    </div>
+    <button class="primary" id="again" type="button">もう一度あそぶ</button>
+    <button class="ghost" id="home-btn" type="button">モード選択にもどる</button>
+    <div class="review" id="review"></div>
+  </section>
+
+  <!-- LEARN -->
+  <section id="learn" hidden>
+    <div class="topbar">
+      <button class="icon-btn" id="learn-back" type="button" aria-label="ホームにもどる">←</button>
+      <strong style="font-size:17px">まなぶ</strong>
+    </div>
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-tab="tone" aria-selected="true">PCCSトーン</button>
+      <button class="tab" role="tab" data-tab="wheel" aria-selected="false">色相環</button>
+      <button class="tab" role="tab" data-tab="harmony" aria-selected="false">配色</button>
+      <button class="tab" role="tab" data-tab="mix" aria-selected="false">混色</button>
+      <button class="tab" role="tab" data-tab="names" aria-selected="false">慣用色名</button>
+    </div>
+    <div class="panel" id="panel"></div>
+  </section>
+
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* ================= data ================= */
+// PCCS 24 hues (vivid tone, screen approximations)
+const HUES = [
+  null,
+  { n: 1,  sym: "pR", name: "紫みの赤",   hex: "#C4004E" },
+  { n: 2,  sym: "R",  name: "赤",         hex: "#E60033" },
+  { n: 3,  sym: "yR", name: "黄みの赤",   hex: "#EE3A26" },
+  { n: 4,  sym: "rO", name: "赤みの橙",   hex: "#F35A1E" },
+  { n: 5,  sym: "O",  name: "橙",         hex: "#F7851B" },
+  { n: 6,  sym: "yO", name: "黄みの橙",   hex: "#FBA71A" },
+  { n: 7,  sym: "rY", name: "赤みの黄",   hex: "#FCC800" },
+  { n: 8,  sym: "Y",  name: "黄",         hex: "#FFE600" },
+  { n: 9,  sym: "gY", name: "緑みの黄",   hex: "#D8DB00" },
+  { n: 10, sym: "YG", name: "黄緑",       hex: "#9DC41A" },
+  { n: 11, sym: "yG", name: "黄みの緑",   hex: "#4FB233" },
+  { n: 12, sym: "G",  name: "緑",         hex: "#00A14B" },
+  { n: 13, sym: "bG", name: "青みの緑",   hex: "#00A37A" },
+  { n: 14, sym: "BG", name: "青緑",       hex: "#009C96" },
+  { n: 15, sym: "BG", name: "青緑",       hex: "#008FA8" },
+  { n: 16, sym: "gB", name: "緑みの青",   hex: "#0082BE" },
+  { n: 17, sym: "B",  name: "青",         hex: "#006AB6" },
+  { n: 18, sym: "B",  name: "青",         hex: "#0059A8" },
+  { n: 19, sym: "pB", name: "紫みの青",   hex: "#2C4BA0" },
+  { n: 20, sym: "V",  name: "青紫",       hex: "#4C3A96" },
+  { n: 21, sym: "bP", name: "青みの紫",   hex: "#6E3290" },
+  { n: 22, sym: "P",  name: "紫",         hex: "#8B2F8E" },
+  { n: 23, sym: "rP", name: "赤みの紫",   hex: "#A9287F" },
+  { n: 24, sym: "RP", name: "赤紫",       hex: "#C1166A" },
+];
+
+// PCCS tones. col = saturation column (1 low .. 4 vivid), row = lightness (0 top .. 6 bottom) on the tone map.
+// mix: [weight of pure hue, mixing color, kind]
+const TONES = {
+  p:   { en: "pale",             jp: "うすい",       col: 1, row: 0, mix: [0.25, "#FFFFFF"], kind: "明清色（純色＋白）" },
+  ltg: { en: "light grayish",    jp: "明るい灰みの", col: 1, row: 2, mix: [0.18, "#C9C9C9"], kind: "濁色（純色＋明るい灰）" },
+  g:   { en: "grayish",          jp: "灰みの",       col: 1, row: 4, mix: [0.2,  "#6E6E6E"], kind: "濁色（純色＋灰）" },
+  dkg: { en: "dark grayish",     jp: "暗い灰みの",   col: 1, row: 6, mix: [0.2,  "#262626"], kind: "濁色（純色＋暗い灰）" },
+  lt:  { en: "light",            jp: "浅い",         col: 2, row: 1, mix: [0.5,  "#FFFFFF"], kind: "明清色（純色＋白）" },
+  sf:  { en: "soft",             jp: "柔らかい",     col: 2, row: 2, mix: [0.45, "#BDBDBD"], kind: "濁色（純色＋明るい灰）" },
+  d:   { en: "dull",             jp: "にぶい",       col: 2, row: 4, mix: [0.45, "#7A7A7A"], kind: "濁色（純色＋灰）" },
+  dk:  { en: "dark",             jp: "暗い",         col: 2, row: 5, mix: [0.42, "#151515"], kind: "暗清色（純色＋黒）" },
+  b:   { en: "bright",           jp: "明るい",       col: 3, row: 1, mix: [0.75, "#FFFFFF"], kind: "明清色（純色＋白）" },
+  s:   { en: "strong",           jp: "強い",         col: 3, row: 3, mix: [0.8,  "#7F7F7F"], kind: "濁色（純色＋少しの灰）" },
+  dp:  { en: "deep",             jp: "濃い",         col: 3, row: 5, mix: [0.65, "#000000"], kind: "暗清色（純色＋黒）" },
+  v:   { en: "vivid",            jp: "さえた",       col: 4, row: 3, mix: [1,    "#000000"], kind: "純色" },
+};
+const TONE_KEYS = Object.keys(TONES);
+
+// JIS慣用色名 (approximate sRGB)
+const NAMES = [
+  ["鴇色", "ときいろ", "#F4B3C2", "トキが飛ぶときに見える風切羽の淡いピンク。"],
+  ["茜色", "あかねいろ", "#B7282E", "茜草の根で染めた、沈んだ赤。夕焼けの「茜空」の色。"],
+  ["紅", "べに", "#D7003A", "紅花から採った鮮やかな赤。口紅の「紅」。"],
+  ["えんじ", "えんじ", "#B94047", "臙脂。カイガラムシから採る染料由来の濃い赤。"],
+  ["朱色", "しゅいろ", "#EB6101", "硫化水銀の顔料の色。鳥居や朱肉の黄みの赤。"],
+  ["珊瑚色", "さんごいろ", "#F5B1AA", "桃色珊瑚を砕いた顔料のような、明るい黄みのピンク。"],
+  ["柿色", "かきいろ", "#ED6D3D", "熟した柿の実のような赤みの橙。"],
+  ["山吹色", "やまぶきいろ", "#F8B500", "ヤマブキの花の色。黄金色や小判の比喩にも。"],
+  ["黄土色", "おうどいろ", "#C39143", "黄土（酸化鉄を含む土）の顔料の色。"],
+  ["卵色", "たまごいろ", "#FCD575", "鶏卵の黄身のような、明るい赤みの黄。"],
+  ["萌黄", "もえぎ", "#AACF53", "春に萌え出る若葉のような、さえた黄緑。"],
+  ["若竹色", "わかたけいろ", "#68BE8D", "若い竹の幹のような、明るい緑。"],
+  ["抹茶色", "まっちゃいろ", "#C5C56A", "挽いた抹茶のような、やわらかい黄緑。"],
+  ["鶯色", "うぐいすいろ", "#928C36", "ウグイスの羽色。くすんだ緑みの黄。"],
+  ["浅葱色", "あさぎいろ", "#00A3AF", "薄い葱の葉の色が名の由来。新選組の羽織の色。"],
+  ["新橋色", "しんばしいろ", "#59B9C6", "明治期に東京・新橋の芸者衆が好んだ明るい緑みの青。"],
+  ["群青色", "ぐんじょういろ", "#4D5AAF", "藍銅鉱（アズライト）の顔料の、深い紫みの青。"],
+  ["藍色", "あいいろ", "#165E83", "藍で染めた濃い青。「ジャパンブルー」とも。"],
+  ["紺色", "こんいろ", "#223A70", "藍染めを重ねた、ごく暗い紫みの青。"],
+  ["瑠璃色", "るりいろ", "#1E50A2", "宝石の瑠璃（ラピスラズリ）のような、こい紫みの青。"],
+  ["勿忘草色", "わすれなぐさいろ", "#89C3EB", "ワスレナグサの花の明るい青。"],
+  ["江戸紫", "えどむらさき", "#745399", "江戸で染められた、青みの紫。"],
+  ["菫色", "すみれいろ", "#7058A3", "スミレの花のような、あざやかな青紫。"],
+  ["藤色", "ふじいろ", "#A59ACA", "藤の花のような、明るい青みの紫。"],
+  ["牡丹色", "ぼたんいろ", "#D0398B", "ボタンの花のような、鮮やかな赤紫。"],
+  ["小豆色", "あずきいろ", "#96514D", "小豆の実のような、くすんだ黄みの赤。"],
+  ["煉瓦色", "れんがいろ", "#B55233", "赤煉瓦のような、暗い黄みの赤。"],
+  ["栗色", "くりいろ", "#762F07", "栗の実の皮のような、暗い赤みの茶。"],
+  ["鼠色", "ねずみいろ", "#949495", "ネズミの毛色。江戸時代に流行した灰色。"],
+  ["コバルトブルー", "cobalt blue", "#0068B7", "コバルトを含む顔料の、鮮やかな青。"],
+  ["ターコイズブルー", "turquoise blue", "#00AFCC", "宝石トルコ石の、明るい緑みの青。"],
+  ["エメラルドグリーン", "emerald green", "#00A968", "宝石エメラルドの、鮮やかな緑。"],
+  ["オリーブ", "olive", "#72640C", "オリーブの実のような、暗い緑みの黄。"],
+  ["ボルドー", "bordeaux", "#6C272D", "ボルドー産赤ワインのような、ごく暗い赤。"],
+  ["マゼンタ", "magenta", "#E4007F", "減法混色（色料）の三原色の一つ。鮮やかな赤紫。"],
+  ["シアン", "cyan", "#00A0E9", "減法混色（色料）の三原色の一つ。明るい青。"],
+  ["ベージュ", "beige", "#EEDCB3", "未漂白・未染色の羊毛の色。明るい灰みの黄赤。"],
+  ["セピア", "sepia", "#6B4A2B", "イカ墨から作ったインクの色。古い写真の色調。"],
+  ["ネイビーブルー", "navy blue", "#202F55", "英国海軍の制服の色。暗い紫みの青。"],
+  ["スカイブルー", "sky blue", "#A0D8EF", "晴れた空のような明るい青。"],
+  ["サーモンピンク", "salmon pink", "#F3A68C", "鮭の身のような、黄みのピンク。"],
+  ["レモンイエロー", "lemon yellow", "#FFF462", "レモンの果皮のような、あざやかな緑みの黄。"],
+].map(([name, yomi, hex, note]) => ({ name, yomi, hex, note }));
+
+// Knowledge questions: [tag, question, [correct, ...wrong], explanation]
+const KNOW = [
+  ["色の基本", "色の三属性に含まれないものはどれ？", ["透明度", "色相", "明度", "彩度"], "色の三属性は<b>色相</b>（色み）・<b>明度</b>（明るさ）・<b>彩度</b>（鮮やかさ）の3つ。"],
+  ["色の基本", "明度だけをもち、色相と彩度をもたない色を何という？", ["無彩色", "有彩色", "純色", "清色"], "白・灰・黒は<b>無彩色</b>。色みのある色はすべて<b>有彩色</b>です。"],
+  ["色の基本", "ある色相の中で最も彩度の高い色を何という？", ["純色", "清色", "濁色", "中間色"], "各色相で最も鮮やかな色が<b>純色</b>。PCCSでは主に v（ビビッド）トーンがこれにあたります。"],
+  ["色の基本", "純色に白だけを混ぜた色を何という？", ["明清色", "暗清色", "濁色", "補色"], "純色＋白＝<b>明清色</b>、純色＋黒＝<b>暗清色</b>、純色＋灰＝<b>濁色（中間色）</b>。"],
+  ["色の基本", "純色に灰色を混ぜた色を何という？", ["濁色（中間色）", "明清色", "暗清色", "純色"], "灰色が混ざって濁るので<b>濁色</b>。PCCSでは sf・d・ltg・g・dkg などのトーンです。"],
+  ["光と色", "人が見ることのできる光（可視光）の波長の範囲はおよそ？", ["380〜780nm", "100〜380nm", "780〜1500nm", "10〜100nm"], "可視光はおよそ<b>380〜780nm</b>。それより短いと紫外線、長いと赤外線です。"],
+  ["光と色", "可視光のうち、最も波長の長い光は何色に見える？", ["赤", "青紫", "緑", "黄"], "長波長は<b>赤</b>、短波長は<b>青紫</b>。プリズムで分けると赤→橙→黄→緑→青→青紫と並びます。"],
+  ["光と色", "太陽光をプリズムで分けて得られる、色の帯を何という？", ["スペクトル", "グラデーション", "色立体", "トーン"], "ニュートンが示した光の帯が<b>スペクトル</b>。白色光はさまざまな波長の光が混ざったものです。"],
+  ["目のしくみ", "網膜にあり、主に明るい所で色を感じる視細胞は？", ["錐体", "杆体", "水晶体", "虹彩"], "<b>錐体</b>は明るい所で色を感じ、<b>杆体</b>は暗い所で明暗を感じます。"],
+  ["目のしくみ", "暗い所で働き、明暗だけを感じる視細胞は？", ["杆体", "錐体", "角膜", "毛様体"], "<b>杆体</b>は感度が高く、暗所視で働きます。色の区別はできません。"],
+  ["目のしくみ", "夕方、赤い花が暗く沈み、青い花が明るく見えてくる現象は？", ["プルキニエ現象", "ベゾルト効果", "リープマン効果", "色の恒常性"], "暗くなると錐体から杆体へ働きが移り、短波長側（青）が明るく見えます。これが<b>プルキニエ現象</b>。"],
+  ["目のしくみ", "照明が変わっても、白い紙を白いと感じ続けるはたらきは？", ["色の恒常性", "演色性", "同化", "残像"], "脳が照明の影響を差し引いて見るはたらきが<b>色の恒常性</b>です。"],
+  ["混色", "光の三原色（加法混色の原色）はどれ？", ["赤（R）・緑（G）・青紫（B）", "シアン・マゼンタ・イエロー", "赤・黄・青", "白・灰・黒"], "光の三原色は<b>R・G・B</b>。重ねるほど明るくなるので<b>加法混色</b>と呼びます。"],
+  ["混色", "色料の三原色（減法混色の原色）はどれ？", ["シアン・マゼンタ・イエロー", "赤（R）・緑（G）・青紫（B）", "赤・黄・青", "赤・緑・黄"], "色料の三原色は<b>C・M・Y</b>。混ぜるほど暗くなるので<b>減法混色</b>。"],
+  ["混色", "加法混色で、赤（R）と緑（G）の光を重ねると何色になる？", ["イエロー", "シアン", "マゼンタ", "白"], "R＋G＝<b>イエロー</b>、G＋B＝シアン、B＋R＝マゼンタ。3色すべてで白です。"],
+  ["混色", "加法混色で、R・G・B の3色すべてを重ねると？", ["白", "黒", "灰色", "黄"], "光は重ねるほど明るくなり、3原色すべてで<b>白</b>になります。"],
+  ["混色", "減法混色で、シアンとイエローを混ぜると何色になる？", ["緑", "赤", "青紫", "黒"], "C＋Y＝<b>緑（G）</b>、M＋Y＝赤（R）、C＋M＝青紫（B）。"],
+  ["混色", "減法混色で、シアン・マゼンタ・イエローをすべて混ぜると理論上？", ["黒", "白", "赤", "明るい灰"], "色料は光を吸収するので、3原色すべてで<b>黒</b>に近づきます。"],
+  ["混色", "テレビやスマホ画面のように、小さな色点が並んで混ざって見える混色は？", ["並置加法混色", "減法混色", "継時加法混色", "同時加法混色"], "細かな色点が網膜上で混ざるのが<b>並置加法混色</b>。点描画や織物の色も同じしくみです。"],
+  ["混色", "コマに色を塗って回すと色が混ざって見える。この混色は？", ["継時加法混色", "並置加法混色", "減法混色", "色の同化"], "時間的に素早く入れ替わる色が混ざって見えるのが<b>継時加法混色</b>（回転混色）。"],
+  ["色の見え方", "同じ灰色でも、黒い背景の上だと明るく見える。この現象は？", ["明度対比", "彩度対比", "色相対比", "補色対比"], "周囲が暗いと明るく、周囲が明るいと暗く見えるのが<b>明度対比</b>です。"],
+  ["色の見え方", "くすんだ色が、鮮やかな背景の上ではよりくすんで見える。この現象は？", ["彩度対比", "明度対比", "色相対比", "リープマン効果"], "周囲が高彩度だと中の色は低彩度に見えるのが<b>彩度対比</b>。"],
+  ["色の見え方", "補色どうしを並べると、互いに鮮やかさが増して見える現象は？", ["補色対比", "色相対比", "同化", "縁辺対比"], "<b>補色対比</b>では互いの彩度が高まって見えます。"],
+  ["色の見え方", "細い黒線の入った模様の地色が、線の色に近づいて暗く見える現象は？", ["同化（ベゾルト効果）", "明度対比", "プルキニエ現象", "色陰現象"], "囲まれた色が周りの色に近づいて見えるのが<b>同化</b>。対比とは逆の効果です。"],
+  ["色の見え方", "明度差の小さい色どうしを並べると、境界がぼやけて見える現象は？", ["リープマン効果", "ハーマングリッド", "ベゾルト効果", "マッハバンド"], "<b>リープマン効果</b>。境界をはっきりさせるには明度差をつけるのが効果的です。"],
+  ["色の見え方", "赤をしばらく見つめた後に白い壁を見ると、青緑の像が見える。これは？", ["陰性残像（補色残像）", "陽性残像", "色の恒常性", "同化"], "見つめた色の補色が見える<b>陰性残像</b>。手術着が青緑なのは、血の赤の残像を目立たなくするためです。"],
+  ["色の心理", "一般に、膨張して大きく見えやすい色は？", ["明度の高い色", "明度の低い色", "彩度の低い寒色", "黒"], "<b>明度が高い</b>ほど膨張して見えます。白い碁石が黒より少し小さく作られるのはこのためです。"],
+  ["色の心理", "色の軽い・重いの感じ方に最も影響する属性は？", ["明度", "彩度", "色相", "トーン"], "<b>明度</b>が高いと軽く、低いと重く感じます。"],
+  ["色の心理", "寒色に分類される色はどれ？", ["青緑", "赤", "黄みの橙", "黄"], "青緑〜青紫は<b>寒色</b>、赤〜黄は暖色、緑や紫は中性色です。"],
+  ["色の心理", "興奮感を与えやすいのはどんな色？", ["高彩度の暖色", "低彩度の寒色", "高明度の寒色", "無彩色の灰色"], "<b>暖色系で彩度が高い</b>色ほど興奮感、寒色系で低彩度ほど沈静感を与えます。"],
+  ["色の心理", "近くに飛び出して見える「進出色」になりやすいのは？", ["暖色・高明度の色", "寒色・低明度の色", "低彩度の寒色", "暗い青"], "<b>暖色系で明るい色</b>は進出して見え、寒色系で暗い色は後退して見えます。"],
+  ["色の心理", "人の注意を引きつけやすい性質「誘目性」が高いのは？", ["高彩度の暖色", "低彩度の寒色", "中明度の灰色", "暗い青緑"], "赤などの<b>高彩度の暖色</b>は誘目性が高く、消火器や非常ボタンに使われます。"],
+  ["色の心理", "遠くからでも見つけやすい「視認性」を高めるのに最も大切なのは？", ["背景との明度差", "色相の数", "光沢感", "寒色を使うこと"], "視認性・可読性を上げるには、背景との<b>明度差</b>を大きくするのが基本です。"],
+  ["表色系", "マンセル表色系の「5R 4/14」で、「4」が表すものは？", ["明度（バリュー）", "彩度（クロマ）", "色相（ヒュー）", "トーン"], "マンセル記号は <b>色相 明度/彩度</b> の順。5R が色相、4 が明度、14 が彩度です。"],
+  ["表色系", "マンセル表色系の基本となる5色相は？", ["R・Y・G・B・P", "R・O・Y・G・B", "R・Y・G・B・V", "C・M・Y・K・R"], "基本5色相は<b>R・Y・G・B・P</b>。間にYR・GY・BG・PB・RPを加えて10色相にします。"],
+  ["表色系", "PCCSの色相環は何色相で構成されている？", ["24色相", "10色相", "12色相", "100色相"], "PCCSは<b>24色相</b>。心理四原色（赤・黄・緑・青）を基準にしています。"],
+  ["表色系", "PCCSで、色相とトーンの組み合わせで色を表す考え方を何という？", ["ヒュー・トーン・システム", "オストワルト・システム", "XYZ表色系", "NCS"], "PCCSは<b>ヒュー・トーン・システム</b>。「v2」のようにトーン記号＋色相番号で表します。"],
+  ["表色系", "PCCSで、明度と彩度をまとめた色の調子を何という？", ["トーン", "バリュー", "クロマ", "ヒュー"], "明度と彩度の複合概念が<b>トーン（色調）</b>です。"],
+  ["配色技法", "同じ色相（系統）で、明度差を大きくとった配色技法は？", ["トーンオントーン配色", "トーンイントーン配色", "カマイユ配色", "トリコロール配色"], "トーンを重ねる（on）イメージ。<b>同系色相・明度差大</b>がトーンオントーン。"],
+  ["配色技法", "トーンをそろえて、色相は自由に選ぶ配色技法は？", ["トーンイントーン配色", "トーンオントーン配色", "セパレーション配色", "アクセントカラー配色"], "トーンの中に（in）収める配色。<b>同一・類似トーン</b>で統一感を出します。"],
+  ["配色技法", "色相もトーンもほぼ同じで、一見1色に見えるほど微妙な差の配色は？", ["カマイユ配色", "フォカマイユ配色", "ビコロール配色", "グラデーション配色"], "フランス語で「単色画法」。<b>カマイユ</b>は極めて小さな差、<b>フォカマイユ</b>は少しだけ変化をつけたもの。"],
+  ["配色技法", "隣り合う2色の間に別の色（白・黒・灰など）を挟む配色技法は？", ["セパレーション配色", "アクセントカラー配色", "ドミナントカラー配色", "カマイユ配色"], "分離色（セパレーションカラー）を挟んで、ぼやけた配色を引き締めたり、強すぎる配色を和らげたりします。"],
+  ["配色技法", "単調な配色に、小面積の対照的な色を加えて引き締める技法は？", ["アクセントカラー配色", "セパレーション配色", "トーンイントーン配色", "グラデーション配色"], "全体の5%程度の小面積に入れるのが<b>アクセントカラー</b>。"],
+  ["配色技法", "フランス国旗のように、3色で明快なコントラストをつけた配色は？", ["トリコロール配色", "ビコロール配色", "カマイユ配色", "ドミナントトーン配色"], "3色＝<b>トリコロール</b>、2色＝<b>ビコロール</b>。"],
+  ["配色技法", "色相・明度・彩度などを段階的に変化させる配色は？", ["グラデーション配色", "セパレーション配色", "アクセントカラー配色", "フォカマイユ配色"], "規則的に変化させてリズムを生むのが<b>グラデーション配色</b>。"],
+  ["配色技法", "黄に近い色を明るく、青紫に近い色を暗くした、自然に見える配色は？", ["ナチュラルハーモニー", "コンプレックスハーモニー", "トーンオントーン", "ビコロール"], "自然界の光と影の見え方に近い<b>ナチュラルハーモニー</b>。逆にすると<b>コンプレックスハーモニー</b>（意外性のある配色）。"],
+  ["配色技法", "全体を同じ色相で支配して統一感を出す配色は？", ["ドミナントカラー配色", "トーンイントーン配色", "トリコロール配色", "セパレーション配色"], "dominant＝支配的。<b>色相</b>でまとめるとドミナントカラー、<b>トーン</b>でまとめるとドミナントトーン。"],
+  ["照明", "照明光によって、物体の色の見え方が変わる性質を何という？", ["演色性", "恒常性", "同化", "誘目性"], "光源の<b>演色性</b>。自然光に近いほど演色性が高い（Ra値が大きい）とされます。"],
+];
+
+const MODES = [
+  { id: "mix",   title: "ミックス10問",  desc: "全ジャンルからランダム。まずはここから。", featured: true, sw: ["#E60033", "#FFE600", "#00A14B", "#0059A8"] },
+  { id: "know",  title: "知識クイズ",    desc: "三属性・混色・目のしくみ・色の心理・配色技法", sw: ["#2C4BA0", "#8EA0D8", "#C9CFE6", "#1F2A55"] },
+  { id: "tone",  title: "PCCSトーン当て", desc: "色を見て v・b・dp・ltg… のどのトーンか答える", sw: null },
+  { id: "hue",   title: "色相環チャレンジ", desc: "補色・色相番号・色相差による配色の名前", sw: ["#E60033", "#009C96", "#FBA71A", "#4C3A96"] },
+  { id: "names", title: "慣用色名",      desc: "鴇色・浅葱色・ボルドー…色と名前を結びつける", sw: ["#F4B3C2", "#00A3AF", "#F8B500", "#6C272D"] },
+];
+
+/* ================= color utils ================= */
+const hex2rgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const rgb2hex = c => "#" + c.map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, "0")).join("").toUpperCase();
+const mix = (a, b, w) => { const A = hex2rgb(a), B = hex2rgb(b); return rgb2hex(A.map((v, i) => v * w + B[i] * (1 - w))); };
+const dist = (a, b) => { const A = hex2rgb(a), B = hex2rgb(b); return Math.hypot(...A.map((v, i) => (v - B[i]) * [0.3, 0.59, 0.11][i] * 3)); };
+const toneColor = (tone, hue) => tone === "v" ? HUES[hue].hex : mix(HUES[hue].hex, TONES[tone].mix[1], TONES[tone].mix[0]);
+const lum = h => { const [r, g, b] = hex2rgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
+const textOn = h => lum(h) > 0.6 ? "#1A1C26" : "#FFFFFF";
+
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const rnd = n => Math.floor(Math.random() * n);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const wrap24 = n => ((n - 1) % 24 + 24) % 24 + 1;
+const hueDiff = (a, b) => { const d = Math.abs(a - b); return Math.min(d, 24 - d); };
+const chip = (hex, cls = "mid", label = "") => `<span class="chip ${cls}" style="background:${hex}" role="img" aria-label="${label || "色見本"}"></span>`;
+const mini = hex => `<span class="mini" style="background:${hex}"></span>`;
+const toneLabel = k => `${k}（${TONES[k].en}／${TONES[k].jp}）`;
+const hueLabel = n => `${n}:${HUES[n].sym}（${HUES[n].name}）`;
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("irokenq:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("irokenq:" + k, JSON.stringify(v)); } catch {} },
+};
+
+/* ================= sound ================= */
+let soundOn = store.get("sound", true);
+let actx = null;
+function beep(ok) {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const notes = ok ? [660, 990] : [220, 180];
+    notes.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = ok ? "triangle" : "square"; o.frequency.value = f;
+      const t = actx.currentTime + i * 0.09;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(ok ? 0.18 : 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.18);
+    });
+  } catch {}
+}
+
+/* ================= question generators ================= */
+function qKnow() {
+  const [tag, q, opts, exp] = pick(KNOW);
+  return { tag, text: q, visual: "", choices: shuffle(opts.map((o, i) => ({ html: o, correct: i === 0 }))), explain: exp, key: "k:" + q, short: q };
+}
+
+function qTone() {
+  const t = pick(TONE_KEYS);
+  const start = rnd(6) + 1;
+  const hues = [start, start + 6, start + 12, start + 18].map(wrap24);
+  const near = TONE_KEYS.filter(k => k !== t)
+    .map(k => ({ k, d: Math.abs(TONES[k].col - TONES[t].col) * 1.3 + Math.abs(TONES[k].row - TONES[t].row) + Math.random() * 0.8 }))
+    .sort((a, b) => a.d - b.d).slice(0, 3).map(o => o.k);
+  const visual = `<div class="tone-row">${hues.map(h => chip(toneColor(t, h), "", `${t}${h}`)).join("")}</div>`;
+  return {
+    tag: "PCCSトーン",
+    text: "この4色に共通するトーンはどれ？",
+    visual,
+    choices: shuffle([t, ...near].map(k => ({ html: `<span class="k">${k}</span>${TONES[k].en}（${TONES[k].jp}）`, correct: k === t }))),
+    explain: `正解は <b>${toneLabel(t)}</b>。${TONES[t].kind}のトーンです。左から ${hues.map(h => `${t}${h}`).join("・")}。同じトーンなら色相が違っても「明るさ・鮮やかさの調子」がそろって見えます。`,
+    key: "t:" + t, short: `トーン ${t}`,
+  };
+}
+
+function qHue() {
+  const kind = pick(["comp", "comp", "name", "diff", "diff", "sym"]);
+  const n = rnd(24) + 1;
+  if (kind === "comp") {
+    const ans = wrap24(n + 12);
+    const offs = shuffle([2, -2, 3, -3, 6, -6]).slice(0, 3);
+    const opts = [ans, ...offs.map(o => wrap24(ans + o))];
+    return {
+      tag: "補色", text: "この色の<b>補色</b>（PCCS色相環で正反対の色）はどれ？",
+      visual: `<div class="chip-col">${chip(HUES[n].hex, "big", hueLabel(n))}</div>`,
+      swatch: true,
+      choices: shuffle(opts.map(h => ({ html: chip(HUES[h].hex, "", "選択肢"), cap: hueLabel(h), correct: h === ans }))),
+      explain: `${mini(HUES[n].hex)}${hueLabel(n)} の補色は ${mini(HUES[ans].hex)}<b>${hueLabel(ans)}</b>。PCCSでは色相番号に12を足し引きした色が心理補色です。`,
+      key: "h:comp" + n, short: `${n}:${HUES[n].sym} の補色`,
+    };
+  }
+  if (kind === "name") {
+    const pool = shuffle([-1, 1, -2, 2, -3, 3, -4, 4].map(o => wrap24(n + o)));
+    const names = [HUES[n].name];
+    for (const h of pool) { if (names.length >= 4) break; if (!names.includes(HUES[h].name)) names.push(HUES[h].name); }
+    return {
+      tag: "色相", text: "この色の色相名はどれ？（PCCS v トーン）",
+      visual: `<div class="chip-col">${chip(HUES[n].hex, "big", "色見本")}</div>`,
+      choices: shuffle(names.map(nm => ({ html: nm, correct: nm === HUES[n].name }))),
+      explain: `${mini(HUES[n].hex)} は PCCS 色相番号 <b>${hueLabel(n)}</b>。「〜みの」は修飾語で、たとえば「黄みの赤」は黄に寄った赤のことです。`,
+      key: "h:name" + n, short: `${n}:${HUES[n].sym} の色相名`,
+    };
+  }
+  if (kind === "diff") {
+    const cats = [
+      { name: "同一色相配色", r: [0, 0] }, { name: "隣接色相配色", r: [1, 1] }, { name: "類似色相配色", r: [2, 3] },
+      { name: "中差色相配色", r: [4, 7] }, { name: "対照色相配色", r: [8, 10] }, { name: "補色色相配色", r: [11, 12] },
+    ];
+    const ci = rnd(5) + 1; // skip 同一 most of the time
+    const c = cats[ci];
+    const d = c.r[0] + rnd(c.r[1] - c.r[0] + 1);
+    const m = wrap24(n + (Math.random() < .5 ? d : -d));
+    const wrong = shuffle(cats.filter((_, i) => i !== ci)).slice(0, 3);
+    return {
+      tag: "色相配色", text: "この2色の配色は、色相差で分けると何？",
+      visual: `<div class="chip-col">${chip(HUES[n].hex, "mid")}<span>${n}:${HUES[n].sym}</span></div><div class="chip-col">${chip(HUES[m].hex, "mid")}<span>${m}:${HUES[m].sym}</span></div>`,
+      choices: shuffle([c, ...wrong].map(x => ({ html: x.name, correct: x === c }))),
+      explain: `色相番号 ${n} と ${m} の差は <b>${hueDiff(n, m)}</b> なので <b>${c.name}</b>。目安：0 同一／1 隣接／2〜3 類似／4〜7 中差／8〜10 対照／11〜12 補色。`,
+      key: "h:diff" + ci, short: `色相差 ${hueDiff(n, m)}`,
+    };
+  }
+  // sym
+  const ans = HUES[n].sym;
+  const syms = [ans];
+  for (const h of shuffle([-1, 1, -2, 2, -3, 3, 6, -6].map(o => wrap24(n + o)))) { if (syms.length >= 4) break; if (!syms.includes(HUES[h].sym)) syms.push(HUES[h].sym); }
+  return {
+    tag: "色相記号", text: `PCCS 色相番号 <b>${n}</b> の色相記号はどれ？`,
+    visual: `<div class="notation">${n} : ?</div>`,
+    choices: shuffle(syms.map(s => ({ html: `<span style="font-family:var(--font-mono);font-weight:600">${s}</span>`, correct: s === ans }))),
+    explain: `${mini(HUES[n].hex)} ${n} は <b>${ans}</b>（${HUES[n].name}）。大文字が基本の色、小文字の前置きは「〜みの」を表します（例：yR＝黄みの赤）。2:R・8:Y・12:G・18:B が心理四原色。`,
+    key: "h:sym" + n, short: `色相番号 ${n} の記号`,
+  };
+}
+
+function qName() {
+  const c = pick(NAMES);
+  const near = NAMES.filter(x => x !== c).map(x => ({ x, d: dist(x.hex, c.hex) })).sort((a, b) => a.d - b.d).slice(0, 7);
+  const others = shuffle(near).slice(0, 3).map(o => o.x);
+  const opts = shuffle([c, ...others]);
+  const exp = `${mini(c.hex)} <b>${c.name}</b>（${c.yomi}）― ${c.note}`;
+  if (Math.random() < 0.5) {
+    return {
+      tag: "慣用色名", text: "この色の慣用色名はどれ？",
+      visual: `<div class="chip-col">${chip(c.hex, "big", "色見本")}</div>`,
+      choices: opts.map(o => ({ html: o.name, correct: o === c, extra: o })),
+      explain: exp, key: "n:" + c.name, short: c.name,
+    };
+  }
+  return {
+    tag: "慣用色名", text: `「<b>${c.name}</b>」はどの色？`,
+    visual: `<div style="font-size:13px;color:var(--muted)">${c.yomi}</div>`,
+    swatch: true,
+    choices: opts.map(o => ({ html: chip(o.hex, "", "選択肢"), cap: o.name, correct: o === c })),
+    explain: exp, key: "n:" + c.name, short: c.name,
+  };
+}
+
+const GEN = { know: qKnow, tone: qTone, hue: qHue, names: qName };
+function makeSet(mode) {
+  const out = [], keys = new Set();
+  let guard = 0;
+  while (out.length < 10 && guard++ < 200) {
+    const g = mode === "mix" ? GEN[pick(["know", "know", "tone", "hue", "names"])] : GEN[mode];
+    const q = g();
+    if (keys.has(q.key) && guard < 150) continue;
+    keys.add(q.key); out.push(q);
+  }
+  return out;
+}
+
+/* ================= state & screens ================= */
+const screens = ["home", "quiz", "result", "learn"];
+function show(id) { screens.forEach(s => { $("#" + s).hidden = s !== id; }); window.scrollTo(0, 0); }
+
+let S = null; // current game
+let lifetime = store.get("life", { total: 0, correct: 0, maxCombo: 0 });
+let bests = store.get("best", {});
+
+function renderStrips() {
+  const html = HUES.slice(1).map(h => `<span style="background:${h.hex}"></span>`).join("");
+  $("#strip-top").innerHTML = html; $("#strip-res").innerHTML = html;
+}
+function renderHome() {
+  $("#st-total").textContent = lifetime.total;
+  $("#st-rate").textContent = lifetime.total ? Math.round(lifetime.correct / lifetime.total * 100) + "%" : "–";
+  $("#st-streak").textContent = lifetime.maxCombo;
+  $("#modes").innerHTML = MODES.map(m => {
+    const sw = m.sw || ["v", "lt", "d", "dk"].map(t => toneColor(t, 12));
+    const b = bests[m.id];
+    return `<button class="mode${m.featured ? " featured" : ""}" data-mode="${m.id}" type="button">
+      <span class="mode-swatch" aria-hidden="true">${sw.map(c => `<span style="background:${c}"></span>`).join("")}</span>
+      <span><h3>${m.title}</h3><p>${m.desc}</p></span>
+      <span class="best">ベスト<b>${b ? b.score : "—"}</b></span></button>`;
+  }).join("");
+}
+
+function start(mode) {
+  S = { mode, qs: makeSet(mode), i: 0, score: 0, combo: 0, maxCombo: 0, results: [], t0: 0 };
+  $("#progress").innerHTML = "<i></i>".repeat(10);
+  show("quiz");
+  renderQ();
+}
+
+function renderQ() {
+  const q = S.qs[S.i];
+  [...$("#progress").children].forEach((el, i) => {
+    el.className = i < S.i ? (S.results[i].ok ? "ok" : "ng") : i === S.i ? "now" : "";
+  });
+  $("#qnum").textContent = `Q${S.i + 1} / 10`;
+  $("#combo").textContent = S.combo >= 2 ? `${S.combo} COMBO` : "";
+  $("#score").textContent = S.score;
+  $("#qtag").textContent = q.tag;
+  $("#qtext").innerHTML = q.text;
+  $("#visual").innerHTML = q.visual;
+  const box = $("#choices");
+  box.className = "choices" + (q.swatch ? " swatches" : "");
+  box.innerHTML = q.choices.map((c, i) => q.swatch
+    ? `<button class="choice sw" type="button" data-i="${i}">${c.html}<span class="cap"></span></button>`
+    : `<button class="choice" type="button" data-i="${i}">${c.html.includes('class="k"') ? c.html : `<span class="k">${"ABCD"[i]}</span>${c.html}`}</button>`
+  ).join("");
+  $("#feedback").hidden = true;
+  $("#next").hidden = true;
+  S.t0 = performance.now();
+  S.locked = false;
+}
+
+function answer(idx) {
+  if (S.locked) return;
+  S.locked = true;
+  const q = S.qs[S.i];
+  const ok = q.choices[idx].correct;
+  const secs = (performance.now() - S.t0) / 1000;
+  const btns = [...$("#choices").children];
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (q.choices[i].correct) b.classList.add("right");
+    else if (i === idx) b.classList.add("wrong");
+    else b.classList.add("dim");
+    if (q.swatch) b.querySelector(".cap").textContent = q.choices[i].cap;
+  });
+  let gained = 0;
+  if (ok) {
+    S.combo++; S.maxCombo = Math.max(S.maxCombo, S.combo);
+    const speed = Math.max(0, Math.round(50 - secs * 5));
+    const comboB = Math.min(100, (S.combo - 1) * 20);
+    gained = 100 + speed + comboB;
+    S.score += gained;
+    const sc = $("#score");
+    sc.textContent = S.score;
+    const p = document.createElement("span"); p.className = "pop"; p.textContent = "+" + gained;
+    sc.appendChild(p); setTimeout(() => p.remove(), 900);
+  } else {
+    S.combo = 0;
+    btns[idx].classList.add("shake");
+    try { navigator.vibrate && navigator.vibrate(60); } catch {}
+  }
+  beep(ok);
+  $("#combo").textContent = S.combo >= 2 ? `${S.combo} COMBO` : "";
+  S.results.push({ ok, q });
+  const fb = $("#feedback");
+  fb.className = "feedback " + (ok ? "ok" : "ng");
+  $("#fb-title").textContent = ok ? (S.combo >= 3 ? `正解！ ${S.combo}コンボ` : "正解！") : "ざんねん…";
+  $("#fb-body").innerHTML = q.explain;
+  fb.hidden = false;
+  const nx = $("#next");
+  nx.textContent = S.i === 9 ? "結果を見る" : "次の問題へ";
+  nx.hidden = false;
+  requestAnimationFrame(() => nx.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+}
+
+function next() {
+  if (S.i < 9) { S.i++; renderQ(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  else finish();
+}
+
+const RANKS = [
+  [10, "パーフェクト！色彩マスター", "完璧です。上の級にも挑戦してみよう。"],
+  [8, "合格ライン突破！", "色彩検定の合格目安（約70%）を大きく超えています。"],
+  [7, "合格ライン到達", "合格目安の約70%に届きました。あと少しで盤石です。"],
+  [5, "あと一歩", "間違えた問題の解説を読み直せば、すぐ届きます。"],
+  [0, "のびしろ十分", "「まなぶ」でトーン図と色相環を眺めてから再挑戦しよう。"],
+];
+function finish() {
+  const correct = S.results.filter(r => r.ok).length;
+  lifetime.total += 10; lifetime.correct += correct; lifetime.maxCombo = Math.max(lifetime.maxCombo, S.maxCombo);
+  store.set("life", lifetime);
+  const prev = bests[S.mode];
+  const isBest = !prev || S.score > prev.score;
+  if (isBest) { bests[S.mode] = { score: S.score, correct }; store.set("best", bests); }
+  const [, rank, sub] = RANKS.find(r => correct >= r[0]);
+  $("#res-mode").textContent = MODES.find(m => m.id === S.mode).title;
+  $("#res-correct").textContent = `${correct}/10`;
+  $("#res-rank").textContent = rank;
+  $("#res-sub").innerHTML = `${S.score} pt・最大 ${S.maxCombo} コンボ${isBest ? "・<b>ベスト更新！</b>" : ""}<br>${sub}`;
+  const pal = [1, 3, 5, 7, 8, 10, 12, 14, 17, 20];
+  $("#res-chips").innerHTML = S.results.map((r, i) => {
+    const bg = r.ok ? HUES[pal[i]].hex : "var(--line)";
+    return `<i style="background:${bg};color:${r.ok ? textOn(HUES[pal[i]].hex) : "var(--muted)"}">${r.ok ? "○" : "×"}</i>`;
+  }).join("");
+  const miss = S.results.filter(r => !r.ok);
+  $("#review").innerHTML = miss.length
+    ? `<h2 class="section-h" style="margin:8px 0 0">見直しポイント</h2>` + miss.map(r => `<div class="review-item"><b>${r.q.tag}</b>　${r.q.explain}</div>`).join("")
+    : "";
+  show("result");
+}
+
+/* ================= learn ================= */
+let learnHue = 2;
+const PANELS = {
+  tone() {
+    // [tone, column, first row, row span] on an 8-row map (top = high lightness)
+    const order = [["p", 1, 1, 2], ["ltg", 1, 3, 2], ["g", 1, 5, 2], ["dkg", 1, 7, 2],
+                   ["lt", 2, 1, 2], ["sf", 2, 3, 2], ["d", 2, 5, 2], ["dk", 2, 7, 2],
+                   ["b", 3, 2, 2], ["s", 3, 4, 2], ["dp", 3, 6, 2], ["v", 4, 3, 4]];
+    const cells = order.map(([k, c, r, sp]) => {
+      const hex = toneColor(k, learnHue);
+      return `<button class="t" data-tone="${k}" type="button" style="grid-column:${c + 1};grid-row:${r} / span ${sp};background:${hex};color:${textOn(hex)}">${k}${learnHue}</button>`;
+    }).join("");
+    return `
+      <p>PCCSのトーンは<b>明度</b>（縦）と<b>彩度</b>（横）をまとめた「色の調子」。下の色相ボタンで色を変えて、同じトーンがどう見えるか比べよう。マスをタップすると説明が出ます。</p>
+      <div class="hue-pick">${HUES.slice(1).map(h => `<button type="button" data-hue="${h.n}" aria-label="${hueLabel(h.n)}" aria-pressed="${h.n === learnHue}" style="background:${h.hex}"></button>`).join("")}</div>
+      <div class="tonemap">
+        <div class="axis" style="grid-column:1;grid-row:1 / span 8">↑明度 高　低↓</div>
+        ${cells}
+      </div>
+      <div class="tonemap-x"><span></span><span>彩度 低 → 高（右端が純色 v）</span></div>
+      <div class="tone-info" id="tone-info">マスをタップしてください。</div>
+      <h3>清色と濁色</h3>
+      <p><b>明清色</b>（純色＋白）：b・lt・p　<b>暗清色</b>（純色＋黒）：dp・dk<br><b>濁色</b>（純色＋灰）：s・sf・d・ltg・g・dkg</p>`;
+  },
+  wheel() {
+    const cx = 170, cy = 170, R = 150, r = 92;
+    const seg = HUES.slice(1).map((h, i) => {
+      const a0 = (i - 0.5) / 24 * Math.PI * 2 - Math.PI / 2, a1 = (i + 0.5) / 24 * Math.PI * 2 - Math.PI / 2;
+      const p = (rad, a) => `${(cx + rad * Math.cos(a)).toFixed(1)},${(cy + rad * Math.sin(a)).toFixed(1)}`;
+      const am = (a0 + a1) / 2;
+      const [tx, ty] = [cx + (R - 26) * Math.cos(am), cy + (R - 26) * Math.sin(am)];
+      return `<path d="M${p(r, a0)} L${p(R, a0)} A${R},${R} 0 0 1 ${p(R, a1)} L${p(r, a1)} A${r},${r} 0 0 0 ${p(r, a0)}Z" fill="${h.hex}"/>
+        <text x="${tx.toFixed(1)}" y="${(ty - 3).toFixed(1)}" text-anchor="middle" style="fill:${textOn(h.hex)}">${h.n}</text>
+        <text x="${tx.toFixed(1)}" y="${(ty + 8).toFixed(1)}" text-anchor="middle" style="fill:${textOn(h.hex)}">${h.sym}</text>`;
+    }).join("");
+    return `
+      <div class="wheel-wrap"><svg viewBox="0 0 340 340" role="img" aria-label="PCCS 24色相環">${seg}
+        <text x="170" y="164" text-anchor="middle" style="font-size:14px;font-weight:600">PCCS</text>
+        <text x="170" y="182" text-anchor="middle" style="font-size:11px">24色相</text></svg></div>
+      <p><b>心理四原色</b>は 2:R（赤）・8:Y（黄）・12:G（緑）・18:B（青）。その<b>心理補色</b>が向かい側の 14:BG・20:V・24:RP・6:yO に置かれています。</p>
+      <p>色相番号に <b>±12</b> した色が補色。例：2:R ⇔ 14:BG、8:Y ⇔ 20:V。</p>
+      <p>暖色：1〜8（赤〜黄）　寒色：13〜19（青緑〜青）　中性色：9〜12・20〜24（緑系・紫系）</p>`;
+  },
+  harmony() {
+    const rows = [
+      ["同一色相", "0", 2, 2], ["隣接色相", "1", 2, 3], ["類似色相", "2〜3", 2, 4],
+      ["中差色相", "4〜7", 2, 8], ["対照色相", "8〜10", 2, 11], ["補色色相", "11〜12", 2, 14],
+    ];
+    return `
+      <h3>色相差による配色（PCCS）</h3>
+      <div class="table-wrap"><table><thead><tr><th>配色</th><th>色相差</th><th>例</th></tr></thead><tbody>
+      ${rows.map(([n, d, a, b]) => `<tr><td>${n}配色</td><td style="font-family:var(--font-mono)">${d}</td><td>${mini(a === b ? toneColor("lt", a) : HUES[a].hex)}${mini(HUES[b].hex)}</td></tr>`).join("")}
+      </tbody></table></div>
+      <h3>よく出る配色技法</h3>
+      <div class="table-wrap"><table><tbody>
+        <tr><td><b>トーンオントーン</b></td><td>同系色相で明度差を大きく ${mini(toneColor("p", 18))}${mini(toneColor("v", 18))}${mini(toneColor("dk", 18))}</td></tr>
+        <tr><td><b>トーンイントーン</b></td><td>トーンをそろえ色相は自由 ${mini(toneColor("sf", 2))}${mini(toneColor("sf", 8))}${mini(toneColor("sf", 16))}</td></tr>
+        <tr><td><b>カマイユ</b></td><td>色相・トーンともほぼ同じ ${mini(toneColor("ltg", 12))}${mini(toneColor("ltg", 13))}</td></tr>
+        <tr><td><b>フォカマイユ</b></td><td>カマイユより少し変化 ${mini(toneColor("sf", 10))}${mini(toneColor("ltg", 12))}</td></tr>
+        <tr><td><b>セパレーション</b></td><td>間に分離色をはさむ ${mini(HUES[2].hex)}${mini("#FFFFFF")}${mini(HUES[24].hex)}</td></tr>
+        <tr><td><b>アクセントカラー</b></td><td>小面積に対照色 ${mini(toneColor("dk", 18))}${mini(toneColor("dk", 18))}${mini(HUES[6].hex)}</td></tr>
+        <tr><td><b>グラデーション</b></td><td>段階的に変化 ${[2, 4, 6, 8].map(h => mini(HUES[h].hex)).join("")}</td></tr>
+        <tr><td><b>トリコロール／ビコロール</b></td><td>3色／2色の明快な配色 ${mini(HUES[18].hex)}${mini("#FFFFFF")}${mini(HUES[2].hex)}</td></tr>
+        <tr><td><b>ナチュラルハーモニー</b></td><td>黄寄りを明るく、青紫寄りを暗く ${mini(toneColor("b", 8))}${mini(toneColor("dp", 12))}</td></tr>
+      </tbody></table></div>`;
+  },
+  mix() {
+    const svg = (cols, blend, bg) => `<svg viewBox="0 0 150 140" aria-hidden="true"><rect width="150" height="140" rx="12" fill="${bg}"/>
+      <g style="mix-blend-mode:normal">${cols.map((c, i) => { const a = i * 2.094 - 1.571; return `<circle cx="${75 + 24 * Math.cos(a)}" cy="${72 + 24 * Math.sin(a)}" r="36" fill="${c}" style="mix-blend-mode:${blend}"/>`; }).join("")}</g></svg>`;
+    return `
+      <div class="mixbox">
+        <figure style="margin:0">${svg(["#FF0000", "#00FF00", "#0000FF"], "screen", "#000000")}<figcaption>加法混色（光）</figcaption></figure>
+        <figure style="margin:0">${svg(["#00FFFF", "#FF00FF", "#FFFF00"], "multiply", "#FFFFFF")}<figcaption>減法混色（色料）</figcaption></figure>
+      </div>
+      <h3>加法混色（光の三原色 R・G・B）</h3>
+      <p>R＋G＝Y（イエロー）／G＋B＝C（シアン）／B＋R＝M（マゼンタ）／R＋G＋B＝白。混ぜるほど<b>明るく</b>なる。</p>
+      <p>同時加法混色（スポットライト）、継時加法混色（回転するコマ）、並置加法混色（画面の画素・点描）の3種類。</p>
+      <h3>減法混色（色料の三原色 C・M・Y）</h3>
+      <p>C＋M＝B（青紫）／M＋Y＝R（赤）／Y＋C＝G（緑）／C＋M＋Y＝黒。混ぜるほど<b>暗く</b>なる。絵の具・印刷インク・フィルターの重ね合わせ。</p>`;
+  },
+  names() {
+    return `<p>JIS慣用色名から試験に出やすいものを集めました（色は近似値）。</p>
+      <div class="names">${NAMES.map(n => `<div class="name-card">${chip(n.hex, "", n.name)}<span><b>${n.name}</b><small>${n.yomi}</small></span></div>`).join("")}</div>`;
+  },
+};
+let learnTab = "tone";
+function renderLearn() {
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.tab === learnTab));
+  $("#panel").innerHTML = PANELS[learnTab]();
+}
+
+/* ================= events ================= */
+document.addEventListener("click", e => {
+  const m = e.target.closest("[data-mode]"); if (m) return start(m.dataset.mode);
+  const c = e.target.closest(".choice"); if (c && !c.disabled) return answer(+c.dataset.i);
+  const tab = e.target.closest(".tab"); if (tab) { learnTab = tab.dataset.tab; return renderLearn(); }
+  const hb = e.target.closest("[data-hue]"); if (hb) { learnHue = +hb.dataset.hue; return renderLearn(); }
+  const tb = e.target.closest("[data-tone]");
+  if (tb) {
+    const k = tb.dataset.tone, t = TONES[k];
+    $("#tone-info").innerHTML = `${mini(toneColor(k, learnHue))} <b>${k}${learnHue}</b>　${t.en}（${t.jp}）<br>${t.kind}。表記は「トーン記号＋色相番号」で ${k}${learnHue} のように書きます。`;
+  }
+});
+$("#next").addEventListener("click", next);
+$("#quit").addEventListener("click", () => { renderHome(); show("home"); });
+$("#again").addEventListener("click", () => start(S.mode));
+$("#home-btn").addEventListener("click", () => { renderHome(); show("home"); });
+$("#go-learn").addEventListener("click", () => { renderLearn(); show("learn"); });
+$("#learn-back").addEventListener("click", () => show("home"));
+const sndBtn = $("#snd-toggle");
+const syncSnd = () => { sndBtn.textContent = "効果音: " + (soundOn ? "ON" : "OFF"); sndBtn.setAttribute("aria-pressed", soundOn); };
+sndBtn.addEventListener("click", () => { soundOn = !soundOn; store.set("sound", soundOn); syncSnd(); });
+document.addEventListener("keydown", e => {
+  if ($("#quiz").hidden) return;
+  if (["1", "2", "3", "4"].includes(e.key) && !S.locked) answer(+e.key - 1);
+  else if ((e.key === "Enter" || e.key === " ") && S.locked && document.activeElement?.id !== "next") { e.preventDefault(); next(); }
+});
+
+// logo dot cycles through the hue circle
+let dotHue = 2;
+setInterval(() => { dotHue = wrap24(dotHue + 3); const d = $("#logo-dot"); if (d) d.style.background = HUES[dotHue].hex; }, 1600);
+
+renderStrips(); renderHome(); syncSnd();
+})();
+</script>
+</body>
+</html>
