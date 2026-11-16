@@ -205,6 +205,29 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 .mixbox svg { width: 150px; height: 140px; }
 .mixbox figcaption { text-align: center; font-size: 13px; font-weight: 700; }
 
+/* ---------- genres ---------- */
+.genre-entry { border: 1.5px solid var(--ink); }
+.weak { margin-top: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+.lv-badge { width: 56px; height: 56px; border-radius: 10px; display: grid; place-items: center; font-family: var(--font-display); font-size: 18px; background: var(--ink); color: var(--paper); }
+.glist { display: grid; gap: 8px; }
+.gcard { display: grid; grid-template-columns: 10px 1fr; gap: 12px; width: 100%; text-align: left; cursor: pointer; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 12px 12px; transition: border-color .12s, transform .12s; }
+.gcard:hover { border-color: var(--accent); }
+.gcard:active { transform: scale(.98); }
+.gchip { border-radius: 5px; }
+.gbody { display: grid; gap: 2px; min-width: 0; }
+.gbody b { font-size: 16px; }
+.gbody small { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.gmeta { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+.gbar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.gbar i { display: block; height: 100%; border-radius: 3px; }
+.safety { display: grid; gap: 6px; }
+.safety div { display: grid; grid-template-columns: 44px 70px 1fr; gap: 10px; align-items: center; font-size: 14px; }
+.safety span:first-child { height: 28px; border-radius: 6px; border: 1px solid var(--chip-edge); }
+.kscale { height: 26px; border-radius: 8px; background: linear-gradient(90deg, #FF8A1F, #FFB46B 20%, #FFE2BF 40%, #FFF6EC 55%, #EEF2FF 75%, #BFD0FF); border: 1px solid var(--chip-edge); }
+.kticks { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+.ratio { display: flex; height: 40px; border-radius: 8px; overflow: hidden; border: 1px solid var(--chip-edge); font-size: 12px; font-weight: 700; }
+.ratio span { display: grid; place-items: center; }
+
 /* ---------- action arena ---------- */
 /* The arena is a fixed neutral grey on purpose: colours are judged on a neutral mid-grey ground (N5 相当), so it does not change with the theme. */
 :root { --arena: #6E7075; --arena-ink: #FFFFFF; --arena-panel: rgba(0, 0, 0, .2); --arena-soft: rgba(255, 255, 255, .14); }
@@ -295,7 +318,11 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
     <p class="foot" style="margin-top:8px">アクションのフィールドは、色を見比べやすい中性グレー（N5相当）の背景です。</p>
 
     <h2 class="section-h">クイズ</h2>
-    <div class="modes" id="modes"></div>
+    <button class="mode genre-entry" id="go-genres" type="button">
+      <span class="mode-swatch" aria-hidden="true" id="genre-sw"></span>
+      <span><h3>ジャンル別・級別</h3><p>13ジャンル・3級／2級／UC級の範囲から選んで10問。ジャンルごとの正答率と苦手もわかる。</p></span>
+      <span class="best" aria-hidden="true"><b>→</b></span></button>
+    <div class="modes" id="modes" style="margin-top:10px"></div>
     <button class="learn-btn" id="go-learn" type="button">まなぶ ― トーン図・色相環・慣用色名図鑑を見る</button>
 
     <div class="toggles">
@@ -340,6 +367,20 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
     <div class="review" id="review"></div>
   </section>
 
+  <!-- GENRES -->
+  <section id="genres" hidden>
+    <div class="topbar">
+      <button class="icon-btn" id="genres-back" type="button" aria-label="ホームにもどる">←</button>
+      <strong style="font-size:17px">ジャンル別・級別</strong>
+    </div>
+    <div class="weak" id="weak"></div>
+    <h2 class="section-h">級別チャレンジ</h2>
+    <div class="modes" id="lv-row"></div>
+    <p class="foot" style="margin-top:6px">級の振り分けは出題範囲の目安です。</p>
+    <h2 class="section-h">ジャンル別</h2>
+    <div class="glist" id="glist"></div>
+  </section>
+
   <!-- ACTION -->
   <section id="act" class="arena" hidden>
     <div class="hud">
@@ -366,6 +407,7 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
       <button class="tab" role="tab" data-tab="harmony" aria-selected="false">配色</button>
       <button class="tab" role="tab" data-tab="mix" aria-selected="false">混色</button>
       <button class="tab" role="tab" data-tab="names" aria-selected="false">慣用色名</button>
+      <button class="tab" role="tab" data-tab="life" aria-selected="false">安全色・照明・インテリア</button>
     </div>
     <div class="panel" id="panel"></div>
   </section>
@@ -523,9 +565,167 @@ const KNOW = [
   ["照明", "照明光によって、物体の色の見え方が変わる性質を何という？", ["演色性", "恒常性", "同化", "誘目性"], "光源の<b>演色性</b>。自然光に近いほど演色性が高い（Ra値が大きい）とされます。"],
 ];
 
+// More knowledge questions, by genre: [genre, level ("3" | "2" | "UC"), question, [correct, ...wrong], explanation]
+const KNOW2 = [
+  // --- 光と色の基本
+  ["basic", "3", "物体に色がついて見えるのはなぜ？", ["物体が特定の波長の光を反射（透過）するから", "物体自体が光を出しているから", "目が物体に色をつけているから", "すべての波長を吸収するから"], "物体は光の一部を<b>吸収</b>し、残りを<b>反射・透過</b>します。その光が目に届いて色として感じられます。"],
+  ["basic", "3", "色が見えるために必要な3つの要素は？", ["光源・物体・目（視覚）", "色相・明度・彩度", "赤・緑・青", "白・灰・黒"], "<b>光源</b>から出た光が<b>物体</b>に当たり、その光を<b>目と脳</b>が受け取って色を感じます。"],
+  ["basic", "3", "白色光をプリズムで分け、色の帯を示した人物は？", ["ニュートン", "ゲーテ", "マンセル", "オストワルト"], "17世紀、<b>ニュートン</b>がプリズムで光を分け、白色光がさまざまな色の光の集まりであることを示しました。"],
+  ["basic", "3", "波長がおよそ380nmより短い、目に見えない光は？", ["紫外線", "赤外線", "可視光", "マイクロ波"], "380nmより短いと<b>紫外線</b>、780nmより長いと<b>赤外線</b>です。"],
+  ["basic", "2", "物体が波長ごとにどれだけ光を反射するかを示したグラフは？", ["分光反射率曲線", "xy色度図", "等色相面", "トーン図"], "<b>分光反射率曲線</b>を見ると、その物体が何色に見えるかがわかります。赤い物体は長波長側が高くなります。"],
+  ["basic", "2", "晴れた空が青く見えるおもな理由は？", ["短波長の光が大気中で散乱されやすいから", "海の色が映っているから", "長波長の光だけが届くから", "空気そのものが青いから"], "波長の短い青い光ほど空気の分子で<b>散乱</b>されやすく、空全体に広がって見えます（レイリー散乱）。"],
+  ["basic", "2", "シャボン玉の表面に虹色が見える現象は？", ["干渉", "散乱", "吸収", "回折だけによる屈折"], "薄い膜の表と裏で反射した光が重なり合って強め合ったり弱め合ったりする<b>干渉</b>によるものです。"],
+  ["basic", "3", "ステンドグラスのように、光が物体を通り抜けて見える色を何という？", ["透過色", "表面色", "光源色", "開口色"], "光が通り抜けて見える色が<b>透過色</b>、物体の表面で反射して見える色が<b>表面色</b>です。"],
+  // --- 目と色の見え方
+  ["eye", "3", "同じ橙色が、赤の上では黄みに、黄の上では赤みに見える現象は？", ["色相対比", "明度対比", "彩度対比", "同化"], "周りの色相と反対の方向へずれて見えるのが<b>色相対比</b>です。"],
+  ["eye", "3", "小さな色見本で選んだ色を壁一面に塗ると、明るく鮮やかに感じる。これは？", ["面積効果", "色順応", "同化", "縁辺対比"], "面積が大きいほど明度・彩度が高く見えるのが<b>面積効果</b>。外壁やカーテンの色選びで注意が必要です。"],
+  ["eye", "3", "明るい所から映画館に入ると、しばらくして周りが見えてくる。このはたらきは？", ["暗順応", "明順応", "色順応", "恒常性"], "暗さに目が慣れるのが<b>暗順応</b>（時間がかかる）。逆に明るさに慣れるのが<b>明順応</b>（すぐ慣れる）。"],
+  ["eye", "3", "色付きのサングラスをかけてしばらくすると、色の偏りが気にならなくなる。これは？", ["色順応", "暗順応", "色相対比", "リープマン効果"], "目が照明や光の色みに慣れるはたらきが<b>色順応</b>です。"],
+  ["eye", "3", "網膜の中心にあり、錐体が密集して色や形を最もよく見分ける部分は？", ["中心窩", "盲点", "虹彩", "毛様体"], "<b>中心窩</b>には錐体が集まっています。視神経の出口の<b>盲点</b>には視細胞がありません。"],
+  ["eye", "2", "赤・緑・青紫の3種類の受容器を仮定した色覚の説は？", ["ヤング＝ヘルムホルツの三色説", "ヘリングの反対色説", "段階説", "オストワルトの調和論"], "<b>三色説</b>は錐体レベルのしくみをよく説明します。"],
+  ["eye", "2", "赤-緑、黄-青、白-黒の対になった反応で色覚を説明した説は？", ["ヘリングの反対色説", "ヤング＝ヘルムホルツの三色説", "ニュートンの光学", "ジャッドの調和論"], "<b>反対色説</b>。現在は、錐体段階は三色説、その先の神経段階は反対色説とする<b>段階説</b>が有力です。"],
+  ["eye", "2", "錐体は何種類ある？", ["3種類（L・M・S）", "2種類", "4種類", "1種類"], "長波長に反応する<b>L錐体</b>、中波長の<b>M錐体</b>、短波長の<b>S錐体</b>の3種類です。"],
+  ["eye", "2", "明度を段階的に変えた灰色を並べると、境目で明るい側がより明るく、暗い側がより暗く見える現象は？", ["縁辺対比", "同化", "面積効果", "色陰現象"], "境界部分で対比が強まるのが<b>縁辺対比</b>です。"],
+  ["eye", "2", "白黒の模様だけのコマを回すと、うっすら色が見える現象は？", ["主観色（ベンハムのコマ）", "継時加法混色", "残像", "プルキニエ現象"], "白黒しかないのに色を感じる<b>主観色</b>。ベンハムのコマが有名です。"],
+  ["eye", "3", "ある色を見た直後に別の色を見たとき、前の色の影響で見え方が変わる対比は？", ["継時対比", "同時対比", "縁辺対比", "面積対比"], "時間をおいて起こるのが<b>継時対比</b>、並べて同時に見るときに起こるのが<b>同時対比</b>です。"],
+  // --- 混色
+  ["mix", "3", "加法混色で、補色の関係にある色光どうしを混ぜると？", ["白（無彩色）", "黒", "より鮮やかな色", "緑"], "補色の色光を混ぜると<b>白</b>（無彩色）になります。色料の補色どうしなら黒に近い灰色です。"],
+  ["mix", "3", "減法混色で、マゼンタとイエローを混ぜると？", ["赤（R）", "緑（G）", "青紫（B）", "白"], "M＋Y＝<b>赤</b>。印刷の赤はこの組み合わせで作ります。"],
+  ["mix", "3", "減法混色で、シアンとマゼンタを混ぜると？", ["青紫（B）", "赤（R）", "緑（G）", "黄"], "C＋M＝<b>青紫</b>。"],
+  ["mix", "2", "並置加法混色や継時加法混色で、混色した色の明るさは？", ["もとの色の明るさのほぼ平均になる", "必ず白になる", "もとの色より必ず暗くなる", "もとの色より必ず明るくなる"], "これらは<b>中間混色</b>とも呼ばれ、明るさは混ぜた色の<b>平均</b>程度になります。"],
+  ["mix", "3", "カラー印刷で、C・M・Yに加えて黒（K）インクを使うおもな理由は？", ["3色だけでは締まった黒が出にくいから", "白を表現するため", "インクを節約するため", "光の三原色に合わせるため"], "CMYを重ねても濁った暗い色になりやすいので、<b>K（黒）</b>を加えて文字や影をくっきりさせます。"],
+  ["mix", "2", "フィルターを重ねて光を通す混色は何混色？", ["減法混色", "加法混色", "中間混色", "並置加法混色"], "フィルターは光を吸収するので、重ねるほど暗くなる<b>減法混色</b>です。"],
+  // --- PCCS
+  ["pccs", "3", "PCCSの明度段階で、黒と白はそれぞれいくつ？", ["黒1.5・白9.5", "黒0・白10", "黒1・白9", "黒2・白8"], "PCCSでは実際の色票に合わせて<b>黒1.5〜白9.5</b>としています。"],
+  ["pccs", "3", "PCCSで「v2」はどんな色を表す？", ["ビビッドトーンの赤", "明度2の灰色", "彩度2の赤", "ペールトーンの紫"], "トーン記号＋色相番号。<b>v</b>（ビビッド）トーンの<b>2:R</b>（赤）です。"],
+  ["pccs", "3", "PCCSの「心理四原色」とは？", ["赤・黄・緑・青", "赤・緑・青紫", "シアン・マゼンタ・イエロー・黒", "赤・黄・青・白"], "人が「混じりけがない」と感じる<b>赤（2）・黄（8）・緑（12）・青（18）</b>です。"],
+  ["pccs", "3", "PCCSで、有彩色のトーンはいくつに分類される？", ["12", "24", "9", "5"], "v・b・s・dp・lt・sf・d・dk・p・ltg・g・dkg の<b>12トーン</b>。無彩色は W・Gy・Bk です。"],
+  ["pccs", "3", "PCCSの純色（vトーン）で、最も明度が高い色相は？", ["8:Y（黄）", "2:R（赤）", "12:G（緑）", "20:V（青紫）"], "純色の明度は色相によって違い、<b>黄が最も高く</b>、<b>青紫が最も低い</b>です。"],
+  ["pccs", "3", "PCCSの彩度は何段階で表される？", ["9段階（1s〜9s）", "14段階", "100段階", "4段階"], "PCCSの彩度は<b>1s〜9s</b>。sは saturation の頭文字です。"],
+  ["pccs", "3", "PCCSで「Gy-5.5」が表す色は？", ["明度5.5の灰色", "彩度5.5の緑", "色相5.5の灰み", "明度5.5の黄"], "無彩色は <b>W</b>（白）・<b>Gy</b>（灰）・<b>Bk</b>（黒）で表し、Gyには明度の数値を付けます。"],
+  ["pccs", "3", "PCCS（日本色研配色体系）を発表した機関は？", ["日本色彩研究所", "国際照明委員会（CIE）", "日本産業標準調査会", "米国光学会"], "1964年に<b>日本色彩研究所</b>が発表しました。配色を考えやすいことが特長です。"],
+  // --- 表色系と色名
+  ["system", "3", "マンセル表色系の「5R 4/14」で、「14」は何を表す？", ["彩度（クロマ）", "明度（バリュー）", "色相（ヒュー）", "色温度"], "<b>ヒュー バリュー／クロマ</b>の順。14はクロマ（彩度）です。"],
+  ["system", "3", "マンセル表色系で、無彩色の明度5の灰色はどう表す？", ["N5", "Gy-5", "5N0", "W5"], "マンセルの無彩色は Neutral の<b>N</b>に明度を付けて表します。"],
+  ["system", "2", "マンセル色相環は、基本10色相をさらに細かく分けて全部で何色相？", ["100色相", "24色相", "10色相", "12色相"], "10色相をそれぞれ10分割して<b>100色相</b>。各色相の代表は「5」の位置です。"],
+  ["system", "2", "マンセル色立体がいびつな形になるのはなぜ？", ["色相や明度によって最高彩度が違うから", "明度の段階が色相ごとに違うから", "色相環が楕円だから", "白と黒の位置がずれているから"], "たとえば赤は高い彩度まであるが青緑は低い、など<b>最高彩度が色相ごとに違う</b>ため、凸凹の形になります。"],
+  ["system", "2", "白色量＋黒色量＋純色量＝100 として色を表す表色系は？", ["オストワルト表色系", "マンセル表色系", "PCCS", "XYZ表色系"], "<b>オストワルト</b>は回転混色の考え方にもとづき、24色相の等色相三角形で色を整理しました。"],
+  ["system", "2", "色の見えを色票で表すマンセル表色系のような体系を何という？", ["顕色系", "混色系", "慣用色名", "系統色名"], "色票で表すのが<b>顕色系</b>（マンセル・PCCS）、光の混色量で表すのが<b>混色系</b>（XYZ）です。"],
+  ["system", "2", "XYZ表色系を定めた国際機関は？", ["国際照明委員会（CIE）", "国際標準化機構（ISO）", "日本色彩研究所", "国際流行色委員会"], "1931年に<b>CIE</b>が定めました。xy色度図は馬蹄形になります。"],
+  ["system", "2", "L*a*b*表色系で、a*がプラス方向に大きいほど強くなる色みは？", ["赤み", "緑み", "黄み", "青み"], "a*＋は<b>赤</b>、a*−は緑、b*＋は黄、b*−は青。L*は明度です。"],
+  ["system", "3", "「明るい灰みの青」のように、基本色名に修飾語を付けて表す色名は？", ["系統色名", "慣用色名", "固有色名", "伝統色名"], "JISの<b>系統色名</b>。「鴇色」「浅葱色」のように昔からの呼び名は<b>慣用色名</b>です。"],
+  ["system", "2", "ヘリングの反対色説をもとにスウェーデンで作られた表色系は？", ["NCS", "PCCS", "マンセル", "DIN"], "<b>NCS</b>（ナチュラル・カラー・システム）。黒み・純色み・色相で色を表します。"],
+  // --- 色の心理と効果
+  ["psych", "3", "派手・地味の印象に最も関係する属性は？", ["彩度", "明度", "色相", "色温度"], "<b>彩度</b>が高いと派手、低いと地味に感じます。"],
+  ["psych", "3", "柔らかい印象を与えやすいのはどんな色？", ["明度が高く彩度が低い色", "明度が低く彩度が高い色", "黒", "暗い寒色"], "<b>高明度・低彩度</b>（ペールなど）は柔らかく、低明度の色は硬く感じやすいです。"],
+  ["psych", "3", "JIS安全色で「赤」が表す意味は？", ["防火・禁止・停止・高度の危険", "安全状態・進行", "注意・警告", "指示・誘導"], "消火器や「止まれ」の赤。<b>防火・禁止・停止・高度の危険</b>を表します。"],
+  ["psych", "3", "JIS安全色で「緑」が表す意味は？", ["安全状態・進行", "防火", "注意", "放射能"], "非常口の誘導灯などの緑は<b>安全状態・進行</b>です。"],
+  ["psych", "3", "JIS安全色で「黄」が表す意味は？", ["注意・警告", "安全状態", "防火", "指示"], "<b>注意・警告</b>。黒と組み合わせた縞模様（トラ柄）でよく使われます。"],
+  ["psych", "2", "JIS安全色で「赤紫」が表す意味は？", ["放射能", "防火", "指示", "安全"], "赤紫は<b>放射能</b>を表します。"],
+  ["psych", "3", "文字や記号の読みやすさを何という？", ["可読性", "誘目性", "識別性", "嗜好性"], "読みやすさが<b>可読性</b>、目を引くのが<b>誘目性</b>、区別しやすさが<b>識別性</b>です。"],
+  ["psych", "3", "鉄道の路線図で路線ごとに色を変えるのは、おもにどの性質を利用している？", ["識別性", "誘目性", "膨張性", "進出性"], "色で情報を区別しやすくする<b>識別性</b>です。"],
+  ["psych", "3", "「赤」から連想される抽象的なイメージとしてよく挙がるのは？", ["情熱・危険", "冷静・誠実", "平和・安全", "高貴・神秘"], "具体的な連想（火・りんご）と抽象的な連想（<b>情熱・危険</b>）があります。"],
+  ["psych", "3", "後退して遠くに見えやすい色は？", ["寒色・低明度の色", "暖色・高明度の色", "高彩度の暖色", "白"], "<b>寒色系の暗い色</b>は後退して見えます。部屋を広く見せたいときに役立ちます。"],
+  // --- 配色と色彩調和
+  ["harmony", "2", "「類似の調和」と「対比の調和」を示したフランスの化学者は？", ["シュヴルール", "ジャッド", "イッテン", "ビレン"], "ゴブラン織の染色監督だった<b>シュヴルール</b>が、色の同時対比や調和を研究しました。"],
+  ["harmony", "2", "色彩調和の4原理（秩序・なじみ・類似性・明瞭性）を示したのは？", ["ジャッド", "シュヴルール", "ムーン＆スペンサー", "オストワルト"], "<b>ジャッド</b>は、それまでの調和論を4つの原理にまとめました。"],
+  ["harmony", "2", "美度（M＝秩序の要素O÷複雑さの要素C）で調和を数量化したのは？", ["ムーン＆スペンサー", "ジャッド", "ゲーテ", "マンセル"], "<b>ムーン＆スペンサー</b>はマンセル表色系をもとに、調和を数式で表そうとしました。"],
+  ["harmony", "2", "12色相環を使い、ダイアード・トライアドなどの調和を示した画家・教育者は？", ["イッテン", "ニュートン", "シュヴルール", "ビレン"], "バウハウスで教えた<b>ヨハネス・イッテン</b>です。"],
+  ["harmony", "3", "色相環を3等分した位置にある3色の配色は？", ["トライアド", "ダイアード", "テトラード", "スプリットコンプリメンタリー"], "<b>トライアド</b>（3色）。2色の補色は<b>ダイアード</b>、4色は<b>テトラード</b>。"],
+  ["harmony", "3", "ある色と、その補色の両隣の2色を組み合わせた3色配色は？", ["スプリットコンプリメンタリー", "トライアド", "ダイアード", "ペンタード"], "補色を「分割」するので<b>スプリットコンプリメンタリー</b>です。"],
+  ["harmony", "2", "ひとまとまりの配色を規則的にくり返してリズムを生む技法は？", ["リピテーション", "セパレーション", "カマイユ", "グラデーション"], "チェック柄やボーダーなどが<b>リピテーション</b>（くり返し）の配色です。"],
+  ["harmony", "3", "トーンを統一し、色相に変化をつける配色は？", ["ドミナントトーン配色", "ドミナントカラー配色", "トーンオントーン配色", "補色配色"], "トーンで支配するのが<b>ドミナントトーン</b>、色相で支配するのが<b>ドミナントカラー</b>です。"],
+  ["harmony", "2", "オストワルトの調和論で、白色量が等しい色を並べた系列は？", ["等白系列", "等黒系列", "等純系列", "等価値色系列"], "等色相三角形の中で白色量が同じ並びが<b>等白系列</b>です。"],
+  // --- ファッション
+  ["fashion", "3", "高明度・低彩度のパステル調で、甘く可憐な印象のファッションイメージは？", ["ロマンティック", "モダン", "クラシック", "マニッシュ"], "ペールトーンのピンクや明るい暖色が中心の<b>ロマンティック</b>です。"],
+  ["fashion", "3", "紫系やグレイッシュな色を中心にした、上品で優雅なファッションイメージは？", ["エレガント", "カジュアル", "スポーティ", "エスニック"], "ソフトな紫系・灰み系の色で上品さを表すのが<b>エレガント</b>です。"],
+  ["fashion", "3", "ダークトーンのブラウンやワインレッドなど、伝統的で落ち着いたファッションイメージは？", ["クラシック", "ロマンティック", "カジュアル", "モダン"], "深みのある暗い色で重厚感を出すのが<b>クラシック</b>です。"],
+  ["fashion", "3", "ベージュ・アイボリー・ブラウンなど、自然素材を思わせるファッションイメージは？", ["ナチュラル", "モダン", "スポーティ", "エレガント"], "素朴で穏やかな<b>ナチュラル</b>。低〜中彩度の黄み系の色が中心です。"],
+  ["fashion", "3", "白・黒・グレーと寒色のシャープなコントラストで、都会的なファッションイメージは？", ["モダン", "ナチュラル", "ロマンティック", "エスニック"], "無彩色中心のはっきりした配色は<b>モダン</b>です。"],
+  ["fashion", "3", "ネイビー・グレー・ブラウンなど紳士服の要素を取り入れたファッションイメージは？", ["マニッシュ", "ロマンティック", "エレガント", "カジュアル"], "男性的（manish）な<b>マニッシュ</b>です。"],
+  ["fashion", "3", "明るく鮮やかな色の多色配色で、気軽で活動的なファッションイメージは？", ["カジュアル", "クラシック", "エレガント", "モダン"], "ビビッド・ブライト系を組み合わせた<b>カジュアル</b>です。"],
+  ["fashion", "3", "民族衣装を思わせる、土や草木の深い色や暖色を使ったファッションイメージは？", ["エスニック", "モダン", "マニッシュ", "ロマンティック"], "<b>エスニック</b>。ダークトーンの暖色や、柄の多色使いが特徴です。"],
+  ["fashion", "2", "約2年前に流行色の方向性を選定する国際機関は？", ["インターカラー（国際流行色委員会）", "CIE", "ISO", "日本色彩研究所"], "<b>インターカラー</b>で選ばれた色をもとに、各国でトレンドカラーが提案されます。"],
+  ["fashion", "2", "シャネルの「リトル・ブラック・ドレス」が登場し、黒が都会的な色になった年代は？", ["1920年代", "1960年代", "1980年代", "1900年代"], "<b>1920年代</b>。短髪・短いスカートの「ギャルソンヌ」スタイルも流行しました。"],
+  ["fashion", "2", "ミニスカートやサイケデリックな配色が流行した年代は？", ["1960年代", "1920年代", "1940年代", "1990年代"], "<b>1960年代</b>。マリー・クヮントのミニスカートや、ポップアートの鮮やかな色が象徴的です。"],
+  ["fashion", "2", "日本で黒い服を着る若者が「カラス族」と呼ばれた年代は？", ["1980年代", "1950年代", "1970年代", "2000年代"], "<b>1980年代</b>のDCブランドブーム。日本人デザイナーの黒い服が世界でも注目されました。"],
+  // --- インテリア・商品・環境
+  ["interior", "3", "インテリア配色で、ベース・アソート・アクセントカラーの面積比の目安は？", ["70：25：5", "50：30：20", "33：33：33", "90：5：5"], "<b>ベース70%</b>・<b>アソート25%</b>・<b>アクセント5%</b>が目安です。"],
+  ["interior", "3", "インテリアのベースカラーが使われるおもな部分は？", ["床・壁・天井", "クッション・小物", "カーテン・ソファ", "照明器具"], "面積の大きい<b>床・壁・天井</b>がベースカラー。"],
+  ["interior", "3", "インテリアのアソートカラーが使われるおもな部分は？", ["カーテン・ソファなどの家具", "床・壁・天井", "クッション・花などの小物", "窓ガラス"], "<b>カーテン・家具</b>などがアソート（配合色）。クッションや小物はアクセントカラーです。"],
+  ["interior", "3", "部屋に安定感を出す配色の基本は？", ["床を暗く、天井を明るくする", "天井を暗く、床を明るくする", "壁と床を同じ高彩度色にする", "天井を黒にする"], "上を明るく下を暗くすると<b>安定感</b>が出ます。逆にすると不安定・圧迫感が出ます。"],
+  ["interior", "3", "狭い部屋を広く見せたいとき、壁に向いている色は？", ["高明度で寒色寄りの色", "低明度の暖色", "高彩度の赤", "黒"], "<b>明るい後退色</b>は壁を遠くに感じさせ、空間を広く見せます。"],
+  ["interior", "3", "食品のパッケージで食欲をそそるとされる色は？", ["赤・橙・黄などの暖色", "青・青紫", "灰色", "黒と紫"], "<b>暖色系</b>は食欲をそそる色として食品や飲食店によく使われます。"],
+  ["interior", "3", "企業のイメージを表すために決めて使い続ける色を何という？", ["コーポレートカラー", "アクセントカラー", "トレンドカラー", "セパレーションカラー"], "ロゴや店舗に統一して使う<b>コーポレートカラー</b>です。"],
+  ["interior", "2", "景観に調和させるため、建物の外壁に推奨されやすい色は？", ["低彩度の色", "高彩度の色", "蛍光色", "原色の組み合わせ"], "多くの景観計画では外壁の<b>彩度を低く</b>抑えるよう定めています。"],
+  ["interior", "3", "くつろぐ寝室やリビングの照明に向いている光の色は？", ["電球色（低い色温度）", "昼光色（高い色温度）", "青色の光", "紫外線ライト"], "<b>電球色</b>の暖かい光は落ち着きをもたらします。作業には昼白色・昼光色が向いています。"],
+  ["interior", "3", "土・木・岩など大地を思わせる茶系・緑系の色の総称は？", ["アースカラー", "パステルカラー", "ネオンカラー", "モノトーン"], "<b>アースカラー</b>は自然になじみやすく、景観やナチュラル系のインテリアに使われます。"],
+  // --- 色彩と文化
+  ["culture", "2", "603年に定められた冠位十二階で、最上位の冠の色は？", ["紫", "赤", "黄", "白"], "聖徳太子らによる冠位十二階では、最上位の大徳が<b>濃い紫</b>とされます。"],
+  ["culture", "2", "天皇だけが着ることを許された「禁色」の代表的な色は？", ["黄櫨染（こうろぜん）", "藍色", "鼠色", "萌黄"], "<b>黄櫨染</b>は天皇が儀式で着る袍の色です。"],
+  ["culture", "2", "平安貴族が衣を重ねて季節感を表した配色を何という？", ["襲（かさね）の色目", "四十八茶百鼠", "冠位十二階", "五行説"], "表地と裏地、重ね着の配色で季節の植物などを表した<b>襲の色目</b>です。"],
+  ["culture", "2", "江戸時代、ぜいたくを禁じる法令の中で、微妙な茶色や灰色が数多く流行したことを表す言葉は？", ["四十八茶百鼠", "襲の色目", "ジャパンブルー", "禁色"], "派手な色が制限され、<b>茶色と鼠色</b>のわずかな違いを楽しむ文化が生まれました。"],
+  ["culture", "2", "明治時代に来日した外国人が、日本の藍色を評した呼び名は？", ["ジャパンブルー", "プルシャンブルー", "ロイヤルブルー", "ネイビーブルー"], "町中にあふれる藍染めを見て、<b>ジャパンブルー</b>と呼びました。"],
+  ["culture", "2", "古代中国の五行説で、「東」に当てられた色は？", ["青", "赤", "白", "黒"], "東＝<b>青</b>（青龍）、南＝赤（朱雀）、西＝白（白虎）、北＝黒（玄武）、中央＝黄。"],
+  ["culture", "3", "日本で祝い事によく使われる配色は？", ["紅白", "黒白", "青白", "黄緑"], "<b>紅白</b>はおめでたい配色、<b>黒白</b>（白黒）は弔事の配色です。"],
+  ["culture", "2", "古代ローマで高貴な色とされた紫の染料は、何から採られた？", ["貝（アクキガイ）", "藍の葉", "紅花", "鉱石のラピスラズリ"], "大量の<b>貝</b>からわずかしか採れない貝紫は、とても高価でした。"],
+  ["culture", "2", "小さな色の点を並べて描き、並置加法混色を絵画に取り入れた新印象派の画家は？", ["スーラ", "モネ", "ピカソ", "ゴッホ"], "<b>スーラ</b>の点描画は、離れて見ると色が混ざって見えます。"],
+  ["culture", "2", "『色彩論』を著し、色の心理的な側面を重視したドイツの文豪は？", ["ゲーテ", "ニュートン", "シュヴルール", "オストワルト"], "<b>ゲーテ</b>は、光学だけでは説明できない色の見え方や心理を記録しました。"],
+  // --- 照明と測色
+  ["lighting", "3", "色温度の単位は？", ["K（ケルビン）", "nm（ナノメートル）", "lx（ルクス）", "cd（カンデラ）"], "光の色みを表す色温度は<b>K（ケルビン）</b>で表します。"],
+  ["lighting", "3", "色温度が高い光は、どんな色みに見える？", ["青白い", "赤っぽい", "黄色っぽい", "緑っぽい"], "色温度が<b>高いほど青白く</b>、低いほど赤み・橙みを帯びます。"],
+  ["lighting", "3", "ろうそくの炎の色温度に近いのは？", ["約2000K", "約5000K", "約6500K", "約10000K"], "ろうそくは<b>約2000K</b>前後の、赤みの強い光です。"],
+  ["lighting", "3", "照明の「電球色」と「昼光色」、色温度が高いのはどっち？", ["昼光色", "電球色", "どちらも同じ", "照明の明るさによる"], "電球色は約3000K、<b>昼光色</b>は約6500Kです。"],
+  ["lighting", "2", "照明による色の見え方の自然さを表す「平均演色評価数」の記号は？", ["Ra", "K", "lm", "Y"], "<b>Ra</b>が100に近いほど、基準の光で見たときに近い色に見えます。"],
+  ["lighting", "2", "ある照明では同じ色に見える2色が、別の照明では違って見える現象は？", ["条件等色（メタメリズム）", "色の恒常性", "色順応", "プルキニエ現象"], "分光分布が違うのに特定の照明下で一致して見える状態が<b>条件等色（メタメリズム）</b>です。"],
+  ["lighting", "2", "CIEが定めた、平均的な昼光を表す標準の光は？", ["D65", "A", "F2", "N5"], "<b>D65</b>は色温度約6500Kの昼光。<b>標準イルミナントA</b>は白熱電球の光です。"],
+  ["lighting", "2", "色見本を目で見比べるときに適しているとされる自然光は？", ["北窓からの昼光", "西日", "南向きの直射日光", "夕焼けの光"], "時間による変化が少なく直射日光の入らない<b>北窓昼光</b>が適しています。"],
+  ["lighting", "3", "白熱電球の光の下で、鮮やかに見えやすい色は？", ["赤や橙", "青や青紫", "灰色", "黒"], "白熱電球は長波長の光が多いので、<b>赤や橙</b>が鮮やかに、青は沈んで見えます。"],
+  ["lighting", "2", "色を数値で測るときに使う機器は？", ["分光測色計（色彩計）", "照度計", "温度計", "露出計"], "<b>分光測色計</b>は波長ごとの反射率を測り、色を数値で表します。"],
+  // --- ユニバーサルデザイン
+  ["ud", "UC", "カラーユニバーサルデザインの目的として正しいものは？", ["色の見え方が違う人にも情報が正しく伝わるようにする", "流行色を取り入れる", "使う色の数を増やす", "鮮やかな色だけを使う"], "<b>色覚の多様性</b>に配慮し、誰にでも伝わる色使いを考えることです。"],
+  ["ud", "UC", "日本人男性のうち、P型・D型の色覚をもつ人の割合はおよそ？", ["約5%（20人に1人）", "約0.2%", "約20%", "約50%"], "男性は<b>約5%</b>、女性は約0.2%といわれます。学校の1クラスに1人いてもおかしくない数です。"],
+  ["ud", "UC", "P型の色覚で、特性が異なるのはどの錐体？", ["L錐体", "M錐体", "S錐体", "杆体"], "<b>P型はL錐体</b>、D型はM錐体、T型はS錐体の特性が異なります。"],
+  ["ud", "UC", "P型・D型の色覚の人が区別しにくい組み合わせとして代表的なのは？", ["赤と緑（明度が近いとき）", "白と黒", "黄と青紫", "明るい黄と暗い青"], "明度が近い<b>赤と緑</b>、<b>橙と黄緑</b>などは区別しにくくなります。"],
+  ["ud", "UC", "色だけに頼らず情報を伝える工夫として適切なものは？", ["形・模様・文字を併用する", "色数をできるだけ増やす", "赤と緑で区別する", "彩度の低い色だけを使う"], "色に加えて<b>形・線種・模様・文字</b>でも区別できるようにします。"],
+  ["ud", "UC", "グラフを見やすくする工夫として適切なのは？", ["凡例ではなくデータに直接ラベルを付ける", "似た色を隣り合わせに並べる", "細い線だけで区別する", "色の名前を書かない"], "<b>直接ラベル</b>なら色を照合する必要がなくなります。"],
+  ["ud", "UC", "加齢で水晶体が黄色く濁ると、見分けにくくなるのは？", ["白と黄、紺と黒", "赤と白", "黄と黒", "緑と白"], "短波長（青）の光が届きにくくなり、<b>白と黄</b>、<b>紺と黒</b>などの区別が難しくなります。"],
+  ["ud", "UC", "伝わりやすい配色にするために最も効果的なのは？", ["明度差をはっきりつける", "色相だけを変える", "同じ明度の色でそろえる", "背景に柄を入れる"], "色覚の違いがあっても伝わりやすいのは<b>明度差</b>です。"],
+  ["ud", "UC", "黒板に書く色チョークとして、見えにくいので避けたほうがよいのは？", ["赤", "白", "黄", "明るい水色"], "暗い緑の黒板に<b>赤</b>は明度差が小さく見えにくいです。黄や白で強調します。"],
+  ["ud", "UC", "赤を強調色に使うとき、より見分けやすくする工夫は？", ["黄みの強い赤（朱色寄り）にする", "暗い赤にする", "紫みの赤にする", "緑と並べる"], "<b>朱色寄りの赤</b>は、P型の色覚でも暗く沈みにくく識別しやすくなります。"],
+  ["ud", "UC", "色の見え方の違いに配慮した表示で、色の名前を併記する理由は？", ["色について会話するときに伝わりやすいから", "色を鮮やかにするため", "印刷コストを下げるため", "流行に合わせるため"], "「赤いボタンを押して」と言われても見分けにくい場合があるので、<b>色名の表記</b>が役立ちます。"],
+];
+
+const GENRES = [
+  { id: "basic",    name: "光と色の基本",       hue: 8,  desc: "三属性・光とスペクトル・物体の色" },
+  { id: "eye",      name: "目と色の見え方",     hue: 16, desc: "視細胞・順応・対比・同化・面積効果", gens: ["know", "know", "contrast"] },
+  { id: "mix",      name: "混色",               hue: 12, desc: "加法混色・減法混色・中間混色", gens: ["know", "mixq"] },
+  { id: "pccs",     name: "PCCS",               hue: 2,  desc: "トーン・色相環・明度と彩度の段階", gens: ["know", "tone", "hue"] },
+  { id: "system",   name: "表色系と色名",       hue: 19, desc: "マンセル・オストワルト・XYZ・L*a*b*・JIS色名" },
+  { id: "psych",    name: "色の心理と効果",     hue: 4,  desc: "寒暖・軽重・進出後退・誘目性・安全色" },
+  { id: "harmony",  name: "配色と色彩調和",     hue: 22, desc: "配色技法・トライアドなど・調和論" },
+  { id: "fashion",  name: "ファッション",       hue: 24, desc: "ファッションイメージ・流行色・ファッション史" },
+  { id: "interior", name: "インテリア・商品・環境", hue: 10, desc: "70:25:5・部屋の見え方・景観・食と色" },
+  { id: "culture",  name: "色彩と文化",         hue: 21, desc: "冠位十二階・襲の色目・五行・西洋の色" },
+  { id: "lighting", name: "照明と測色",         hue: 6,  desc: "色温度・演色性・メタメリズム・標準の光" },
+  { id: "ud",       name: "ユニバーサルデザイン", hue: 14, desc: "色覚の多様性・高齢者の見え方・伝わる配色" },
+  { id: "names",    name: "慣用色名",           hue: 1,  desc: "和名・外来色名42色", gens: ["names"] },
+];
+const GENRE = Object.fromEntries(GENRES.map(g => [g.id, g]));
+const TAG2GENRE = { "色の基本": "basic", "光と色": "basic", "目のしくみ": "eye", "色の見え方": "eye", "混色": "mix", "色の心理": "psych", "表色系": "system", "配色技法": "harmony", "照明": "lighting" };
+const ALLK = [
+  ...KNOW.map(([tag, q, opts, exp]) => ({ g: q.includes("PCCS") ? "pccs" : TAG2GENRE[tag], lv: /プルキニエ|恒常性|ナチュラルハーモニー|演色性/.test(q) ? "2" : "3", q, opts, exp })),
+  ...KNOW2.map(([g, lv, q, opts, exp]) => ({ g, lv, q, opts, exp })),
+];
+const LEVELS = [
+  { id: "3",  name: "3級の範囲",  desc: "色の基本・PCCS・心理・配色・ファッション・インテリア" },
+  { id: "2",  name: "2級の範囲",  desc: "表色系・調和論・文化と歴史・照明と測色" },
+  { id: "UC", name: "UC級の範囲", desc: "色覚の多様性・高齢者の見え方・伝わる配色" },
+];
+
 const MODES = [
   { id: "mix",   title: "ミックス10問",  desc: "全ジャンルからランダム。まずはここから。", featured: true, sw: ["#E60033", "#FFE600", "#00A14B", "#0059A8"] },
-  { id: "know",  title: "知識クイズ",    desc: "三属性・混色・目のしくみ・色の心理・配色技法", sw: ["#2C4BA0", "#8EA0D8", "#C9CFE6", "#1F2A55"] },
+  { id: "know",  title: "知識クイズ",    desc: "全ジャンルの知識問題からランダム（光・目・表色系・心理・配色・文化・照明・UDほか）", sw: ["#2C4BA0", "#8EA0D8", "#C9CFE6", "#1F2A55"] },
   { id: "tone",  title: "PCCSトーン当て", desc: "色を見て v・b・dp・ltg… のどのトーンか答える", sw: null },
   { id: "hue",   title: "色相環チャレンジ", desc: "補色・色相番号・色相差による配色の名前", sw: ["#E60033", "#009C96", "#FBA71A", "#4C3A96"] },
   { id: "names", title: "慣用色名",      desc: "鴇色・浅葱色・ボルドー…色と名前を結びつける", sw: ["#F4B3C2", "#00A3AF", "#F8B500", "#6C272D"] },
@@ -577,9 +777,61 @@ function beep(ok) {
 }
 
 /* ================= question generators ================= */
-function qKnow() {
-  const [tag, q, opts, exp] = pick(KNOW);
-  return { tag, text: q, visual: "", choices: shuffle(opts.map((o, i) => ({ html: o, correct: i === 0 }))), explain: exp, key: "k:" + q, short: q };
+function qKnow(filter = () => true) {
+  const pool = ALLK.filter(filter);
+  const k = pick(pool.length ? pool : ALLK);
+  const lv = k.lv === "UC" ? "UC級" : k.lv + "級";
+  return { tag: `${GENRE[k.g].name}・${lv}`, genre: k.g, text: k.q, visual: "", choices: shuffle(k.opts.map((o, i) => ({ html: o, correct: i === 0 }))), explain: k.exp, key: "k:" + k.q, short: k.q };
+}
+
+// 混色: which colour do these lights / inks make?
+const LIGHTS = { R: ["赤（R）", "#FF2020"], G: ["緑（G）", "#20E040"], B: ["青紫（B）", "#3030FF"], Y: ["イエロー", "#FFF000"], C: ["シアン", "#00E0FF"], M: ["マゼンタ", "#FF20D0"], W: ["白", "#FFFFFF"] };
+const INKS = { C: ["シアン", "#00A0E9"], M: ["マゼンタ", "#E4007F"], Y: ["イエロー", "#FFF100"], R: ["赤", "#E60033"], G: ["緑", "#00A14B"], B: ["青紫", "#3A3A9E"], K: ["黒", "#1A1A1A"] };
+function qMix() {
+  const add = Math.random() < .5;
+  const table = add
+    ? [["RG", "Y"], ["GB", "C"], ["BR", "M"], ["RGB", "W"]]
+    : [["CM", "B"], ["MY", "R"], ["YC", "G"], ["CMY", "K"]];
+  const [ins, out] = pick(table), P = add ? LIGHTS : INKS;
+  const bg = add ? "#111318" : "#FFFFFF";
+  const circles = [...ins].map(k => `<div class="chip-col"><span class="chip mid" style="background:${P[k][1]};border-radius:50%"></span><span style="color:${add ? "#DDD" : "#555"}">${P[k][0]}</span></div>`).join(`<span style="align-self:center;font-size:24px;color:${add ? "#FFF" : "#333"}">＋</span>`);
+  const pool = shuffle(Object.keys(P).filter(k => k !== out)).slice(0, 3);
+  return {
+    tag: add ? "混色・加法混色（光）" : "混色・減法混色（色料）", genre: "mix",
+    text: add ? "この色光を重ねると、何色になる？" : "この色料（インク）を混ぜると、何色になる？",
+    visual: `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;background:${bg};border-radius:12px;padding:14px;width:100%">${circles}</div>`,
+    swatch: true,
+    choices: shuffle([out, ...pool].map(k => ({ html: chip(P[k][1], "", P[k][0]), cap: P[k][0], correct: k === out }))),
+    explain: add
+      ? `光の混色は重ねるほど明るくなる<b>加法混色</b>。R＋G＝イエロー、G＋B＝シアン、B＋R＝マゼンタ、3色すべてで白。`
+      : `色料の混色は混ぜるほど暗くなる<b>減法混色</b>。C＋M＝青紫、M＋Y＝赤、Y＋C＝緑、3色すべてで黒。`,
+    key: "m:" + ins, short: ins,
+  };
+}
+
+// 見え方: look at the illusion, name the effect
+const EFFECTS = ["明度対比", "彩度対比", "色相対比", "補色対比", "同化（ベゾルト効果）", "リープマン効果", "面積効果", "縁辺対比"];
+function qContrast() {
+  const panel = (x, bg, inner, extra = "") => `<rect x="${x}" y="0" width="140" height="120" rx="10" fill="${bg}"/>${extra}${inner ? `<rect x="${x + 45}" y="35" width="50" height="50" fill="${inner}"/>` : ""}`;
+  const stripes = (x, base, line) => `<rect x="${x}" y="0" width="140" height="120" rx="10" fill="${base}"/>` + Array.from({ length: 10 }, (_, i) => `<rect x="${x + 6 + i * 13.4}" y="10" width="3" height="100" fill="${line}"/>`).join("");
+  const steps = [0.25, 0.4, 0.55, 0.7, 0.85].map((v, i) => { const c = Math.round(v * 255).toString(16).padStart(2, "0"); return `<rect x="${i * 58}" y="0" width="58" height="120" fill="#${c}${c}${c}"/>`; }).join("");
+  const C = {
+    "明度対比":  [panel(0, "#111111", "#808080") + panel(150, "#F2F2F2", "#808080"), "中央の灰色は左右まったく同じ。黒の上の方が明るく見えるのはなぜ？", "周りが暗いと明るく、周りが明るいと暗く見える<b>明度対比</b>です。"],
+    "彩度対比":  [panel(0, "#E60033", toneColor("d", 2)) + panel(150, "#8A8A8A", toneColor("d", 2)), "中央の色は左右同じ。鮮やかな赤の上ではよりくすんで見える。これは？", "周りが鮮やかだと中の色は地味に、周りが無彩色だと鮮やかに見える<b>彩度対比</b>です。"],
+    "色相対比":  [panel(0, HUES[2].hex, HUES[5].hex) + panel(150, HUES[8].hex, HUES[5].hex), "中央の橙は左右同じ。左では黄みに、右では赤みに見える。これは？", "周りの色相と反対の方向へずれて見える<b>色相対比</b>です。"],
+    "補色対比":  [panel(0, HUES[14].hex, HUES[2].hex) + panel(150, "#8A8A8A", HUES[2].hex), "中央の赤は左右同じ。左（青緑の上）の方がより鮮やかに見える。これは？", "補色どうしを並べると互いの彩度が高まって見える<b>補色対比</b>です。"],
+    "同化（ベゾルト効果）": [stripes(0, toneColor("b", 2), "#FFFFFF") + stripes(150, toneColor("b", 2), "#111111"), "地の赤は左右同じ。白い線の左は明るく、黒い線の右は暗く見える。これは？", "細い線や細かい模様の色に近づいて見える<b>同化（ベゾルト効果）</b>です。"],
+    "リープマン効果": [`<rect x="0" y="0" width="290" height="120" rx="10" fill="#C64B3E"/><text x="145" y="78" text-anchor="middle" font-size="44" font-weight="700" fill="#3F7BB5">COLOR</text>`, "文字の輪郭がちらついて読みにくい。明度の近い色どうしで起こるこの現象は？", "明度差が小さいと境界がぼやける<b>リープマン効果</b>。白や黒の縁取りを入れると読みやすくなります。"],
+    "面積効果": [`<rect x="0" y="0" width="290" height="120" rx="10" fill="#E9EAEE"/><rect x="18" y="48" width="24" height="24" fill="${toneColor("lt", 18)}"/><rect x="70" y="8" width="210" height="104" rx="6" fill="${toneColor("lt", 18)}"/>`, "左の小さな見本と右の大きな面は同じ色。右の方が明るく鮮やかに見える。これは？", "面積が大きいほど明度・彩度が高く見える<b>面積効果</b>です。"],
+    "縁辺対比": [steps, "1本ずつは均一な灰色なのに、境目の近くで明るさが変わって見える。これは？", "隣の色との境目で対比が強まる<b>縁辺対比</b>です。"],
+  };
+  const eff = pick(Object.keys(C)), [svg, q, exp] = C[eff];
+  return {
+    tag: "目と色の見え方・体験", genre: "eye", text: q,
+    visual: `<svg viewBox="0 0 290 120" style="width:100%;max-width:420px;height:auto" role="img" aria-label="色の見え方の例">${svg}</svg>`,
+    choices: shuffle([eff, ...shuffle(EFFECTS.filter(e => e !== eff)).slice(0, 3)].map(e => ({ html: e, correct: e === eff }))),
+    explain: exp, key: "c:" + eff, short: eff,
+  };
 }
 
 function qTone() {
@@ -682,13 +934,33 @@ function qName() {
   };
 }
 
-const GEN = { know: qKnow, tone: qTone, hue: qHue, names: qName };
+function genFromGenre(gid) {
+  const kind = pick(GENRE[gid].gens || ["know"]);
+  const q = kind === "know" ? qKnow(k => k.g === gid)
+    : kind === "tone" ? qTone() : kind === "hue" ? qHue() : kind === "names" ? qName()
+    : kind === "mixq" ? qMix() : qContrast();
+  q.genre = gid;
+  return q;
+}
+function genFromLevel(lv) {
+  if (lv === "3" && Math.random() < .3) return genFromGenre(pick(["pccs", "pccs", "names", "mix", "eye"]));
+  const q = qKnow(k => k.lv === lv);
+  return q;
+}
+function modeTitle(mode) {
+  if (mode.startsWith("g:")) return "ジャンル別：" + GENRE[mode.slice(2)].name;
+  if (mode.startsWith("lv:")) return LEVELS.find(l => l.id === mode.slice(3)).name;
+  return MODES.find(m => m.id === mode).title;
+}
 function makeSet(mode) {
   const out = [], keys = new Set();
   let guard = 0;
   while (out.length < 10 && guard++ < 200) {
-    const g = mode === "mix" ? GEN[pick(["know", "know", "tone", "hue", "names"])] : GEN[mode];
-    const q = g();
+    const q = mode === "mix" ? genFromGenre(pick(GENRES).id)
+      : mode === "know" ? qKnow()
+      : mode.startsWith("g:") ? genFromGenre(mode.slice(2))
+      : mode.startsWith("lv:") ? genFromLevel(mode.slice(3))
+      : Object.assign({ tone: qTone, hue: qHue, names: qName }[mode](), { genre: mode === "names" ? "names" : "pccs" });
     if (keys.has(q.key) && guard < 150) continue;
     keys.add(q.key); out.push(q);
   }
@@ -696,7 +968,7 @@ function makeSet(mode) {
 }
 
 /* ================= state & screens ================= */
-const screens = ["home", "quiz", "result", "learn", "act"];
+const screens = ["home", "quiz", "result", "learn", "act", "genres"];
 function show(id) {
   screens.forEach(s => { $("#" + s).hidden = s !== id; });
   document.body.style.overflow = id === "act" ? "hidden" : "";
@@ -707,6 +979,31 @@ let lastKind = "quiz", lastAct = "rush";
 let S = null; // current game
 let lifetime = store.get("life", { total: 0, correct: 0, maxCombo: 0 });
 let bests = store.get("best", {});
+let gstat = store.get("gstat", {});
+
+function renderGenres() {
+  $("#lv-row").innerHTML = LEVELS.map(l => {
+    const n = ALLK.filter(k => k.lv === l.id).length, b = bests["lv:" + l.id];
+    return `<button class="mode" data-mode="lv:${l.id}" type="button">
+      <span class="lv-badge">${l.id === "UC" ? "UC" : l.id + "級"}</span>
+      <span><h3>${l.name}</h3><p>${l.desc}（${n}問${l.id === "3" ? "＋色の問題" : ""}）</p></span>
+      <span class="best">ベスト<b>${b ? b.score : "—"}</b></span></button>`;
+  }).join("");
+  $("#glist").innerHTML = GENRES.map(g => {
+    const n = g.id === "names" ? NAMES.length : ALLK.filter(k => k.g === g.id).length;
+    const extra = (g.gens || []).some(k => k !== "know" && k !== "names") ? "＋色の問題" : "";
+    const s = gstat[g.id], rate = s && s.n ? Math.round(s.c / s.n * 100) : null;
+    const col = HUES[g.hue].hex;
+    return `<button class="gcard" data-mode="g:${g.id}" type="button">
+      <span class="gchip" style="background:${col}"></span>
+      <span class="gbody"><b>${g.name}</b><small>${g.desc}</small>
+        <span class="gmeta"><span>${n}問${extra}</span><span>${rate == null ? "未挑戦" : `正答率 ${rate}%（${s.n}問）`}</span></span>
+        <span class="gbar"><i style="width:${rate ?? 0}%;background:${rate == null ? "transparent" : rate >= 70 ? "var(--ok)" : rate >= 50 ? col : "var(--ng)"}"></i></span>
+      </span></button>`;
+  }).join("");
+  const weak = GENRES.filter(g => gstat[g.id]?.n >= 5).sort((a, b) => gstat[a.id].c / gstat[a.id].n - gstat[b.id].c / gstat[b.id].n)[0];
+  $("#weak").innerHTML = weak ? `いちばん苦手なジャンル：<b>${weak.name}</b>（正答率 ${Math.round(gstat[weak.id].c / gstat[weak.id].n * 100)}%）<button class="pill" data-mode="g:${weak.id}" type="button" style="margin-left:8px">苦手を10問</button>` : "5問以上解いたジャンルから、苦手なジャンルをここに表示します。";
+}
 
 function renderStrips() {
   const html = HUES.slice(1).map(h => `<span style="background:${h.hex}"></span>`).join("");
@@ -716,6 +1013,7 @@ function renderHome() {
   $("#st-total").textContent = lifetime.total;
   $("#st-rate").textContent = lifetime.total ? Math.round(lifetime.correct / lifetime.total * 100) + "%" : "–";
   $("#st-streak").textContent = lifetime.maxCombo;
+  $("#genre-sw").innerHTML = [8, 16, 24, 21].map(h => `<span style="background:${HUES[h].hex}"></span>`).join("");
   $("#act-modes").innerHTML = ACT_MODES.map(m => {
     const b = bests[m.id];
     return `<button class="mode action" data-act="${m.id}" type="button">
@@ -832,7 +1130,9 @@ function finish() {
   if (isBest) { bests[S.mode] = { score: S.score, correct }; store.set("best", bests); }
   const [, rank, sub] = RANKS.find(r => correct >= r[0]);
   $("#res-correct").style.fontSize = "";
-  $("#res-mode").textContent = MODES.find(m => m.id === S.mode).title;
+  $("#res-mode").textContent = modeTitle(S.mode);
+  S.results.forEach(r => { const g = r.q.genre; if (!g) return; const s = gstat[g] || (gstat[g] = { n: 0, c: 0 }); s.n++; if (r.ok) s.c++; });
+  store.set("gstat", gstat);
   $("#res-correct").textContent = `${correct}/10`;
   $("#res-rank").textContent = rank;
   $("#res-sub").innerHTML = `${S.score} pt・最大 ${S.maxCombo} コンボ${isBest ? "・<b>ベスト更新！</b>" : ""}<br>${sub}`;
@@ -923,6 +1223,21 @@ const PANELS = {
       <p>同時加法混色（スポットライト）、継時加法混色（回転するコマ）、並置加法混色（画面の画素・点描）の3種類。</p>
       <h3>減法混色（色料の三原色 C・M・Y）</h3>
       <p>C＋M＝B（青紫）／M＋Y＝R（赤）／Y＋C＝G（緑）／C＋M＋Y＝黒。混ぜるほど<b>暗く</b>なる。絵の具・印刷インク・フィルターの重ね合わせ。</p>`;
+  },
+  life() {
+    const safety = [["#E60012", "赤", "防火・禁止・停止・高度の危険"], ["#F08300", "黄赤", "危険・航海／航空の保安施設"], ["#FFD400", "黄", "注意・警告"],
+      ["#00A15F", "緑", "安全状態・進行"], ["#0068B7", "青", "指示・誘導"], ["#A5248A", "赤紫", "放射能"]];
+    return `
+      <h3>JIS安全色（JIS Z 9103）</h3>
+      <div class="safety">${safety.map(([c, n, m]) => `<div><span style="background:${c}"></span><b>${n}</b><span>${m}</span></div>`).join("")}</div>
+      <p>対比色として白と黒を組み合わせます（例：黄と黒の縞は「注意」）。</p>
+      <h3>色温度（K：ケルビン）</h3>
+      <div class="kscale" role="img" aria-label="色温度が低いほど赤み、高いほど青白い"></div>
+      <div class="kticks"><span>2000K<br>ろうそく</span><span>3000K<br>電球色</span><span>5000K<br>昼白色</span><span>6500K<br>昼光色・D65</span></div>
+      <p>色温度が<b>低いほど赤み</b>、<b>高いほど青白い</b>光。くつろぐ部屋は電球色、作業や色の確認は昼白色〜昼光色。演色性は <b>Ra</b>（100に近いほど自然）で表します。</p>
+      <h3>インテリアの配色比率</h3>
+      <div class="ratio"><span style="flex:70;background:${toneColor("ltg", 6)};color:#1A1C26">ベース 70%</span><span style="flex:25;background:${toneColor("sf", 14)};color:#1A1C26">アソート 25%</span><span style="flex:5;background:${HUES[4].hex}"></span></div>
+      <p><b>ベース</b>＝床・壁・天井、<b>アソート</b>＝カーテン・家具、<b>アクセント</b>（5%）＝クッション・小物。床を暗く天井を明るくすると安定感が出ます。</p>`;
   },
   names() {
     return `<p>JIS慣用色名から試験に出やすいものを集めました（色は近似値）。</p>
@@ -1323,6 +1638,8 @@ $("#quit").addEventListener("click", () => { renderHome(); show("home"); });
 $("#again").addEventListener("click", () => lastKind === "act" ? startAction(lastAct) : start(S.mode));
 $("#home-btn").addEventListener("click", () => { renderHome(); show("home"); });
 $("#go-learn").addEventListener("click", () => { renderLearn(); show("learn"); });
+$("#go-genres").addEventListener("click", () => { renderGenres(); show("genres"); });
+$("#genres-back").addEventListener("click", () => { renderHome(); show("home"); });
 $("#learn-back").addEventListener("click", () => show("home"));
 const sndBtn = $("#snd-toggle");
 const syncSnd = () => { sndBtn.textContent = "効果音: " + (soundOn ? "ON" : "OFF"); sndBtn.setAttribute("aria-pressed", soundOn); };
