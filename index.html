@@ -282,10 +282,26 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 .eye-svg [data-part] { cursor: pointer; }
 .eye-svg .hl { stroke: #FFD400 !important; filter: drop-shadow(0 0 4px #FFD400); }
 .eye-svg ellipse.hl, .eye-svg circle.hl, .eye-svg rect.hl { stroke-width: 4px; }
+.eye-svg .hl[stroke-width="14"], .eye-svg .miss[stroke-width="14"] { stroke-width: 4px; }
 .eye-svg .miss { stroke: #E5484D !important; stroke-width: 4px; }
 .learn-spec { height: 40px; border-radius: 8px; border: 1px solid var(--chip-edge); }
 .learn-bands { display: flex; font-size: 11px; font-weight: 700; margin-top: 4px; }
 .learn-bands span { text-align: center; border-left: 1px solid var(--line); }
+
+/* short phones (iPhone SE etc.) */
+@media (max-height: 700px) {
+  .rule { min-height: 0; padding: 6px 12px; margin: 6px auto; }
+  .rule b { font-size: 18px; }
+  .rule small { font-size: 11.5px; }
+  .qf-prompt { min-height: 84px; padding: 8px; }
+  .qf-big { font-size: 22px; }
+  .qf-info { min-height: 2.4em; font-size: 12px; }
+  .qf-opt { min-height: 48px; }
+  .qf-opt.card { aspect-ratio: 1; }
+  .lab-ball { width: 72px; height: 72px; }
+  .spec-wrap { height: 96px; }
+}
+.field-quick, .field-lab { overflow-y: auto; touch-action: manipulation; }
 
 /* ---------- action arena ---------- */
 /* The arena is a fixed neutral grey on purpose: colours are judged on a neutral mid-grey ground (N5 相当), so it does not change with the theme. */
@@ -324,6 +340,7 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 .shake-big { animation: shakeBig .35s; }
 @keyframes shakeBig { 15% { transform: translate(-8px, 3px); } 35% { transform: translate(7px, -4px); } 55% { transform: translate(-5px, 2px); } 75% { transform: translate(3px, -1px); } }
 .ftext { position: fixed; z-index: 61; transform: translate(-50%, -50%); font-family: var(--font-display); font-size: 24px; color: #FFFFFF; text-shadow: 0 2px 8px rgba(0, 0, 0, .55); pointer-events: none; text-align: center; line-height: 1.1; animation: rise .9s ease-out forwards; white-space: nowrap; }
+.skip { opacity: .75; font-size: 12px; white-space: nowrap; }
 .ftext small { display: block; font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
 .ftext.bad { color: #FFD6D6; }
 @keyframes rise { 0% { opacity: 0; margin-top: 10px; } 15% { opacity: 1; } 100% { opacity: 0; margin-top: -50px; } }
@@ -634,7 +651,7 @@ const KNOW2 = [
   ["light", "3", "波長がおよそ380nmより短い、目に見えない光は？", ["紫外線", "赤外線", "可視光", "マイクロ波"], "380nmより短いと<b>紫外線</b>、780nmより長いと<b>赤外線</b>です。"],
   ["light", "2", "物体が波長ごとにどれだけ光を反射するかを示したグラフは？", ["分光反射率曲線", "xy色度図", "等色相面", "トーン図"], "<b>分光反射率曲線</b>を見ると、その物体が何色に見えるかがわかります。赤い物体は長波長側が高くなります。"],
   ["light", "2", "晴れた空が青く見えるおもな理由は？", ["短波長の光が大気中で散乱されやすいから", "海の色が映っているから", "長波長の光だけが届くから", "空気そのものが青いから"], "波長の短い青い光ほど空気の分子で<b>散乱</b>されやすく、空全体に広がって見えます（レイリー散乱）。"],
-  ["light", "2", "シャボン玉の表面に虹色が見える現象は？", ["干渉", "散乱", "吸収", "回折だけによる屈折"], "薄い膜の表と裏で反射した光が重なり合って強め合ったり弱め合ったりする<b>干渉</b>によるものです。"],
+  ["light", "2", "シャボン玉の表面に虹色が見える現象は？", ["干渉", "散乱", "吸収", "拡散反射"], "薄い膜の表と裏で反射した光が重なり合って強め合ったり弱め合ったりする<b>干渉</b>によるものです。"],
   ["light", "3", "ステンドグラスのように、光が物体を通り抜けて見える色を何という？", ["透過色", "表面色", "光源色", "開口色"], "光が通り抜けて見える色が<b>透過色</b>、物体の表面で反射して見える色が<b>表面色</b>です。"],
   // --- 目と色の見え方
   ["eye", "3", "同じ橙色が、赤の上では黄みに、黄の上では赤みに見える現象は？", ["色相対比", "明度対比", "彩度対比", "同化"], "周りの色相と反対の方向へずれて見えるのが<b>色相対比</b>です。"],
@@ -963,7 +980,7 @@ function qHue() {
   const n = rnd(24) + 1;
   if (kind === "comp") {
     const ans = wrap24(n + 12);
-    const offs = shuffle([2, -2, 3, -3, 6, -6]).slice(0, 3);
+    const offs = shuffle([2, -2, 4, -4, 6, -6]).slice(0, 3);
     const opts = [ans, ...offs.map(o => wrap24(ans + o))];
     return {
       tag: "補色", text: "この色の<b>補色</b>（PCCS色相環で正反対の色）はどれ？",
@@ -1017,10 +1034,18 @@ function qHue() {
   };
 }
 
+// Rivals for a colour-name question: similar enough to be a challenge, but never so close that they look identical.
+const NAME_MIN_DIST = 22;
+const nameRivals = c => NAMES.filter(x => x !== c).map(x => ({ x, d: dist(x.hex, c.hex) })).filter(o => o.d >= NAME_MIN_DIST).sort((a, b) => a.d - b.d);
+// Pick n rivals from a candidate list, skipping any that look too much like one already chosen.
+function pickDistinct(cands, n, chosen = []) {
+  const out = [];
+  for (const x of cands) { if (out.length >= n) break; if ([...chosen, ...out].every(y => dist(x.hex, y.hex) >= NAME_MIN_DIST)) out.push(x); }
+  return out;
+}
 function qName() {
   const c = pick(NAMES);
-  const near = NAMES.filter(x => x !== c).map(x => ({ x, d: dist(x.hex, c.hex) })).sort((a, b) => a.d - b.d).slice(0, 7);
-  const others = shuffle(near).slice(0, 3).map(o => o.x);
+  const others = pickDistinct(shuffle(nameRivals(c).slice(0, 9).map(o => o.x)), 3, [c]);
   const opts = shuffle([c, ...others]);
   const exp = `${mini(c.hex)} <b>${c.name}</b>（${c.yomi}）― ${c.note}`;
   if (Math.random() < 0.5) {
@@ -1130,14 +1155,14 @@ function eyeSVG(o = {}) {
     <circle cx="175" cy="120" r="96" fill="#F4F1EA" stroke="#C9C1B2" stroke-width="3" pointer-events="none"/>
     <circle data-part="硝子体"${c("硝子体")} cx="175" cy="120" r="85" fill="#E3EEF2"/>
     <path data-part="網膜"${c("網膜")} d="M197.8,35 A88,88 0 0 1 197.8,205" fill="none" stroke="#E2826F" stroke-width="9"/>
-    <circle data-part="中心窩"${c("中心窩")} cx="262" cy="120" r="7.5" fill="#A93C30"/>
-    <circle data-part="盲点"${c("盲点")} cx="255" cy="157" r="8.5" fill="#F1CF6E"/>
+    <circle data-part="中心窩"${c("中心窩")} cx="262" cy="118" r="7.5" fill="#A93C30" stroke="rgba(0,0,0,0)" stroke-width="14"/>
+    <circle data-part="盲点"${c("盲点")} cx="254" cy="160" r="8.5" fill="#F1CF6E" stroke="rgba(0,0,0,0)" stroke-width="14"/>
     <ellipse data-part="毛様体"${c("毛様体")} cx="118" cy="67" rx="9" ry="15" fill="#C27A6E"/>
     <ellipse data-part="毛様体"${c("毛様体")} cx="118" cy="173" rx="9" ry="15" fill="#C27A6E"/>
     <ellipse data-part="水晶体"${c("水晶体")} cx="121" cy="120" rx="12" ry="30" fill="#F5E2A0" stroke="#D2B25A" stroke-width="2"/>
     <rect data-part="虹彩"${c("虹彩")} x="98" y="76" width="7" height="32" fill="#6B4A2B" stroke="rgba(0,0,0,0)" stroke-width="10"/>
     <rect data-part="虹彩"${c("虹彩")} x="98" y="132" width="7" height="32" fill="#6B4A2B" stroke="rgba(0,0,0,0)" stroke-width="10"/>
-    <rect data-part="瞳孔"${c("瞳孔")} x="96" y="108" width="11" height="24" fill="#16161A"/>
+    <rect data-part="瞳孔"${c("瞳孔")} x="96" y="108" width="11" height="24" fill="#16161A" stroke="rgba(0,0,0,0)" stroke-width="8"/>
     <path data-part="角膜"${c("角膜")} d="M96,72 Q48,120 96,168" fill="rgba(160,210,235,.35)" stroke="#6FAED0" stroke-width="5"/>
     ${labels}</svg>`;
 }
@@ -1623,6 +1648,7 @@ const ACT_MODES = [
     sw: () => ["#FF9A3C", "#FFC98A", "#FFF4E5", "#DDE6FF"] },
 ];
 
+const WRONG_WAIT = 3.2; // seconds to read the correction; a tap skips ahead
 const mult = () => Math.min(3, 1 + Math.floor(A.combo / 5) * 0.5);
 function renderLives() {
   $("#act-lives").innerHTML = [2, 8, 18].map((h, i) => `<i style="background:${i < A.lives ? HUES[h].hex : "rgba(255,255,255,.18)"}"></i>`).join("");
@@ -1658,6 +1684,8 @@ function bad(x, y, label, mistake) {
   floatText(x, y, label, "bad");
   if (mistake) A.mistakes.push(mistake);
   showCombo(); renderLives(); renderHud();
+  const inf = document.querySelector("#qf-info, #m-info");
+  if (inf && A.lives > 0) inf.insertAdjacentHTML("beforeend", `<small class="skip">　▶ タップで次へ</small>`);
   if (A.lives <= 0) { A.running = false; A.ending = setTimeout(endAction, 800); }
 }
 
@@ -1679,6 +1707,7 @@ function tick(now) {
   if (!A || !A.running) return;
   const dt = Math.min(.05, (now - A.last) / 1000); A.last = now;
   A.t += dt;
+  A.waitAge = A.wait > 0 ? (A.waitAge || 0) + dt : 0;
   A.def.update(A, dt);
   if (A && A.running) { renderHud(); requestAnimationFrame(tick); }
 }
@@ -1783,7 +1812,7 @@ const ACT = {
       if (A.t >= A.dur) { A.running = false; endAction(); }
     },
     tap(A, e) {
-      const el = e.target.closest(".fchip"); if (!el) return;
+      const el = e.target.closest(".fchip"); if (!el || el.classList.contains("gone")) return;
       const c = el._c; if (!c || c.hit) return;
       c.hit = true;
       const [x, y] = centerOf(el);
@@ -1829,7 +1858,7 @@ const ACT = {
       bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
       if (A.left <= 0) {
         const [x, y] = centerOf(this.reveal(A));
-        A.wait = 1.1;
+        A.wait = WRONG_WAIT;
         bad(x, y, "TIME UP", { hex: A.cur.hex, text: `${A.cur.t}${A.cur.h} は ${toneLabel(A.cur.t)}（時間切れ）`, why: TONES[A.cur.t].kind });
       }
     },
@@ -1841,7 +1870,7 @@ const ACT = {
         A.wait = .35;
         good(x, y, A.cur.hex, `${A.cur.t}${A.cur.h}`, 10 + Math.round(A.left / A.limit * 20));
       } else {
-        b.classList.add("wrongc"); this.reveal(A); A.wait = 1.2;
+        b.classList.add("wrongc"); this.reveal(A); A.wait = WRONG_WAIT;
         bad(x, y, `× ${k}`, { hex: A.cur.hex, text: `${A.cur.t}${A.cur.h} は ${toneLabel(A.cur.t)}。${k} を選んだ`, why: TONES[A.cur.t].kind });
       }
     },
@@ -1893,7 +1922,7 @@ const ACT = {
       $("#w-timer").setAttribute("stroke-dashoffset", (552.9 * (1 - Math.max(0, A.left / A.limit))).toFixed(1));
       if (A.left <= 0) {
         const seg = field.querySelector(`.seg[data-h="${A.cur.ans}"]`); seg.classList.add("ans");
-        const [x, y] = centerOf(seg); A.wait = 1.2;
+        const [x, y] = centerOf(seg); A.wait = WRONG_WAIT;
         bad(x, y, "TIME UP", this.mistake(A, null));
       }
     },
@@ -1919,7 +1948,7 @@ const ACT = {
       else if (diff === 1) { A.wait = .7; good(e.clientX, e.clientY, HUES[hue].hex, `NEAR → 正解 ${A.cur.ans}`, 8); }
       else {
         field.querySelector(`.seg[data-h="${hue}"]`).classList.add("miss");
-        A.wait = 1.2;
+        A.wait = WRONG_WAIT;
         bad(e.clientX, e.clientY, `× ${hue}`, this.mistake(A, hue));
       }
     },
@@ -1961,7 +1990,7 @@ function quickDef(cfg) {
       const bar = $("#qf-bar"), f = Math.max(0, A.left / A.limit);
       bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
       if (A.left <= 0) {
-        this.reveal(A, -1); A.wait = 1.8;
+        this.reveal(A, -1); A.wait = WRONG_WAIT;
         const [x, y] = centerOf($("#qf-prompt"));
         bad(x, y, cfg.timeout || "TIME UP", A.r.mistake(null));
       }
@@ -1971,7 +2000,7 @@ function quickDef(cfg) {
       const i = +b.dataset.qi, op = A.r.options[i], [x, y] = centerOf(b);
       this.reveal(A, i);
       if (op.correct) { A.wait = .7; good(x, y, A.r.hex || "#FFFFFF", A.r.label, 10 + Math.round(A.left / A.limit * 20)); }
-      else { A.wait = 1.8; bad(x, y, "×", A.r.mistake(op.name || stripTags(op.html) || op.cap || "")); }
+      else { A.wait = WRONG_WAIT; bad(x, y, "×", A.r.mistake(op.name || stripTags(op.html) || op.cap || "")); }
     },
   };
 }
@@ -1983,8 +2012,9 @@ ACT.karuta = quickDef({
   timeout: "取られた！", base: 5.5, min: 1.9, step: .14,
   gen() {
     const c = pick(NAMES);
-    const near = NAMES.filter(x => x !== c).map(x => ({ x, d: dist(x.hex, c.hex) })).sort((a, b) => a.d - b.d).map(o => o.x);
-    const others = [...shuffle(near.slice(0, 6)).slice(0, 3), ...shuffle(near.slice(6)).slice(0, 2)];
+    const near = nameRivals(c).map(o => o.x);
+    const close = pickDistinct(shuffle(near.slice(0, 8)), 3, [c]);
+    const others = [...close, ...pickDistinct(shuffle(near.slice(8)), 2, [c, ...close])];
     const cards = shuffle([c, ...others]);
     return {
       prompt: `<div class="qf-big">${c.name}</div><small>${c.yomi}</small>`, cols: 3, hex: c.hex, label: c.name,
@@ -2024,7 +2054,7 @@ const SAFETY = { red: ["赤", "#E60012", "防火・禁止・停止・高度の�
   green: ["緑", "#00A15F", "安全状態・進行"], blue: ["青", "#0068B7", "指示・誘導"], purple: ["赤紫", "#A5248A", "放射能"] };
 const SIGNS = [["消火器の置き場所", "red"], ["立入禁止", "red"], ["非常停止ボタン", "red"], ["段差に注意", "yellow"], ["頭上に注意", "yellow"], ["フォークリフト通行注意", "yellow"],
   ["非常口", "green"], ["救護所", "green"], ["避難場所", "green"], ["保護めがねを着用せよ", "blue"], ["ヘルメットを着用せよ", "blue"],
-  ["救命胴衣・救命ボート", "orange"], ["航空の保安施設", "orange"], ["危険物の表示", "orange"], ["放射線管理区域", "purple"]];
+  ["救命胴衣・救命ボート", "orange"], ["航空の保安施設", "orange"], ["救命浮環（浮き輪）", "orange"], ["放射線管理区域", "purple"]];
 ACT.signal = quickDef({
   rule: "この標識は何色？", sub: "JIS安全色（JIS Z 9103）。6色の意味を体で覚えよう", base: 5, min: 1.8, step: .13,
   gen(A) {
@@ -2097,7 +2127,8 @@ const SCENES = [
   { q: "ろうそくの炎", t: "k", a: 0, why: "ろうそくは約2000K。赤みの強い光" },
   { q: "白熱電球の光", t: "k", a: 1, why: "白熱電球は約2800〜3000K" },
   { q: "くつろぐ寝室におすすめの光", t: "k", a: 1, why: "電球色（約3000K）の暖かい光は落ち着きを生む" },
-  { q: "晴れた日の正午の太陽光", t: "k", a: 2, why: "正午の直射日光はおよそ5000〜5500K" },
+  { q: "昼白色の蛍光灯・LED", t: "k", a: 2, why: "昼白色は約5000K。自然な白さで、色を見る作業にも向く" },
+  { q: "昼光色の照明", t: "k", a: 3, why: "昼光色は約6500K。青白くすっきりした光" },
   { q: "CIEの標準の光 D65", t: "k", a: 3, why: "D65は色温度約6500Kの平均的な昼光" },
   { q: "床・壁・天井の色", t: "r", a: 0, why: "面積がいちばん大きいベースカラー" },
   { q: "カーテン・ソファの色", t: "r", a: 1, why: "家具やカーテンはアソートカラー" },
@@ -2174,7 +2205,7 @@ ACT.lab = {
     A.left -= dt;
     const bar = $("#qf-bar"), f = Math.max(0, A.left / A.limit);
     bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
-    if (A.left <= 0) { A.wait = 1.8; this.fail(A, null); }
+    if (A.left <= 0) { A.wait = WRONG_WAIT; this.fail(A, null); }
   },
   fail(A, you) {
     const L = A.add ? LAB.add : LAB.sub, name = L.targets[A.t_][0], hex = labColor(A.add, new Set(A.need));
@@ -2194,7 +2225,7 @@ ACT.lab = {
       A.wait = .7; good(x, y, labColor(A.add, A.on), L.targets[A.t_][0], 12 + Math.round(A.left / A.limit * 20));
     } else {
       const L = A.add ? LAB.add : LAB.sub;
-      A.wait = 1.8; this.fail(A, A.on.size ? [...A.on].map(k => L.prim.find(p => p[0] === k)[1]).join("＋") : "何も選ばず");
+      A.wait = WRONG_WAIT; this.fail(A, A.on.size ? [...A.on].map(k => L.prim.find(p => p[0] === k)[1]).join("＋") : "何も選ばず");
     }
   },
 };
@@ -2214,7 +2245,7 @@ ACT.spectrum = {
   next(A) {
     A.n++; A.wait = 0;
     const r = Math.random();
-    if (r < .4) { const w = 410 + rnd(58) * 5; A.q = { type: "chip", w, hex: wl2rgb(w) }; $("#qf-prompt").innerHTML = `<span class="lab-ball" style="background:${wl2rgb(w)}"></span><b>この色の光は何nm？</b>`; }
+    if (r < .4) { const w = 420 + rnd(45) * 5; A.q = { type: "chip", w, hex: wl2rgb(w) }; $("#qf-prompt").innerHTML = `<span class="lab-ball" style="background:${wl2rgb(w)}"></span><b>この色の光は何nm？</b>`; }
     else if (r < .7) { const B = pick(WL_BANDS); A.q = { type: "band", B, hex: wl2rgb((B[0] + Math.min(B[1], 700)) / 2) }; $("#qf-prompt").innerHTML = `<div class="qf-big">「${B[2]}」に見える光</div><small>その波長のあたりをタップ</small>`; }
     else if (r < .85) { const S = pick([["短波長域", 380, 500, "青紫〜青"], ["中波長域", 500, 600, "緑〜黄"], ["長波長域", 600, 780, "橙〜赤"]]); A.q = { type: "range", S, hex: wl2rgb((S[1] + Math.min(S[2], 700)) / 2) }; $("#qf-prompt").innerHTML = `<div class="qf-big">${S[0]}</div><small>（約${S[1]}〜${S[2]}nm）をタップ</small>`; }
     else { const z = pick(["UV", "IR"]); A.q = { type: "zone", z, hex: z === "UV" ? "#7A4FD0" : "#B03030" }; $("#qf-prompt").innerHTML = `<div class="qf-big">${z === "UV" ? "紫外線" : "赤外線"}はどっち？</div><small>目に見えない光</small>`; }
@@ -2236,7 +2267,7 @@ ACT.spectrum = {
     A.left -= dt;
     const bar = $("#qf-bar"), f = Math.max(0, A.left / A.limit);
     bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
-    if (A.left <= 0) { const t = this.reveal(A); $("#qf-info").innerHTML = t; A.wait = 1.8; const [x, y] = centerOf($("#spec")); bad(x, y, "TIME UP", { hex: A.q.hex, text: stripTags(t) + "（時間切れ）", why: "短波長（約380〜500nm）は青み、中波長（約500〜600nm）は緑〜黄、長波長（約600〜780nm）は橙〜赤" }); }
+    if (A.left <= 0) { const t = this.reveal(A); $("#qf-info").innerHTML = t; A.wait = WRONG_WAIT; const [x, y] = centerOf($("#spec")); bad(x, y, "TIME UP", { hex: A.q.hex, text: stripTags(t) + "（時間切れ）", why: "短波長（約380〜500nm）は青み、中波長（約500〜600nm）は緑〜黄、長波長（約600〜780nm）は橙〜赤" }); }
   },
   tap(A, e) {
     if (A.wait > 0) return;
@@ -2253,7 +2284,7 @@ ACT.spectrum = {
     const t = this.reveal(A), you = nm != null ? `${nm}nm` : zone === "UV" ? "紫外線側" : "赤外線側";
     $("#qf-info").innerHTML = `${t}　あなた：${you}`;
     if (ok) { A.wait = .8; good(e.clientX, e.clientY, q.hex, perfect ? `PERFECT ${you}` : you, perfect ? 30 : 10 + Math.round(A.left / A.limit * 15)); }
-    else { A.wait = 1.9; bad(e.clientX, e.clientY, `× ${you}`, { hex: q.hex, text: `${stripTags(t)}。あなたの答え：${you}`, why: "短波長（約380〜500nm）は青み、中波長（約500〜600nm）は緑〜黄、長波長（約600〜780nm）は橙〜赤" }); }
+    else { A.wait = WRONG_WAIT; bad(e.clientX, e.clientY, `× ${you}`, { hex: q.hex, text: `${stripTags(t)}。あなたの答え：${you}`, why: "短波長（約380〜500nm）は青み、中波長（約500〜600nm）は緑〜黄、長波長（約600〜780nm）は橙〜赤" }); }
   },
 };
 
@@ -2283,7 +2314,7 @@ ACT.anatomy = {
     const bar = $("#qf-bar"), f = Math.max(0, A.left / A.limit);
     bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
     if (A.left <= 0) {
-      const p = A.q[0]; this.mark(p, "hl"); A.wait = 1.8;
+      const p = A.q[0]; this.mark(p, "hl"); A.wait = WRONG_WAIT;
       $("#qf-info").innerHTML = `正解：<b>${p}</b>　${EYE_PARTS[p]}`;
       const [x, y] = centerOf(field.querySelector(`[data-part="${p}"]`));
       bad(x, y, "TIME UP", { hex: "#E2826F", text: `「${A.q[1]}」→ <b>${p}</b>（時間切れ）`, why: EYE_PARTS[p] });
@@ -2296,7 +2327,7 @@ ACT.anatomy = {
     this.mark(p, "hl");
     $("#qf-info").innerHTML = `<b>${p}</b>：${EYE_PARTS[p]}`;
     if (you === p) { A.wait = .8; good(e.clientX, e.clientY, "#FFD400", p, 10 + Math.round(A.left / A.limit * 20)); }
-    else { this.mark(you, "miss"); A.wait = 1.9; bad(e.clientX, e.clientY, `× ${you}`, { hex: "#E2826F", text: `「${A.q[1]}」→ <b>${p}</b>。あなたの答え：${you}`, why: EYE_PARTS[p] }); }
+    else { this.mark(you, "miss"); A.wait = WRONG_WAIT; bad(e.clientX, e.clientY, `× ${you}`, { hex: "#E2826F", text: `「${A.q[1]}」→ <b>${p}</b>。あなたの答え：${you}`, why: EYE_PARTS[p] }); }
   },
 };
 
@@ -2331,7 +2362,12 @@ ACT.cones = quickDef({
   },
 });
 
-field.addEventListener("pointerdown", e => { if (A && A.running && A.def.tap) { e.preventDefault(); A.def.tap(A, e); } });
+field.addEventListener("pointerdown", e => {
+  if (!(A && A.running && A.def.tap)) return;
+  e.preventDefault();
+  if (A.wait > 0) { if (A.waitAge > .5 && A.wait > .15) A.wait = .01; return; } // tap to skip the correction
+  A.def.tap(A, e);
+});
 $("#act-quit").addEventListener("click", () => { stopAction(); renderHome(); show("home"); });
 document.addEventListener("visibilitychange", () => {
   if (!A) return;
