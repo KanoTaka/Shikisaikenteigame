@@ -303,6 +303,20 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 }
 .field-quick, .field-lab { overflow-y: auto; touch-action: manipulation; }
 
+/* ---------- variety ---------- */
+.qbadge { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 1px; letter-spacing: .04em; }
+.qbadge.new { background: var(--accent); color: var(--accent-ink); }
+.qbadge.rev { background: var(--ng); color: #FFFFFF; }
+.chip.sm { width: 28px; height: 28px; flex: none; border-radius: 6px; display: inline-block; }
+.pair { display: inline-flex; gap: 4px; }
+.spin { width: min(150px, 40vw); aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--chip-edge); display: block; }
+.pair .chip.sm { width: 40px; height: 40px; }
+.choice .pair { margin: 0 auto; }
+.qf-in-card { width: 100%; display: grid; place-items: center; gap: 6px; padding: 12px; border-radius: 12px; background: #6E7075; color: #FFFFFF; }
+.qf-in-card .qf-big { font-size: 22px; }
+#w-svg.nonum text { display: none; }
+#w-svg.nonum #w-label { display: block; }
+
 /* ---------- action arena ---------- */
 /* The arena is a fixed neutral grey on purpose: colours are judged on a neutral mid-grey ground (N5 相当), so it does not change with the theme. */
 :root { --arena: #6E7075; --arena-ink: #FFFFFF; --arena-panel: rgba(0, 0, 0, .2); --arena-soft: rgba(255, 255, 255, .14); }
@@ -774,6 +788,35 @@ const KNOW2 = [
 ];
 
 KNOW2.push(...[
+  // --- 色の見え方（追加）
+  ["eye", "3", "強い光を一瞬見た後、同じ色の像がしばらく残って見える現象は？", ["陽性残像", "陰性残像", "同化", "面積効果"], "元と同じ色・明るさで残るのが<b>陽性残像</b>、補色で残るのが<b>陰性残像</b>です。"],
+  ["eye", "2", "赤い背景に置いた灰色に薄い紙をかぶせると、灰色が青緑みに見える現象は？", ["色陰現象", "プルキニエ現象", "リープマン効果", "主観色"], "周りの色の補色の色みを帯びて見える<b>色陰現象</b>です。"],
+  ["eye", "3", "外壁やカーテンの色を決めるとき、面積効果を考えると望ましい確認方法は？", ["できるだけ大きな見本で確認する", "小さな色見本だけで決める", "暗い部屋で確認する", "色名だけで決める"], "面積が大きいと明るく鮮やかに見えるので、<b>大きな見本</b>で確かめるのが安全です。"],
+  ["eye", "2", "同化が起こりやすいのはどんなとき？", ["模様が細かく、色の差が小さいとき", "模様が大きく、色の差が大きいとき", "色が1色だけのとき", "暗い所で見たとき"], "<b>細かい模様</b>や<b>差の小さい色</b>ほど、周りの色に近づいて見える同化が起こりやすくなります。"],
+  // --- ファッション（追加）
+  ["fashion", "2", "1947年、細いウエストと広がったスカートの「ニュールック」を発表したデザイナーは？", ["クリスチャン・ディオール", "ココ・シャネル", "マリー・クヮント", "イヴ・サンローラン"], "<b>ディオール</b>のニュールックは、戦後の女性らしいシルエットの象徴になりました。"],
+  ["fashion", "2", "ヒッピーやフォークロア調が広まり、アースカラーが流行した年代は？", ["1970年代", "1920年代", "1950年代", "2000年代"], "<b>1970年代</b>は自然志向が強まり、ブラウンやカーキなどのアースカラーが人気でした。"],
+  ["fashion", "3", "白・黒・紺・グレー・ベージュなど、コーディネートの土台になる色を何という？", ["ベーシックカラー", "アクセントカラー", "トレンドカラー", "セパレーションカラー"], "合わせやすい<b>ベーシックカラー</b>を土台に、差し色（アクセントカラー）を加えるのが基本です。"],
+  ["fashion", "3", "上下を同系色でまとめ、明度差をはっきりつけたコーデはどの配色技法？", ["トーンオントーン", "トーンイントーン", "トリコロール", "補色配色"], "同系色相で明度差を大きくとる<b>トーンオントーン</b>です。"],
+  ["fashion", "3", "トップスとボトムスの間にベルトを入れて、配色を引き締める技法は？", ["セパレーション", "グラデーション", "カマイユ", "ドミナントトーン"], "ベルトが分離色の役目をする<b>セパレーション</b>です。"],
+  ["fashion", "3", "全身をほぼ同じ色相・トーンのわずかな差でまとめる、上品なコーデの配色技法は？", ["カマイユ", "トリコロール", "ビコロール", "アクセントカラー"], "1色に見えるほど微妙な差の<b>カマイユ</b>配色です。"],
+  // --- インテリア（追加）
+  ["interior", "3", "一般に、体感温度を低く感じやすいとされる部屋の色は？", ["寒色系", "暖色系", "高彩度の赤", "黒"], "<b>寒色系</b>は涼しく、暖色系は暖かく感じられやすいといわれます。"],
+  ["interior", "3", "天井を高く見せたいとき、天井に向いている色は？", ["明るい（高明度の）色", "暗い（低明度の）色", "鮮やかな赤", "濃い茶色"], "<b>明るい色</b>は軽く、遠くに感じられるため、天井が高く見えます。"],
+  ["interior", "3", "大きな家具の圧迫感を減らしたいとき、家具の色はどうする？", ["壁の色に近い明るい色にする", "壁と対照的な暗い色にする", "鮮やかな原色にする", "黒にする"], "<b>壁になじむ明るい色</b>にすると、存在感が弱まり圧迫感が減ります。"],
+  ["interior", "3", "案内表示（サイン）を読みやすくするために最も大切なのは？", ["文字と背景の明度差", "色数の多さ", "流行色の使用", "光沢のある素材"], "可読性を上げる基本は、文字と背景の<b>明度差</b>です。"],
+  ["interior", "2", "病院の待合室など、落ち着いてほしい空間に向く配色は？", ["中〜高明度・低彩度の穏やかな色", "高彩度の赤と黄", "黒と白の強い対比", "蛍光色"], "<b>穏やかな低彩度</b>の色は緊張をやわらげます。"],
+  // --- 色彩と文化（追加）
+  ["culture", "2", "平安時代、紫色を染めるのに使われた植物の根は？", ["紫根（ムラサキの根）", "藍の葉", "紅花", "茜の根"], "<b>紫根</b>で染めた紫は手間がかかり高価で、高貴な色とされました。"],
+  ["culture", "2", "紅花から取った染料で染めた鮮やかな赤の色名は？", ["紅（くれない）", "茜色", "朱色", "えんじ"], "<b>紅（くれない・べに）</b>は紅花の色素で染めた赤。口紅の「紅」でもあります。"],
+  ["culture", "2", "古代中国で、皇帝の色として尊ばれたのは？", ["黄", "白", "黒", "青"], "五行説で中央にあたる<b>黄</b>は皇帝の色とされました。"],
+  ["culture", "2", "四神のうち、北を守る玄武に対応する色は？", ["黒", "白", "赤", "青"], "北＝玄武＝<b>黒</b>。東＝青龍（青）、南＝朱雀（赤）、西＝白虎（白）。"],
+  ["culture", "2", "古代の日本語で、色を表す基本の言葉とされる4つは？", ["赤・黒・白・青", "赤・黄・緑・青", "白・黒・灰・茶", "紅・藍・紫・黄"], "「明（あか）・暗（くろ）・顕（しろ）・漠（あを）」という光の感覚から生まれたとする説があります。"],
+  ["culture", "2", "江戸時代に流行した「団十郎茶」の名前の由来は？", ["歌舞伎役者の市川團十郎", "茶人の千利休", "浮世絵師の葛飾北斎", "将軍の徳川家康"], "人気の<b>歌舞伎役者</b>が舞台で使った色が流行し、名前が付きました。"],
+  ["culture", "2", "「利休鼠」の名前の由来になった人物は？", ["千利休", "市川團十郎", "聖徳太子", "紫式部"], "茶人<b>千利休</b>にちなむ、緑みを帯びた鼠色です。"],
+  ["culture", "2", "ルネサンス期、高価な青い顔料ウルトラマリンの原料になった鉱石は？", ["ラピスラズリ", "ルビー", "水晶", "トルコ石"], "<b>ラピスラズリ</b>は金と同じくらい高価で、聖母マリアの衣の青などに使われました。"],
+  ["culture", "2", "19世紀、化学者パーキンが偶然発見した世界初の合成染料の色は？", ["モーブ（藤色に近い紫）", "藍色", "朱色", "黒"], "1856年に発見された<b>モーブ（モーヴェイン）</b>。合成染料の時代が始まりました。"],
+  ["culture", "3", "西洋で喪服として着られることが多い色は？", ["黒", "白", "赤", "黄"], "西洋では<b>黒</b>が喪の色。日本でも明治以降に黒の喪服が広まりました。"],
   // --- 色の基本（追加）
   ["basic", "3", "「色」は最終的にどこで生まれる感覚？", ["脳", "物体の表面", "光そのもの", "水晶体"], "光そのものに色がついているのではなく、目で受け取った信号を<b>脳</b>が処理して「色」として感じます。"],
   ["basic", "3", "色の三属性のうち、明るさの度合いを表すのは？", ["明度", "彩度", "色相", "色温度"], "<b>明度</b>は明るさ。白に近いほど高く、黒に近いほど低くなります。"],
@@ -818,21 +861,21 @@ KNOW2.push(...[
 ]);
 
 const GENRES = [
-  { id: "basic",    name: "色の基本",           hue: 8,  desc: "色とは何か・三属性・有彩色と無彩色・清色と濁色" },
-  { id: "light",    name: "光の性質",           hue: 9,  desc: "波長とスペクトル・反射と吸収・屈折・散乱・分光反射率", gens: ["know", "know", "spec", "curve"] },
-  { id: "vision",   name: "目と脳のしくみ",     hue: 17, desc: "目の構造・錐体と杆体・明所視と暗所視・順応・色覚説・視覚の経路", gens: ["know", "know", "eyepart", "cones"] },
-  { id: "eye",      name: "色の見え方",         hue: 16, desc: "対比・同化・面積効果・残像・錯視", gens: ["know", "know", "contrast"] },
-  { id: "mix",      name: "混色",               hue: 12, desc: "加法混色・減法混色・中間混色", gens: ["know", "mixq"] },
-  { id: "pccs",     name: "PCCS",               hue: 2,  desc: "トーン・色相環・明度と彩度の段階", gens: ["know", "tone", "hue"] },
-  { id: "system",   name: "表色系と色名",       hue: 19, desc: "マンセル・オストワルト・XYZ・L*a*b*・JIS色名" },
-  { id: "psych",    name: "色の心理と効果",     hue: 4,  desc: "寒暖・軽重・進出後退・誘目性・安全色" },
-  { id: "harmony",  name: "配色と色彩調和",     hue: 22, desc: "配色技法・トライアドなど・調和論" },
-  { id: "fashion",  name: "ファッション",       hue: 24, desc: "ファッションイメージ・流行色・ファッション史" },
-  { id: "interior", name: "インテリア・商品・環境", hue: 10, desc: "70:25:5・部屋の見え方・景観・食と色" },
-  { id: "culture",  name: "色彩と文化",         hue: 21, desc: "冠位十二階・襲の色目・五行・西洋の色" },
-  { id: "lighting", name: "照明と測色",         hue: 6,  desc: "色温度・演色性・メタメリズム・標準の光" },
-  { id: "ud",       name: "ユニバーサルデザイン", hue: 14, desc: "色覚の多様性・高齢者の見え方・伝わる配色" },
-  { id: "names",    name: "慣用色名",           hue: 1,  desc: "和名・外来色名42色", gens: ["names"] },
+  { id: "basic",    name: "色の基本",           hue: 8,  desc: "色とは何か・三属性・有彩色と無彩色・清色と濁色", gens: ["know", "know", "toneclass", "attr", "attr"] },
+  { id: "light",    name: "光の性質",           hue: 9,  desc: "波長とスペクトル・反射と吸収・屈折・散乱・分光反射率", gens: ["know", "know", "spec", "curve", "wavecmp"] },
+  { id: "vision",   name: "目と脳のしくみ",     hue: 17, desc: "目の構造・錐体と杆体・明所視と暗所視・順応・色覚説・視覚の経路", gens: ["know", "know", "eyepart", "cones", "eyefunc"] },
+  { id: "eye",      name: "色の見え方",         hue: 16, desc: "対比・同化・面積効果・残像・錯視", gens: ["know", "know", "contrast", "after", "cdir", "cdir"] },
+  { id: "mix",      name: "混色",               hue: 12, desc: "加法混色・減法混色・中間混色", gens: ["know", "mixq", "spin", "mixrev"] },
+  { id: "pccs",     name: "PCCS",               hue: 2,  desc: "トーン・色相環・明度と彩度の段階", gens: ["know", "tone", "hue", "notation", "tonecmp", "compname"] },
+  { id: "system",   name: "表色系と色名",       hue: 19, desc: "マンセル・オストワルト・XYZ・L*a*b*・JIS色名", gens: ["know", "know", "munsell"] },
+  { id: "psych",    name: "色の心理と効果",     hue: 4,  desc: "寒暖・軽重・進出後退・誘目性・安全色", gens: ["know", "know", "safety"] },
+  { id: "harmony",  name: "配色と色彩調和",     hue: 22, desc: "配色技法・トライアドなど・調和論", gens: ["know", "know", "paletteq", "hue"] },
+  { id: "fashion",  name: "ファッション",       hue: 24, desc: "ファッションイメージ・流行色・ファッション史", gens: ["know", "know", "coordq", "coordrev"] },
+  { id: "interior", name: "インテリア・商品・環境", hue: 10, desc: "70:25:5・部屋の見え方・景観・食と色", gens: ["know", "know", "roomq", "roomvis"] },
+  { id: "culture",  name: "色彩と文化",         hue: 21, desc: "冠位十二階・襲の色目・五行・西洋の色", gens: ["know", "know", "know", "gogyo"] },
+  { id: "lighting", name: "照明と測色",         hue: 6,  desc: "色温度・演色性・メタメリズム・標準の光", gens: ["know", "know", "kelvin"] },
+  { id: "ud",       name: "ユニバーサルデザイン", hue: 14, desc: "色覚の多様性・高齢者の見え方・伝わる配色", gens: ["know", "know", "cvd"] },
+  { id: "names",    name: "慣用色名",           hue: 1,  desc: "和名・外来色名42色", gens: ["names", "names", "namerev", "yomi"] },
 ];
 const GENRE = Object.fromEntries(GENRES.map(g => [g.id, g]));
 const TAG2GENRE = { "色の基本": "basic", "光と色": "light", "目のしくみ": "vision", "色の見え方": "eye", "混色": "mix", "色の心理": "psych", "表色系": "system", "配色技法": "harmony", "照明": "lighting" };
@@ -902,7 +945,7 @@ function beep(ok) {
 /* ================= question generators ================= */
 function qKnow(filter = () => true) {
   const pool = ALLK.filter(filter);
-  const k = pick(pool.length ? pool : ALLK);
+  const k = pickByPriority(pool.length ? pool : ALLK, x => "k:" + x.q, 24);
   const lv = k.lv === "UC" ? "UC級" : k.lv + "級";
   return { tag: `${GENRE[k.g].name}・${lv}`, genre: k.g, text: k.q, visual: "", choices: shuffle(k.opts.map((o, i) => ({ html: o, correct: i === 0 }))), explain: k.exp, key: "k:" + k.q, short: k.q };
 }
@@ -963,15 +1006,16 @@ function qTone() {
   const hues = [start, start + 6, start + 12, start + 18].map(wrap24);
   const near = TONE_KEYS.filter(k => k !== t)
     .map(k => ({ k, d: Math.abs(TONES[k].col - TONES[t].col) * 1.3 + Math.abs(TONES[k].row - TONES[t].row) + Math.random() * 0.8 }))
-    .sort((a, b) => a.d - b.d).slice(0, 3).map(o => o.k);
+    .sort((a, b) => a.d - b.d).map(o => o.k);
+  const nearSel = byDiff(near, 3);
   const visual = `<div class="tone-row">${hues.map(h => chip(toneColor(t, h), "", `${t}${h}`)).join("")}</div>`;
   return {
     tag: "PCCSトーン",
     text: "この4色に共通するトーンはどれ？",
     visual,
-    choices: shuffle([t, ...near].map(k => ({ html: `<span class="k">${k}</span>${TONES[k].en}（${TONES[k].jp}）`, correct: k === t }))),
+    choices: shuffle([t, ...nearSel].map(k => ({ html: `<span class="k">${k}</span>${TONES[k].en}（${TONES[k].jp}）`, correct: k === t }))),
     explain: `正解は <b>${toneLabel(t)}</b>。${TONES[t].kind}のトーンです。左から ${hues.map(h => `${t}${h}`).join("・")}。同じトーンなら色相が違っても「明るさ・鮮やかさの調子」がそろって見えます。`,
-    key: "t:" + t, short: `トーン ${t}`,
+    key: `t:${t}:${start}`, concept: "t:" + t, short: `トーン ${t}`,
   };
 }
 
@@ -980,7 +1024,7 @@ function qHue() {
   const n = rnd(24) + 1;
   if (kind === "comp") {
     const ans = wrap24(n + 12);
-    const offs = shuffle([2, -2, 4, -4, 6, -6]).slice(0, 3);
+    const offs = shuffle(QDIFF >= 2 ? [2, -2, 3, -3, 4, -4] : QDIFF === 1 ? [2, -2, 4, -4, 6, -6] : [4, -4, 6, -6, 8, -8]).slice(0, 3);
     const opts = [ans, ...offs.map(o => wrap24(ans + o))];
     return {
       tag: "補色", text: "この色の<b>補色</b>（PCCS色相環で正反対の色）はどれ？",
@@ -1044,8 +1088,10 @@ function pickDistinct(cands, n, chosen = []) {
   return out;
 }
 function qName() {
-  const c = pick(NAMES);
-  const others = pickDistinct(shuffle(nameRivals(c).slice(0, 9).map(o => o.x)), 3, [c]);
+  const c = pickByPriority(NAMES, x => "n:" + x.name);
+  const riv = nameRivals(c).map(o => o.x);
+  let others = pickDistinct(shuffle(QDIFF >= 2 ? riv.slice(0, 9) : QDIFF === 1 ? riv.slice(0, 18) : riv.slice(12)), 3, [c]);
+  if (others.length < 3) others = pickDistinct(shuffle(riv), 3, [c]);
   const opts = shuffle([c, ...others]);
   const exp = `${mini(c.hex)} <b>${c.name}</b>（${c.yomi}）― ${c.note}`;
   if (Math.random() < 0.5) {
@@ -1214,17 +1260,331 @@ function qCones() {
   };
 }
 
+/* ================= more question patterns (parametric: numbers and colours change every time) ================= */
+const mono = t => `<span style="font-family:var(--font-mono);font-weight:600">${t}</span>`;
+const bgOf = st => ((st || "").match(/background:(#[0-9A-Fa-f]{6})/) || [])[1];
+
+// PCCS notation ⇄ colour
+function qNotation() {
+  const t = pick(TONE_KEYS), h = rnd(24) + 1, hex = toneColor(t, h), lab = `${t}${h}`;
+  const near = TONE_KEYS.filter(k => k !== t).sort((a, b) => (Math.abs(TONES[a].col - TONES[t].col) + Math.abs(TONES[a].row - TONES[t].row)) - (Math.abs(TONES[b].col - TONES[t].col) + Math.abs(TONES[b].row - TONES[t].row)));
+  const hs = QDIFF >= 2 ? 2 : QDIFF === 1 ? 4 : 8;
+  const cand = shuffle([...byDiff(near, 3).map(k => `${k}${h}`), `${t}${wrap24(h + hs)}`, `${t}${wrap24(h - hs)}`]);
+  const col = o => { const m = o.match(/^([a-z]+)(\d+)$/); return toneColor(m[1], +m[2]); };
+  const swatchMode = Math.random() >= .5;
+  const opts = [lab];
+  const extra = [...cand, ...shuffle(TONE_KEYS).map(k => `${k}${h}`), ...[3, 5, 7, 9].map(o => `${t}${wrap24(h + o)}`)];
+  for (const c of extra) { if (opts.length >= 4) break; if (opts.includes(c)) continue; if (swatchMode && opts.some(o => dist(col(o), col(c)) < 18)) continue; opts.push(c); }
+  const exp = `${mini(hex)} <b>${lab}</b>＝${TONES[t].en}（${TONES[t].jp}）トーンの ${hueLabel(h)}。表記は「トーン記号＋色相番号」。`;
+  if (!swatchMode) return { tag: "PCCS・表記", genre: "pccs", text: "この色のPCCS表記（トーン記号＋色相番号）は？", visual: `<div class="chip-col">${chip(hex, "big")}</div>`,
+    choices: shuffle(opts).map(o => ({ html: mono(o), correct: o === lab })), explain: exp, key: "nt:" + lab, short: lab };
+  return { tag: "PCCS・表記", genre: "pccs", text: `「<b>${lab}</b>」はどの色？`, visual: `<div class="notation">${lab}</div>`, swatch: true,
+    choices: shuffle(opts).map(o => ({ html: chip(col(o), "", o), cap: o, correct: o === lab })), explain: exp, key: "nt2:" + lab, short: lab };
+}
+
+// 清色・濁色の分類
+const TONE_CLASS = { v: "純色", b: "明清色", lt: "明清色", p: "明清色", dp: "暗清色", dk: "暗清色", s: "濁色", sf: "濁色", d: "濁色", ltg: "濁色", g: "濁色", dkg: "濁色" };
+function qToneClass() {
+  const t = pick(TONE_KEYS), ans = TONE_CLASS[t], h = rnd(24) + 1;
+  return { tag: "色の基本・清色と濁色", genre: "basic", text: `「<b>${t}</b>（${TONES[t].en}／${TONES[t].jp}）」トーンの色は、どれに分類される？`,
+    visual: `<div class="chip-col">${chip(toneColor(t, h), "mid")}<span>${t}${h}</span></div>`,
+    choices: shuffle(["純色", "明清色", "暗清色", "濁色"]).map(c => ({ html: c, correct: c === ans })),
+    explain: `<b>${t}</b> は <b>${ans}</b>。明清色＝純色＋白（b・lt・p）、暗清色＝純色＋黒（dp・dk）、濁色＝純色＋灰（s・sf・d・ltg・g・dkg）。`, key: "tc:" + t, short: t };
+}
+
+// トーンの明度・彩度くらべ
+function qToneCmp() {
+  const G = Object.fromEntries(TONE_GRID.map(([k, c, r, sp]) => [k, { c, y: r + sp / 2 }]));
+  const kind = pick(["明度が最も高い", "明度が最も低い", "彩度が最も高い", "彩度が最も低い"]), light = kind.startsWith("明度");
+  const groups = {}; TONE_KEYS.forEach(k => { const v = light ? G[k].y : G[k].c; (groups[v] = groups[v] || []).push(k); });
+  const opts = shuffle(Object.keys(groups)).slice(0, light ? 4 : 3).map(v => pick(groups[v]));
+  const sc = k => light ? -G[k].y : G[k].c, hi = kind.endsWith("高い");
+  const ans = opts.reduce((a, b) => (hi ? sc(b) > sc(a) : sc(b) < sc(a)) ? b : a);
+  const h = rnd(24) + 1;
+  return { tag: "PCCS・トーンの比較", genre: "pccs", text: `次のうち、<b>${kind}</b>トーンは？`, visual: "",
+    choices: shuffle(opts).map(k => ({ html: `${chip(toneColor(k, h), "sm")}<span><b>${k}</b>（${TONES[k].jp}）</span>`, correct: k === ans })),
+    explain: `正解は <b>${toneLabel(ans)}</b>。トーン図では<b>上ほど明度が高く</b>、<b>右ほど彩度が高い</b>。`, key: `tq:${kind}:${opts.slice().sort().join("")}`, short: kind };
+}
+
+// PCCS 補色（文字で）
+function qCompName() {
+  const n = rnd(24) + 1, ans = wrap24(n + 12);
+  const offs = shuffle(QDIFF >= 2 ? [2, -2, 4, -4] : [4, -4, 6, -6, 8, -8]).slice(0, 3);
+  const opts = [ans, ...offs.map(o => wrap24(ans + o))];
+  return { tag: "PCCS・補色", genre: "pccs", text: `<b>${hueLabel(n)}</b> の心理補色は？`, visual: `<div class="chip-col">${chip(HUES[n].hex, "mid")}</div>`,
+    choices: shuffle(opts).map(h => ({ html: hueLabel(h), correct: h === ans })),
+    explain: `${mini(HUES[n].hex)}${hueLabel(n)} ⇔ ${mini(HUES[ans].hex)}<b>${hueLabel(ans)}</b>。色相番号に12を足し引きした位置です。`, key: "cp:" + n, short: `${n} の補色` };
+}
+
+// マンセル記号の読み取り
+const MH = ["R", "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP"];
+function qMunsell() {
+  const kind = pick(["V", "C", "H", "V", "C", "N"]);
+  if (kind === "N") {
+    const [v, ans] = pick([[1.5, "黒に近い暗い灰色"], [3, "暗い灰色"], [5, "中くらいの明るさの灰色"], [7, "明るい灰色"], [9.5, "白に近い明るい灰色"]]);
+    const opts = shuffle([ans, ...shuffle(["黒に近い暗い灰色", "暗い灰色", "中くらいの明るさの灰色", "明るい灰色", "白に近い明るい灰色", "鮮やかな赤"].filter(x => x !== ans)).slice(0, 3)]);
+    return { tag: "表色系・マンセル", genre: "system", text: `マンセル記号「<b>N${v}</b>」が表す色は？`, visual: `<div class="notation">N${v}</div>`,
+      choices: opts.map(o => ({ html: o, correct: o === ans })), explain: `N＝無彩色（Neutral）。数字は明度で、0が理想の黒、10が理想の白。N${v} は<b>${ans}</b>。`, key: "mn:" + v, short: `N${v}` };
+  }
+  let hn, H, V, C;
+  do { hn = pick(["2.5", "5", "7.5", "10"]); H = hn + pick(MH); V = 2 + rnd(7); C = 2 * (1 + rnd(7)); } while (V === C || String(V) === hn || String(C) === hn);
+  const nota = `${H} ${V}/${C}`;
+  const name = { V: "明度（バリュー）", C: "彩度（クロマ）", H: "色相（ヒュー）" }[kind], ans = { V: String(V), C: String(C), H }[kind];
+  const pool = [String(V), String(C), H, `${V}/${C}`].filter(x => x !== ans);
+  return { tag: "表色系・マンセル", genre: "system", text: `マンセル記号「<b>${nota}</b>」で、<b>${name}</b>を表しているのは？`, visual: `<div class="notation">${nota}</div>`,
+    choices: shuffle([ans, ...pool.slice(0, 3)]).map(o => ({ html: mono(o), correct: o === ans })),
+    explain: `マンセル記号は <b>色相 明度／彩度</b>（H V/C）の順。${nota} は色相 ${H}・明度 ${V}・彩度 ${C}。`, key: `mu:${kind}:${nota}`, short: nota };
+}
+
+// 波長くらべ
+function qWaveCmp() {
+  let a, b; do { a = 430 + rnd(43) * 5; b = 430 + rnd(43) * 5; } while (Math.abs(a - b) < (QDIFF >= 2 ? 40 : 80));
+  const kind = pick(["long", "short", "num"]);
+  if (kind === "num") {
+    const red = Math.max(a, b);
+    return { tag: "光の性質・波長", genre: "light", text: `約${a}nmの光と約${b}nmの光。<b>より赤みに見える</b>のはどっち？`, visual: "",
+      choices: shuffle([a, b]).map(w => ({ html: `約${w}nm`, correct: w === red })),
+      explain: `${mini(wl2rgb(a))}約${a}nm（${bandOf(a)[2]}）、${mini(wl2rgb(b))}約${b}nm（${bandOf(b)[2]}）。<b>長波長ほど赤</b>に、短波長ほど青紫に見えます。`, key: `wn:${a}:${b}`, short: `${a}/${b}` };
+  }
+  const ans = kind === "long" ? Math.max(a, b) : Math.min(a, b);
+  return { tag: "光の性質・波長", genre: "light", text: `この2つの色の光のうち、<b>波長が${kind === "long" ? "長い" : "短い"}</b>のは？`, visual: "", swatch: true,
+    choices: shuffle([a, b]).map(w => ({ html: chip(wl2rgb(w), "", "光の色"), cap: `約${w}nm（${bandOf(w)[2]}）`, correct: w === ans })),
+    explain: `波長は 短い 青紫 → 青 → 緑 → 黄 → 橙 → 赤 長い の順。正解は <b>約${ans}nm</b>。`, key: `wc:${kind}:${a}:${b}`, short: `${a}/${b}` };
+}
+
+// 色温度くらべ
+const KSRC = [["ろうそくの炎", 1900], ["白熱電球", 2800], ["昼白色の照明", 5000], ["昼光色の照明", 6500], ["CIE標準の光 D65", 6500], ["電球色の照明", 3000]];
+function qKelvin() {
+  let a, b; do { a = pick(KSRC); b = pick(KSRC); } while (Math.abs(a[1] - b[1]) < 1500);
+  const kind = pick(["高い", "赤み", "青白"]);
+  const ans = kind === "赤み" ? (a[1] < b[1] ? a : b) : (a[1] > b[1] ? a : b);
+  const q = kind === "高い" ? "色温度が<b>高い</b>のは？" : kind === "赤み" ? "<b>赤み（橙み）</b>の強い光は？" : "<b>青白く</b>見える光は？";
+  return { tag: "照明と測色・色温度", genre: "lighting", text: `「${a[0]}」と「${b[0]}」。${q}`, visual: "",
+    choices: shuffle([a, b]).map(x => ({ html: x[0], correct: x === ans })),
+    explain: `${a[0]}は約${a[1]}K、${b[0]}は約${b[1]}K。色温度が<b>低いほど赤み</b>、<b>高いほど青白い</b>光です。`, key: `kv:${kind}:${[a[0], b[0]].sort().join("/")}`, short: "色温度" };
+}
+
+// 慣用色名：説明から名前／読み方
+function qNameRev() {
+  const c = pickByPriority(NAMES, x => "nr:" + x.name);
+  const riv = pickDistinct(shuffle(byDiff(nameRivals(c).map(o => o.x), 6)), 3, [c]);
+  const opts = shuffle([c, ...(riv.length >= 3 ? riv : pickDistinct(shuffle(nameRivals(c).map(o => o.x)), 3, [c]))]);
+  const hint = c.note.replaceAll(c.name, "〇〇");
+  return { tag: "慣用色名・由来", genre: "names", text: `「${hint}」――この説明に合う色名は？`, visual: "",
+    choices: opts.map(o => ({ html: o.name, correct: o === c })),
+    explain: `${mini(c.hex)} <b>${c.name}</b>（${c.yomi}）。選択肢の色：${opts.map(o => `${mini(o.hex)}${o.name}`).join("　")}`, key: "nr:" + c.name, short: c.name };
+}
+const KANA_NAMES = () => NAMES.filter(n => /^[ぁ-ゖー]+$/.test(n.yomi) && n.name !== n.yomi);
+function qYomi() {
+  const L = KANA_NAMES(), c = pickByPriority(L, x => "y:" + x.name);
+  const opts = shuffle([c, ...shuffle(L.filter(x => x !== c)).slice(0, 3)]);
+  return { tag: "慣用色名・読み方", genre: "names", text: `「<b>${c.name}</b>」の読み方は？`, visual: `<div class="chip-col">${chip(c.hex, "mid")}</div>`,
+    choices: opts.map(o => ({ html: o.yomi, correct: o === c })), explain: `${mini(c.hex)} ${c.name}＝<b>${c.yomi}</b>。${c.note}`, key: "y:" + c.name, short: c.name };
+}
+
+// 目：パーツのはたらき
+function qEyeFunc() {
+  const part = pickByPriority(Object.keys(EYE_PARTS), x => "ef:" + x);
+  const f = x => EYE_PARTS[x].split("（")[0];
+  const opts = shuffle([part, ...shuffle(Object.keys(EYE_PARTS).filter(n => n !== part)).slice(0, 3)]);
+  return { tag: "目と脳のしくみ・はたらき", genre: "vision", text: `「<b>${part}</b>」のはたらきとして正しいのは？`, visual: `<div class="eye-wrap">${eyeSVG({ hl: part })}</div>`,
+    choices: opts.map(o => ({ html: f(o), correct: o === part })), explain: `<b>${part}</b>：${EYE_PARTS[part]}。`, key: "ef:" + part, short: part };
+}
+
+// 安全色（3方向）
+function qSafety() {
+  const kind = pick(["c2m", "m2c", "sign"]);
+  const E = Object.entries(SAFETY);
+  if (kind === "sign") {
+    const [label, key] = pickByPriority(SIGNS, x => "sg:" + x[0]), [nm, hex, mean] = SAFETY[key];
+    const opts = shuffle([key, ...shuffle(Object.keys(SAFETY).filter(k => k !== key)).slice(0, 3)]);
+    return { tag: "色の心理・安全色", genre: "psych", text: `「<b>${label}</b>」の標識に使うJIS安全色は？`, visual: "", swatch: true,
+      choices: opts.map(k => ({ html: chip(SAFETY[k][1], "", SAFETY[k][0]), cap: SAFETY[k][0], correct: k === key })),
+      explain: `${mini(hex)} <b>${nm}</b>＝${mean}。`, key: "sg:" + label, short: label };
+  }
+  const [k, [nm, hex, mean]] = pick(E);
+  const others = shuffle(E.filter(e => e[0] !== k)).slice(0, 3);
+  if (kind === "c2m") return { tag: "色の心理・安全色", genre: "psych", text: "このJIS安全色が表す意味は？", visual: `<div class="chip-col">${chip(hex, "big")}</div>`,
+    choices: shuffle([[k, [nm, hex, mean]], ...others]).map(([kk, v]) => ({ html: v[2], correct: kk === k })), explain: `${mini(hex)} <b>${nm}</b>＝${mean}。`, key: "sc:" + k, short: nm };
+  return { tag: "色の心理・安全色", genre: "psych", text: `JIS安全色で「<b>${mean}</b>」を表す色は？`, visual: "", swatch: true,
+    choices: shuffle([[k, [nm, hex, mean]], ...others]).map(([kk, v]) => ({ html: chip(v[1], "", v[0]), cap: v[0], correct: kk === k })), explain: `${mini(hex)} <b>${nm}</b>＝${mean}。`, key: "sm:" + k, short: nm };
+}
+
+// アクションの出題パターンをクイズでも（配色・コーデ・照明と部屋）
+function fromAction(id, genre, tag, text) {
+  const r = ACT[id].gen({ n: QDIFF * 4 + 2 });
+  return { tag, genre, text, visual: `<div class="qf-in-card">${r.prompt}</div>`,
+    choices: r.options.map(o => ({ html: o.html ? (bgOf(o.style) && !o.html.includes("<") ? `${chip(bgOf(o.style), "sm")}<span>${o.html}</span>` : o.html) : `${chip(bgOf(o.style) || "#888888", "sm")}<span>${o.cap}</span>`, correct: o.correct })),
+    explain: r.reveal, key: `qa:${id}:${r.label}`, short: r.label };
+}
+const qPaletteQ = () => fromAction("palette", "harmony", "配色と色彩調和・配色技法", "この配色の技法名は？");
+const qCoordQ = () => fromAction("coord", "fashion", "ファッション・イメージ", "このコーディネートのファッションイメージは？");
+const qRoomQ = () => { const q = fromAction("light", "interior", "インテリア・照明", "この場面に合うのは？"); if (/K/.test(q.short)) { q.genre = "lighting"; q.tag = "照明と測色・色温度"; } return q; };
+
+// ユニバーサルデザイン：色覚シミュレーション（Machado 2009, 重度）
+const CVD_M = {
+  P: [[0.152286, 1.052583, -0.204868], [0.114503, 0.786281, 0.099216], [-0.003882, -0.048116, 1.051998]],
+  D: [[0.367322, 0.860646, -0.227968], [0.280085, 0.672501, 0.047413], [-0.011820, 0.042940, 0.968881]],
+};
+const toLin = v => { v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; };
+const toGam = v => 255 * (v <= .0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - .055);
+function simCVD(hex, type) {
+  const c = hex2rgb(hex).map(toLin);
+  return rgb2hex(CVD_M[type].map(r => toGam(Math.max(0, Math.min(1, r[0] * c[0] + r[1] * c[1] + r[2] * c[2])))));
+}
+function qCVD() {
+  const type = pick(["P", "D"]), rand = () => toneColor(pick(["v", "s", "dp", "b", "d", "lt", "dk"]), rnd(24) + 1);
+  let hard = null, easy = [];
+  const used = () => [...(hard || []), ...easy.flat()];
+  const fresh = (a, b) => used().every(u => dist(u, a) > 20 && dist(u, b) > 20);
+  for (let i = 0; i < 1500 && (!hard || easy.length < 3); i++) {
+    const a = rand(), b = rand(), dn = dist(a, b), ds = dist(simCVD(a, type), simCVD(b, type));
+    if (!fresh(a, b)) continue;
+    if (!hard && dn > 45 && ds < 14) hard = [a, b];
+    else if (easy.length < 3 && dn > 45 && ds > 45) easy.push([a, b]);
+  }
+  if (!hard) hard = [toneColor("s", 2), toneColor("s", 11)];
+  const pair = ([a, b]) => `<span class="pair">${chip(a, "sm")}${chip(b, "sm")}</span>`;
+  const opts = shuffle([hard, ...easy.slice(0, 3)]);
+  return { tag: "ユニバーサルデザイン・見え方", genre: "ud", text: `${type}型の色覚の人にとって、<b>最も見分けにくい</b>組み合わせは？`, visual: "",
+    choices: opts.map(o => ({ html: pair(o), correct: o === hard })),
+    explain: `シミュレーションでは ${pair(hard)} → ${pair(hard.map(h => simCVD(h, type)))} のように近い色に見えます。${type === "P" ? "P型はL錐体" : "D型はM錐体"}の特性が違うため、赤〜緑方向の差が小さくなります。<b>明度差</b>や形・文字の併用で伝わりやすくなります。（シミュレーションは目安です）`,
+    key: `cvd:${type}:${hard.join("")}`, short: `${type}型` };
+}
+
+// 三属性：2色の違いを見分ける
+function hsl2hex(h, s, l) {
+  s /= 100; l /= 100;
+  const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return rgb2hex([f(0), f(8), f(4)].map(v => v * 255));
+}
+function qAttr() {
+  const attr = pick(["色相", "明度", "彩度"]);
+  let a, b, h;
+  for (let i = 0; i < 200; i++) {
+    h = rnd(360); const S = 55 + rnd(25), L = 45 + rnd(12);
+    a = hsl2hex(h, S, L);
+    if (attr === "色相") { const h2 = (h + 70 + rnd(140)) % 360; b = hsl2hex(h2, S, L); if (Math.abs(lum(a) - lum(b)) < .05) break; }
+    else if (attr === "明度") { b = hsl2hex(h, S, L + (Math.random() < .5 ? -24 : 24)); break; }
+    else { const g = Math.round(lum(a) * 255).toString(16).padStart(2, "0"); b = mix(a, "#" + g + g + g, .22); break; }
+  }
+  return { tag: "色の基本・三属性", genre: "basic", text: "この2色は、主に<b>どの属性</b>が違う？", visual: `<span class="pair">${chip(a, "mid")}${chip(b, "mid")}</span>`,
+    choices: ["色相", "明度", "彩度"].map(x => ({ html: x, correct: x === attr })),
+    explain: `正解は<b>${attr}</b>。${attr === "色相" ? "明るさと鮮やかさはほぼ同じで、色み（赤・黄・緑…）が違います。" : attr === "明度" ? "色みは同じで、明るさが違います。" : "色みと明るさはほぼ同じで、鮮やかさ（灰みの少なさ）が違います。"}`,
+    key: `at:${attr}:${Math.floor(h / 30)}`, concept: "at:" + attr, short: attr };
+}
+
+// 残像：見つめた色の補色
+function qAfterimage() {
+  const n = rnd(24) + 1, ans = wrap24(n + 12);
+  const offs = shuffle(QDIFF >= 2 ? [3, -3, 5, -5] : [6, -6, 8, -8, 12 - 12]).filter(Boolean).slice(0, 3);
+  const opts = [ans, ...offs.map(o => wrap24(ans + o))];
+  return { tag: "色の見え方・残像", genre: "eye", text: "この色をしばらく見つめてから白い紙を見ると、どんな色の残像が見える？", visual: `<div class="chip-col">${chip(HUES[n].hex, "big")}</div>`, swatch: true,
+    choices: shuffle(opts).map(x => ({ html: chip(HUES[x].hex, "", hueLabel(x)), cap: hueLabel(x), correct: x === ans })),
+    explain: `見つめた色に反応した錐体の感度が下がるため、<b>補色</b>の残像（陰性残像）が見えます。${mini(HUES[n].hex)}${hueLabel(n)} → ${mini(HUES[ans].hex)}<b>${hueLabel(ans)}</b>。`, key: "af:" + n, concept: "af", short: "残像" };
+}
+
+// 回転混色（継時加法混色）は平均の色
+function qSpinMix() {
+  for (let i = 0; i < 200; i++) {
+    const h1 = rnd(24) + 1, h2 = wrap24(h1 + 5 + rnd(14)), a = HUES[h1].hex, b = toneColor(pick(["v", "b", "lt", "dp"]), h2);
+    const A = hex2rgb(a), B = hex2rgb(b);
+    const avg = mix(a, b, .5), add = rgb2hex(A.map((v, j) => 255 - (255 - v) * (255 - B[j]) / 255)), sub = rgb2hex(A.map((v, j) => v * B[j] / 255));
+    const opts = [[avg, "2色の平均の色", true], [add, "より明るい色", false], [sub, "より暗い色", false], [pick([a, b]), "片方の色だけ", false]];
+    if (!opts.every((x, j) => opts.every((y, k) => j === k || dist(x[0], y[0]) >= 22))) continue;
+    return { tag: "混色・回転混色", genre: "mix", text: "この2色を半分ずつ塗ったコマを高速で回すと、どんな色に見える？", visual: `<span class="spin" style="background:conic-gradient(${a} 0 50%, ${b} 50% 100%)"></span>`, swatch: true,
+      choices: shuffle(opts).map(([c, cap, ok]) => ({ html: chip(c, "", cap), cap, correct: ok })),
+      explain: `回転するコマの色は<b>継時加法混色</b>（中間混色）で、明るさも色みも<b>2色の平均</b>に見えます。${mini(a)}＋${mini(b)} → ${mini(avg)}`, key: `sp:${h1}:${h2}`, concept: "sp", short: "回転混色" };
+  }
+  return qMix();
+}
+
+// 混色の逆算：この色を作るには？
+function qMixRev() {
+  const add = Math.random() < .5, L = add ? LAB.add : LAB.sub;
+  const t = pick(Object.keys(L.targets).filter(k => L.targets[k][1].length > 1)), [name, need] = L.targets[t];
+  const nm = k => L.prim.find(p => p[0] === k)[1];
+  const combos = ["RG", "GB", "BR", "RGB"].map(c => add ? c : c.replace(/R/g, "C").replace(/G/g, "M").replace(/B/g, "Y"));
+  const label = c => [...c].map(nm).join("＋");
+  const right = combos.find(c => c.length === need.length && [...need].every(k => c.includes(k)));
+  return { tag: add ? "混色・加法混色（光）" : "混色・減法混色（色料）", genre: "mix", text: `${add ? "光" : "インク"}の三原色で<b>${name}</b>を作るには、どれを混ぜる？`,
+    visual: `<div class="chip-col">${chip(labColor(add, new Set(need)), "mid")}</div>`,
+    choices: shuffle(combos).map(c => ({ html: label(c), correct: c === right })),
+    explain: add ? "加法混色：R＋G＝イエロー、G＋B＝シアン、B＋R＝マゼンタ、R＋G＋B＝白。" : "減法混色：C＋M＝青紫、M＋Y＝赤、Y＋C＝緑、C＋M＋Y＝黒。",
+    key: `mr:${add ? "a" : "s"}:${t}`, concept: "mr", short: name };
+}
+
+// ファッション：イメージ → コーデを選ぶ
+function qCoordRev() {
+  const name = pick(Object.keys(COORDS)), opts = shuffle([name, ...shuffle(Object.keys(COORDS).filter(n => n !== name)).slice(0, 3)]);
+  return { tag: "ファッション・イメージ", genre: "fashion", text: `「<b>${name}</b>」のイメージに合うコーデの配色は？`, visual: "",
+    choices: opts.map(n => ({ html: `<span class="pair">${COORDS[n][0]().map(c => chip(c, "sm")).join("")}</span>`, correct: n === name })),
+    explain: `<b>${name}</b>：${COORDS[name][1]}。`, key: "cr:" + name, concept: "cr", short: name };
+}
+
+// 五行・四神
+const GOGYO = [["東", "青", "青龍"], ["南", "赤", "朱雀"], ["西", "白", "白虎"], ["北", "黒", "玄武"]];
+function qGogyo() {
+  const [d, c, beast] = pick(GOGYO), form = pick(["d2c", "c2d", "b2c", "b2d"]);
+  const col = { 青: "#2F6DB5", 赤: "#D6312B", 白: "#F4F4F4", 黒: "#1A1A1A", 黄: "#E8B500" };
+  const others = (i) => shuffle(GOGYO.filter(g => g[0] !== d)).map(g => g[i]);
+  const Q = { d2c: [`五行説・四神で「<b>${d}</b>」に対応する色は？`, c, [...others(1), "黄"].slice(0, 3)], c2d: [`四神で「<b>${c}</b>」に対応する方角は？`, d, [...others(0), "中央"].slice(0, 3)],
+    b2c: [`四神の「<b>${beast}</b>」の色は？`, c, [...others(1), "黄"].slice(0, 3)], b2d: [`四神の「<b>${beast}</b>」が守る方角は？`, d, others(0).slice(0, 3)] }[form];
+  return { tag: "色彩と文化・五行と四神", genre: "culture", text: Q[0], visual: "",
+    choices: shuffle([Q[1], ...Q[2]]).map(x => ({ html: col[x] ? `${chip(col[x], "sm")}<span>${x}</span>` : x, correct: x === Q[1] })),
+    explain: "東＝青（青龍）、南＝赤（朱雀）、西＝白（白虎）、北＝黒（玄武）、中央＝黄。「青春・朱夏・白秋・玄冬」という言葉もここから来ています。", key: `gg:${form}:${d}`, concept: "gg:" + d, short: d };
+}
+
+// 見え方：どちらが〇〇に見える？（左右・色がランダム）
+function qContrastDir() {
+  const kind = pick(["明度", "彩度", "色相"]), flip = Math.random() < .5;
+  const sq = (x, bg, c) => `<rect x="${x}" y="0" width="140" height="110" rx="10" fill="${bg}"/><rect x="${x + 45}" y="30" width="50" height="50" fill="${c}"/>`;
+  let A, B, center, q, why;
+  if (kind === "明度") { const g = pick(["#707070", "#808080", "#8E8E8E"]); center = g; A = pick(["#111111", "#262626"]); B = pick(["#F2F2F2", "#E2E2E2"]); q = "明るく"; why = "周りが暗いほど明るく見える（明度対比）"; }
+  else if (kind === "彩度") { const h = rnd(24) + 1; center = toneColor("d", h); A = "#8A8A8A"; B = HUES[h].hex; q = "鮮やかに"; why = "周りが無彩色だと鮮やかに、周りが鮮やかだとくすんで見える（彩度対比）"; }
+  else { const h = pick([5, 6, 11, 17, 23]); center = HUES[h].hex; A = HUES[wrap24(h - 3)].hex; B = HUES[wrap24(h + 3)].hex; q = `${HUES[wrap24(h + 3)].name}から遠ざかる方向に`; why = "周りの色相と反対の方向へずれて見える（色相対比）"; }
+  const left = flip ? B : A, right = flip ? A : B, ans = flip ? "右" : "左";
+  return { tag: "色の見え方・対比", genre: "eye", text: `中央の四角は左右とも同じ色。<b>より${q}</b>見えるのはどっち？`,
+    visual: `<svg viewBox="0 0 290 110" style="width:100%;max-width:400px;height:auto" role="img" aria-label="対比の図">${sq(0, left, center)}${sq(150, right, center)}</svg>`,
+    choices: ["左", "右"].map(x => ({ html: x, correct: x === ans })), explain: `正解は<b>${ans}</b>。${why}。`,
+    key: `cd:${kind}:${stripTags(left + right + center)}`, concept: "cd:" + kind, short: kind + "対比" };
+}
+
+// インテリア：部屋の配色の印象
+function qRoomVis() {
+  const kind = pick(["安定感がある", "不安定・圧迫感がある", "広く感じる", "狭く感じる"]), h = rnd(24) + 1;
+  const light = toneColor(pick(["p", "ltg"]), h), dark = toneColor(pick(["dk", "dkg"]), h);
+  const [c, w, f] = kind === "安定感がある" ? ["#F5F3EE", toneColor("ltg", h), dark]
+    : kind === "不安定・圧迫感がある" ? [dark, toneColor("ltg", h), "#F5F3EE"]
+    : kind === "広く感じる" ? ["#F7F7F5", toneColor("p", pick([14, 16, 17, 18])), toneColor("ltg", 6)]
+    : [toneColor("dk", pick([2, 4, 6])), toneColor("dp", pick([2, 4, 5])), toneColor("dkg", 6)];
+  const why = { "安定感がある": "天井が明るく床が暗いと、重心が下がって安定感が出る", "不安定・圧迫感がある": "天井が暗く床が明るいと、上が重く感じられ圧迫感が出る",
+    "広く感じる": "高明度の寒色寄りの壁は後退して見え、部屋が広く感じられる", "狭く感じる": "暗い暖色の壁は進出して見え、部屋が狭く感じられる" }[kind];
+  return { tag: "インテリア・部屋の見え方", genre: "interior", text: "この部屋の配色（上から天井・壁・床）の印象は？",
+    visual: `<span class="room" style="max-width:180px">${[c, w, f].map(x => `<span style="background:${x}"></span>`).join("")}</span>`,
+    choices: shuffle(["安定感がある", "不安定・圧迫感がある", "広く感じる", "狭く感じる"]).map(x => ({ html: x, correct: x === kind })),
+    explain: `<b>${kind}</b>：${why}。`, key: `rv:${kind}:${h}`, concept: "rv:" + kind, short: kind };
+}
+
 function genFromGenre(gid) {
   const kind = pick(GENRE[gid].gens || ["know"]);
   const q = kind === "know" ? qKnow(k => k.g === gid)
     : kind === "tone" ? qTone() : kind === "hue" ? qHue() : kind === "names" ? qName()
     : kind === "mixq" ? qMix() : kind === "spec" ? qSpec() : kind === "curve" ? qCurve()
-    : kind === "eyepart" ? qEye() : kind === "cones" ? qCones() : qContrast();
+    : kind === "eyepart" ? qEye() : kind === "cones" ? qCones()
+    : kind === "notation" ? qNotation() : kind === "toneclass" ? qToneClass() : kind === "tonecmp" ? qToneCmp() : kind === "compname" ? qCompName()
+    : kind === "munsell" ? qMunsell() : kind === "wavecmp" ? qWaveCmp() : kind === "kelvin" ? qKelvin() : kind === "namerev" ? qNameRev()
+    : kind === "yomi" ? qYomi() : kind === "eyefunc" ? qEyeFunc() : kind === "safety" ? qSafety() : kind === "paletteq" ? qPaletteQ()
+    : kind === "coordq" ? qCoordQ() : kind === "roomq" ? qRoomQ() : kind === "cvd" ? qCVD()
+    : kind === "attr" ? qAttr() : kind === "after" ? qAfterimage() : kind === "spin" ? qSpinMix() : kind === "mixrev" ? qMixRev()
+    : kind === "coordrev" ? qCoordRev() : kind === "gogyo" ? qGogyo() : kind === "cdir" ? qContrastDir() : kind === "roomvis" ? qRoomVis() : qContrast();
   q.genre = gid;
   return q;
 }
 function genFromLevel(lv) {
   if (lv === "3" && Math.random() < .3) return genFromGenre(pick(["pccs", "pccs", "names", "mix", "eye", "light", "vision"]));
+  if (lv === "UC" && Math.random() < .5) return genFromGenre("ud");
   const q = qKnow(k => k.lv === lv);
   return q;
 }
@@ -1234,17 +1594,29 @@ function modeTitle(mode) {
   return MODES.find(m => m.id === mode).title;
 }
 function makeSet(mode) {
-  const out = [], keys = new Set();
-  let guard = 0;
-  while (out.length < 10 && guard++ < 200) {
-    const q = mode === "mix" ? genFromGenre(pick(GENRES).id)
-      : mode === "know" ? qKnow()
-      : mode.startsWith("g:") ? genFromGenre(mode.slice(2))
-      : mode.startsWith("lv:") ? genFromLevel(mode.slice(3))
-      : Object.assign({ tone: qTone, hue: qHue, names: qName }[mode](), { genre: mode === "names" ? "names" : "pccs" });
-    if (keys.has(q.key) && guard < 150) continue;
-    keys.add(q.key); out.push(q);
+  const slot = () => mode === "mix" ? genFromGenre(pick(GENRES).id)
+    : mode === "know" ? qKnow()
+    : mode.startsWith("g:") ? genFromGenre(mode.slice(2))
+    : mode.startsWith("lv:") ? genFromLevel(mode.slice(3))
+    : Object.assign({ tone: qTone, hue: qHue, names: qName }[mode](), { genre: mode === "names" ? "names" : "pccs" });
+  const out = [], concepts = new Set();
+  SETKEYS = new Set();
+  for (let i = 0; i < 10; i++) {
+    QDIFF = i < 3 ? 0 : i < 7 ? 1 : 2;
+    let best = null, bs = -Infinity;
+    for (let c = 0; c < 10; c++) {          // generate a few candidates, keep the one the player most needs
+      const q = slot();
+      let sc = priority(q.key);
+      if (q.concept && concepts.has(q.concept)) sc -= 1e7;   // same idea already in this set
+      if (sc > bs) { bs = sc; best = q; }
+    }
+    if (best.concept) concepts.add(best.concept);
+    const h = QH[best.key];
+    best.diff = QDIFF;
+    best.status = !h ? "new" : h.w > 0 && h.s < 2 ? "review" : "";
+    SETKEYS.add(best.key); out.push(best);
   }
+  QDIFF = 1; SETKEYS = new Set();
   return out;
 }
 
@@ -1260,6 +1632,42 @@ let lastKind = "quiz", lastAct = "rush";
 let S = null; // current game
 let lifetime = store.get("life", { total: 0, correct: 0, maxCombo: 0 });
 let bests = store.get("best", {});
+
+/* ---- question history: unseen first, missed ones come back, mastered ones rest ---- */
+let QH = store.get("qhist", {}), QCOUNT = store.get("qcount", 0);
+let QDIFF = 1;            // 0 = ★ easy, 1 = ★★, 2 = ★★★ hard (set per slot while building a quiz set)
+let SETKEYS = new Set();  // keys already used in the set being built
+function noteAnswer(q, ok) {
+  const h = QH[q.key] || (QH[q.key] = { r: 0, w: 0, s: 0, last: 0 });
+  h.last = ++QCOUNT;
+  if (ok) { h.r++; h.s++; } else { h.w++; h.s = 0; }
+}
+function saveHist() {
+  const keys = Object.keys(QH);
+  if (keys.length > 2500) keys.sort((a, b) => QH[a].last - QH[b].last).slice(0, keys.length - 2500).forEach(k => delete QH[k]);
+  store.set("qhist", QH); store.set("qcount", QCOUNT);
+}
+function priority(key) {
+  if (SETKEYS.has(key)) return -1;
+  const h = QH[key];
+  if (!h) return 1e6 + Math.random() * 1e3;                 // never seen: top priority
+  const age = QCOUNT - h.last;                               // how long ago
+  const weak = h.w > 0 && h.s < 2 ? 3 : 1;                   // missed and not yet re-learned: review sooner
+  return age * weak / (1 + Math.min(h.s, 5) * 1.5) + Math.random() * 3;
+}
+function pickByPriority(list, keyOf, n = 14) {
+  let best = null, bs = -Infinity;
+  for (const x of shuffle(list).slice(0, n)) { const sc = priority(keyOf(x)); if (sc > bs) { bs = sc; best = x; } }
+  return best || pick(list);
+}
+const DIFF_STARS = d => "★".repeat(d + 1) + "☆".repeat(2 - d);
+// pick n rivals from a list sorted from most to least similar, according to the current difficulty
+function byDiff(sorted, n) {
+  if (QDIFF >= 2) return sorted.slice(0, n);
+  if (QDIFF === 1) return shuffle(sorted.slice(0, n * 2)).slice(0, n);
+  const far = sorted.slice(n);
+  return shuffle(far.length >= n ? far : sorted).slice(0, n);
+}
 let gstat = store.get("gstat", {});
 
 function renderGenres() {
@@ -1325,10 +1733,10 @@ function renderQ() {
   [...$("#progress").children].forEach((el, i) => {
     el.className = i < S.i ? (S.results[i].ok ? "ok" : "ng") : i === S.i ? "now" : "";
   });
-  $("#qnum").textContent = `Q${S.i + 1} / 10`;
+  $("#qnum").textContent = `Q${S.i + 1} / 10　${DIFF_STARS(q.diff ?? 1)}`;
   $("#combo").textContent = S.combo >= 2 ? `${S.combo} COMBO` : "";
   $("#score").textContent = S.score;
-  $("#qtag").textContent = q.tag;
+  $("#qtag").innerHTML = q.tag + (q.status === "new" ? ' <b class="qbadge new">NEW</b>' : q.status === "review" ? ' <b class="qbadge rev">復習</b>' : "");
   $("#qtext").innerHTML = q.text;
   $("#visual").innerHTML = q.visual;
   const box = $("#choices");
@@ -1379,6 +1787,7 @@ function answer(idx) {
   beep(ok);
   $("#combo").textContent = S.combo >= 2 ? `${S.combo} COMBO` : "";
   S.results.push({ ok, q });
+  noteAnswer(q, ok);
   const fb = $("#feedback");
   fb.className = "feedback " + (ok ? "ok" : "ng");
   $("#fb-title").textContent = ok ? (S.combo >= 3 ? `正解！ ${S.combo}コンボ` : "正解！") : "ざんねん…";
@@ -1414,9 +1823,12 @@ function finish() {
   $("#res-mode").textContent = modeTitle(S.mode);
   S.results.forEach(r => { const g = r.q.genre; if (!g) return; const s = gstat[g] || (gstat[g] = { n: 0, c: 0 }); s.n++; if (r.ok) s.c++; });
   store.set("gstat", gstat);
+  saveHist();
+  const nNew = S.qs.filter(q => q.status === "new").length, nRev = S.qs.filter(q => q.status === "review").length;
+  S.mixNote = `はじめての問題 ${nNew}・復習 ${nRev}`;
   $("#res-correct").textContent = `${correct}/10`;
   $("#res-rank").textContent = rank;
-  $("#res-sub").innerHTML = `${S.score} pt・最大 ${S.maxCombo} コンボ${isBest ? "・<b>ベスト更新！</b>" : ""}<br>${sub}`;
+  $("#res-sub").innerHTML = `${S.score} pt・最大 ${S.maxCombo} コンボ${isBest ? "・<b>ベスト更新！</b>" : ""}<br>${S.mixNote}<br>${sub}`;
   const pal = [1, 3, 5, 7, 8, 10, 12, 14, 17, 20];
   $("#res-chips").innerHTML = S.results.map((r, i) => {
     const bg = r.ok ? HUES[pal[i]].hex : "var(--line)";
@@ -1837,7 +2249,9 @@ const ACT = {
     extra: A => `レベル ${A.n}`,
     next(A) {
       A.n++;
-      let t; do { t = pick(TONE_KEYS); } while (t === A.cur?.t);
+      A.recentT = A.recentT || [];
+    let t; do { t = pick(TONE_KEYS); } while (A.recentT.includes(t));
+    A.recentT = [...A.recentT, t].slice(-4);
       A.cur = { h: rnd(24) + 1, t };
       A.cur.hex = toneColor(t, A.cur.h);
       A.limit = Math.max(1.8, 5 - A.n * .12); A.left = A.limit; A.wait = 0;
@@ -1903,15 +2317,17 @@ const ACT = {
       A.spd = (16 + A.n * 2.8) * A.dir;
       const h = rnd(24) + 1;
       A.kind = A.n <= 2 ? "hue" : pick(["hue", "comp"]);
+      field.querySelector("#w-svg").classList.toggle("nonum", A.n >= 8);
       A.cur = A.kind === "hue"
         ? { h, t: pick(["b", "lt", "s", "dp", "sf", "d", "dk", "p"]), ans: h }
-        : { h, t: "v", ans: wrap24(h + 12) };
+        : { h, t: A.n >= 5 ? pick(["v", "b", "dp", "lt"]) : "v", ans: wrap24(h + 12) };
       A.cur.hex = toneColor(A.cur.t, A.cur.h);
       A.limit = Math.max(2.6, 7 - A.n * .18); A.left = A.limit; A.wait = 0;
       field.querySelectorAll(".seg").forEach(s => s.classList.remove("ans", "miss"));
       $("#w-target").setAttribute("fill", A.cur.hex);
       const lab = $("#w-label"); lab.textContent = A.kind === "hue" ? `${A.cur.t}?` : "v?"; lab.setAttribute("fill", textOn(A.cur.hex));
-      if (A.kind === "hue") setRule("同じ色相をタップ！", "トーンが変わっても色相番号は同じ。真ん中の色の「純色」を探そう");
+      if (levelBanner(A, { 5: "補色のお題もトーン違いで出る", 8: "色相環の番号が消える" })) {}
+      else if (A.kind === "hue") setRule("同じ色相をタップ！", "トーンが変わっても色相番号は同じ。真ん中の色の「純色」を探そう");
       else setRule("補色をタップ！", "補色＝色相環の正反対（色相番号 ±12）");
     },
     update(A, dt) {
@@ -1956,8 +2372,19 @@ const ACT = {
 };
 /* ---- quick-fire engine: one prompt, a few big buttons, a shrinking timer ---- */
 const stripTags = h => h.replace(/<[^>]+>/g, "");
+function levelBanner(A, unlocks, rule, sub) {
+  const msg = unlocks && unlocks[A.n];
+  if (msg) {
+    setRule(`LEVEL ${A.n}！ 新パターン`, msg); A.ruleBack = A.n + 2;
+    const r = $("#act-rule").getBoundingClientRect(); floatText(r.left + r.width / 2, r.bottom + 10, "LEVEL UP!");
+    return true;
+  }
+  if (A.ruleBack === A.n && rule) { setRule(rule, sub); A.ruleBack = 0; }
+  return false;
+}
 function quickDef(cfg) {
   return {
+    gen: cfg.gen,
     setup(A) {
       field.className = "field field-quick";
       field.innerHTML = `<div class="qf-prompt" id="qf-prompt"></div><div class="tbar"><i id="qf-bar"></i></div><div class="qf-info" id="qf-info"></div><div class="qf-opts" id="qf-opts"></div>`;
@@ -1967,7 +2394,16 @@ function quickDef(cfg) {
     extra: A => `レベル ${A.n}`,
     next(A) {
       A.n++;
-      const r = cfg.gen(A); A.r = r;
+      levelBanner(A, cfg.unlocks, cfg.rule, cfg.sub);
+      let r;
+      A.recent = A.recent || [];
+      for (let i = 0; i < 10; i++) {  // avoid repeating a recent prompt
+        r = cfg.gen(A);
+        r.key = r.key || stripTags(r.prompt) + "|" + r.label;
+        if (!A.recent.includes(r.key)) break;
+      }
+      A.recent = [...A.recent, r.key].slice(-(cfg.memory || 5));
+      A.r = r;
       A.limit = Math.max(cfg.min || 2.2, (cfg.base || 6) - A.n * (cfg.step || .15)); A.left = A.limit; A.wait = 0;
       $("#qf-prompt").innerHTML = r.prompt;
       $("#qf-info").innerHTML = r.info || cfg.info || "";
@@ -2009,15 +2445,21 @@ const youSaid = you => you == null ? "（時間切れ）" : you ? `。あなた�
 /* 色かるた */
 ACT.karuta = quickDef({
   rule: "読まれた札を取れ！", sub: "相手のバーが満ちる前に、色名に合う札をタップ", info: "▲ 白いバーは相手。先に取られると1枚失う",
-  timeout: "取られた！", base: 5.5, min: 1.9, step: .14,
-  gen() {
-    const c = pick(NAMES);
+  timeout: "取られた！", base: 5.5, min: 1.9, step: .14, memory: 12,
+  unlocks: { 4: "似た色の札が増える", 7: "読み方だけで読まれる札が登場", 11: "由来の説明だけで読まれる札が登場" },
+  gen(A) {
+    const lv = A.n || 1, c = pick(NAMES);
     const near = nameRivals(c).map(o => o.x);
-    const close = pickDistinct(shuffle(near.slice(0, 8)), 3, [c]);
-    const others = [...close, ...pickDistinct(shuffle(near.slice(8)), 2, [c, ...close])];
+    const k = lv >= 8 ? 4 : lv >= 4 ? 3 : 1;   // how many "close" rivals
+    const close = pickDistinct(shuffle(near.slice(0, lv >= 8 ? 6 : 10)), k, [c]);
+    const others = [...close, ...pickDistinct(shuffle(near.slice(10)), 5 - close.length, [c, ...close])];
     const cards = shuffle([c, ...others]);
+    const kana = /^[ぁ-ゖー]+$/.test(c.yomi) && c.name !== c.yomi;
+    const mode = lv >= 11 && Math.random() < .3 ? "note" : lv >= 7 && kana && Math.random() < .4 ? "yomi" : "name";
+    const prompt = mode === "note" ? `<div style="font-size:16px;font-weight:700;line-height:1.5">「${c.note.replaceAll(c.name, "〇〇")}」</div><small>由来から札を取れ</small>`
+      : mode === "yomi" ? `<div class="qf-big">${c.yomi}</div><small>読み方だけで取れ</small>` : `<div class="qf-big">${c.name}</div><small>${c.yomi}</small>`;
     return {
-      prompt: `<div class="qf-big">${c.name}</div><small>${c.yomi}</small>`, cols: 3, hex: c.hex, label: c.name,
+      prompt, cols: 3, hex: c.hex, label: c.name, key: "k:" + c.name,
       options: cards.map(o => ({ html: "", cls: "card", style: `background:${o.hex};color:${textOn(o.hex)};transform:rotate(${(Math.random() * 8 - 4).toFixed(1)}deg)`, cap: o.name, correct: o === c, name: o.name })),
       reveal: `${mini(c.hex)} <b>${c.name}</b>：${c.note}`,
       mistake: you => ({ hex: c.hex, text: `「${c.name}」はこの色${youSaid(you)}`, why: c.note }),
@@ -2027,14 +2469,16 @@ ACT.karuta = quickDef({
 
 /* 錯視ジャッジ */
 ACT.judge = quickDef({
-  rule: "同じ色？違う色？", sub: "中央の四角を見比べよう。対比や同化にだまされないで", base: 5.5, min: 2.4,
-  gen() {
-    const kind = pick(["明度対比", "彩度対比", "色相対比", "同化"]);
-    const same = Math.random() < .55;
+  rule: "同じ色？違う色？", sub: "中央の四角を見比べよう。対比や同化にだまされないで", base: 5.5, min: 2.4, memory: 3,
+  unlocks: { 5: "補色対比の図が登場", 8: "違いがより小さくなる" },
+  gen(A) {
+    const lv = A.n || 1, kind = pick(lv >= 5 ? ["明度対比", "彩度対比", "色相対比", "同化", "補色対比"] : ["明度対比", "彩度対比", "色相対比", "同化"]);
+    const same = Math.random() < .55, subtle = lv >= 8;
     const sq = (x, bg, c) => `<rect x="${x}" y="0" width="140" height="110" rx="10" fill="${bg}"/><rect x="${x + 45}" y="30" width="50" height="50" fill="${c}"/>`;
     const st = (x, base, line) => `<rect x="${x}" y="0" width="140" height="110" rx="10" fill="${base}"/>` + Array.from({ length: 10 }, (_, i) => `<rect x="${x + 6 + i * 13.4}" y="8" width="3" height="94" fill="${line}"/>`).join("");
     let L, R, svg, why;
-    if (kind === "明度対比") { L = "#808080"; R = same ? L : pick(["#6C6C6C", "#969696"]); svg = sq(0, "#111111", L) + sq(150, "#F2F2F2", R); why = "周りが暗いと明るく、明るいと暗く見える（明度対比）"; }
+    if (kind === "補色対比") { L = HUES[2].hex; R = same ? L : pick([toneColor("s", 2), mix(HUES[2].hex, "#FFFFFF", .85)]); svg = sq(0, HUES[14].hex, L) + sq(150, "#8A8A8A", R); why = "補色に囲まれると鮮やかに見える（補色対比）"; }
+    else if (kind === "明度対比") { L = "#808080"; R = same ? L : pick(subtle ? ["#747474", "#8C8C8C"] : ["#6C6C6C", "#969696"]); svg = sq(0, "#111111", L) + sq(150, "#F2F2F2", R); why = "周りが暗いと明るく、明るいと暗く見える（明度対比）"; }
     else if (kind === "彩度対比") { L = toneColor("d", 2); R = same ? L : pick([toneColor("s", 2), toneColor("g", 2)]); svg = sq(0, HUES[2].hex, L) + sq(150, "#8A8A8A", R); why = "周りが鮮やかだとくすんで、無彩色だと鮮やかに見える（彩度対比）"; }
     else if (kind === "色相対比") { L = HUES[5].hex; R = same ? L : pick([HUES[4].hex, HUES[6].hex]); svg = sq(0, HUES[2].hex, L) + sq(150, HUES[8].hex, R); why = "周りの色相と反対の方向へずれて見える（色相対比）"; }
     else { L = toneColor("b", 2); R = same ? L : pick([toneColor("lt", 2), toneColor("s", 2)]); svg = st(0, L, "#FFFFFF") + st(150, R, "#111111"); why = "細い線の色に近づいて見える（同化・ベゾルト効果）"; }
@@ -2056,9 +2500,20 @@ const SIGNS = [["消火器の置き場所", "red"], ["立入禁止", "red"], ["�
   ["非常口", "green"], ["救護所", "green"], ["避難場所", "green"], ["保護めがねを着用せよ", "blue"], ["ヘルメットを着用せよ", "blue"],
   ["救命胴衣・救命ボート", "orange"], ["航空の保安施設", "orange"], ["救命浮環（浮き輪）", "orange"], ["放射線管理区域", "purple"]];
 ACT.signal = quickDef({
-  rule: "この標識は何色？", sub: "JIS安全色（JIS Z 9103）。6色の意味を体で覚えよう", base: 5, min: 1.8, step: .13,
+  rule: "この標識は何色？", sub: "JIS安全色（JIS Z 9103）。6色の意味を体で覚えよう", base: 5, min: 1.8, step: .13, memory: 8,
+  unlocks: { 5: "色を見て意味を答える逆パターンが登場" },
   gen(A) {
-    let s; do { s = pick(SIGNS); } while (s === A.lastSign); A.lastSign = s;
+    if ((A.n || 1) >= 5 && Math.random() < .4) {
+      const [k, [nm, hex, mean]] = pick(Object.entries(SAFETY));
+      const opts = shuffle([k, ...shuffle(Object.keys(SAFETY).filter(x => x !== k)).slice(0, 3)]);
+      return {
+        prompt: `<span class="lab-ball" style="background:${hex};border-radius:14px"></span><b>この安全色の意味は？</b>`, cols: 1, hex, label: nm, key: "rev:" + k,
+        options: opts.map(x => ({ html: SAFETY[x][2], correct: x === k })),
+        reveal: `${mini(hex)} <b>${nm}</b>＝${mean}`,
+        mistake: you => ({ hex, text: `${nm}の意味は「${mean}」${youSaid(you)}`, why: `JIS安全色の${nm}は「${mean}」` }),
+      };
+    }
+    const s = pick(SIGNS);
     const [label, key] = s, [nm, hex, mean] = SAFETY[key];
     return {
       prompt: `<div class="sign">${label}</div>`, cols: 3, hex, label: nm,
@@ -2081,10 +2536,11 @@ const PALETTES = {
   "補色配色（ダイアード）": [() => { const h = rnd(24) + 1; return [[HUES[h].hex, 1], [HUES[wrap24(h + 12)].hex, 1]]; }, "色相環で正反対の2色"],
 };
 ACT.palette = quickDef({
-  rule: "この配色の名前は？", sub: "色相・トーン・面積の比率に注目", base: 6.5, min: 2.6,
-  gen() {
+  rule: "この配色の名前は？", sub: "色相・トーン・面積の比率に注目", base: 6.5, min: 2.6, memory: 3,
+  unlocks: { 7: "選択肢が6つに増える" },
+  gen(A) {
     const name = pick(Object.keys(PALETTES)), [make, why] = PALETTES[name], blocks = make();
-    const opts = shuffle([name, ...shuffle(Object.keys(PALETTES).filter(n => n !== name)).slice(0, 3)]);
+    const opts = shuffle([name, ...shuffle(Object.keys(PALETTES).filter(n => n !== name)).slice(0, (A.n || 1) >= 7 ? 5 : 3)]);
     return {
       prompt: `<div class="pal">${blocks.map(([c, w]) => `<span style="flex:${w};background:${c}"></span>`).join("")}</div>`,
       cols: 2, hex: blocks[0][0], label: name,
@@ -2106,10 +2562,11 @@ const COORDS = {
   "マニッシュ": [() => [toneColor("dk", 19), "#6E6E72", toneColor("d", 5), "#F4F4F4"], "ネイビー・グレー・ブラウンの紳士服的な配色"],
 };
 ACT.coord = quickDef({
-  rule: "このコーデのイメージは？", sub: "トップス・ボトムス・小物の配色から判断", base: 6.5, min: 2.6,
-  gen() {
+  rule: "このコーデのイメージは？", sub: "トップス・ボトムス・小物の配色から判断", base: 6.5, min: 2.6, memory: 3,
+  unlocks: { 7: "選択肢が6つに増える" },
+  gen(A) {
     const name = pick(Object.keys(COORDS)), [make, why] = COORDS[name], c = make();
-    const opts = shuffle([name, ...shuffle(Object.keys(COORDS).filter(n => n !== name)).slice(0, 3)]);
+    const opts = shuffle([name, ...shuffle(Object.keys(COORDS).filter(n => n !== name)).slice(0, (A.n || 1) >= 7 ? 5 : 3)]);
     return {
       prompt: `<div class="coord" role="img" aria-label="コーディネートの配色"><span style="background:${c[0]}"></span><span style="background:${c[2]}"></span><span style="background:${c[1]}"></span><span style="background:${c[3]}"></span></div>`,
       cols: 2, hex: c[0], label: name,
@@ -2138,9 +2595,9 @@ const SCENES = [
 ];
 const room = (ceil, wall, floor) => `<span class="room"><span style="background:${ceil}"></span><span style="background:${wall}"></span><span style="background:${floor}"></span></span>`;
 ACT.light = quickDef({
-  rule: "この場面に合うのは？", sub: "色温度（K）とインテリア配色の役割", base: 6, min: 2.4,
+  rule: "この場面に合うのは？", sub: "色温度（K）とインテリア配色の役割", base: 6, min: 2.4, memory: 6,
   gen(A) {
-    let sc; do { sc = pick(SCENES); } while (sc === A.lastScene); A.lastScene = sc;
+    const sc = pick(SCENES);
     let options, ans;
     if (sc.t === "k") { options = KOPTS.map(([k, n, h], i) => ({ html: `${k}<small>${n}</small>`, style: `background:${h};color:#1A1C26;border-color:transparent`, correct: i === sc.a, name: `${k}（${n}）` })); ans = `${KOPTS[sc.a][0]}（${KOPTS[sc.a][1]}）`; }
     else if (sc.t === "r") { options = ROLES.map((r, i) => ({ html: r, correct: i === sc.a })); ans = ROLES[sc.a]; }
@@ -2191,11 +2648,14 @@ ACT.lab = {
     let t; do { t = Math.random() < .8 ? pick(composite) : pick(keys); } while (t === A.lastT && keys.length > 1);
     A.lastT = t; A.t_ = t; A.need = L.targets[t][1]; A.on = new Set(); A.wait = 0;
     A.limit = Math.max(3, 8 - A.n * .25); A.left = A.limit;
-    $("#lab-t").style.background = labColor(A.add, new Set(A.need));
+    const hide = A.n >= 5 && Math.random() < .5;
+    $("#lab-t").style.background = hide ? "repeating-linear-gradient(45deg,#555 0 8px,#666 8px 16px)" : labColor(A.add, new Set(A.need));
+    $("#lab-t").textContent = hide ? "?" : "";
     $("#lab-tn").textContent = `お題：${L.targets[t][0]}`;
     $("#lab-btns").innerHTML = L.prim.map(([k, n, h]) => `<button class="lab-btn" type="button" data-lab="${k}" aria-pressed="false" style="background:${h};color:${textOn(h)}">${n}</button>`).join("");
     $("#qf-info").textContent = A.add ? "光（R・G・B）を重ねるほど明るくなる" : "インク（C・M・Y）を混ぜるほど暗くなる";
-    setRule(A.add ? "光を重ねてお題の色を作れ！" : "インクを混ぜてお題の色を作れ！", A.add ? "加法混色：R・G・Bの光を選んで「完成」" : "減法混色：C・M・Yのインクを選んで「完成」");
+    if (!levelBanner(A, { 5: "お題の色が「？」で隠れることがある。名前だけで作れ" }))
+      setRule(A.add ? "光を重ねてお題の色を作れ！" : "インクを混ぜてお題の色を作れ！", A.add ? "加法混色：R・G・Bの光を選んで「完成」" : "減法混色：C・M・Yのインクを選んで「完成」");
     this.draw(A);
   },
   draw(A) { $("#lab-r").style.background = labColor(A.add, A.on); },
@@ -2244,6 +2704,7 @@ ACT.spectrum = {
   extra: A => `レベル ${A.n}`,
   next(A) {
     A.n++; A.wait = 0;
+    levelBanner(A, { 5: "色当ての判定が厳しくなる（±22nm）", 9: "さらに厳しく（±16nm）" }, "光の波長をタップ！", "可視光はおよそ380〜780nm。短いほど青紫、長いほど赤");
     const r = Math.random();
     if (r < .4) { const w = 420 + rnd(45) * 5; A.q = { type: "chip", w, hex: wl2rgb(w) }; $("#qf-prompt").innerHTML = `<span class="lab-ball" style="background:${wl2rgb(w)}"></span><b>この色の光は何nm？</b>`; }
     else if (r < .7) { const B = pick(WL_BANDS); A.q = { type: "band", B, hex: wl2rgb((B[0] + Math.min(B[1], 700)) / 2) }; $("#qf-prompt").innerHTML = `<div class="qf-big">「${B[2]}」に見える光</div><small>その波長のあたりをタップ</small>`; }
@@ -2277,7 +2738,7 @@ ACT.spectrum = {
     if (e.clientX < sp.left) zone = "UV"; else if (e.clientX > sp.right) zone = "IR"; else nm = Math.round(380 + (e.clientX - sp.left) / sp.width * 400);
     if (nm != null) { const y = $("#spec-you"); y.style.left = this.pos(nm) + "%"; y.hidden = false; }
     let ok = false, perfect = false;
-    if (q.type === "chip") { ok = nm != null && Math.abs(nm - q.w) <= 30; perfect = ok && Math.abs(nm - q.w) <= 12; }
+    if (q.type === "chip") { const tol = A.n >= 9 ? 16 : A.n >= 5 ? 22 : 30; ok = nm != null && Math.abs(nm - q.w) <= tol; perfect = ok && Math.abs(nm - q.w) <= tol * .4; }
     else if (q.type === "band") ok = nm != null && nm >= q.B[0] - 5 && nm <= q.B[1] + 5;
     else if (q.type === "range") ok = nm != null && nm >= q.S[1] - 5 && nm <= q.S[2] + 5;
     else ok = zone === q.z;
@@ -2300,8 +2761,12 @@ ACT.anatomy = {
   extra: A => `レベル ${A.n}`,
   next(A) {
     A.n++; A.wait = 0;
-    let q; do { q = pick(EYE_ASK); } while (q === A.q);
+    A.recentQ = A.recentQ || [];
+    const pool = A.n >= 6 ? [...EYE_ASK, ...Object.keys(EYE_PARTS).map(k => [k, EYE_PARTS[k].split("（")[0].replace(/。.*$/, "") + "のは？"])] : EYE_ASK;
+    let q; do { q = pick(pool); } while (A.recentQ.includes(q[1]));
+    A.recentQ = [...A.recentQ, q[1]].slice(-5);
     A.q = q;
+    levelBanner(A, { 6: "はたらきの説明だけで出題されるようになる" }, "目のパーツをタッチ！", "光は左から入る。角膜→瞳孔→水晶体→硝子体→網膜→視神経→脳");
     $("#qf-prompt").innerHTML = `<div class="qf-big" style="font-size:22px">${q[1]}</div>`;
     $("#eye-wrap").innerHTML = eyeSVG();
     $("#qf-info").textContent = "";
@@ -2332,11 +2797,14 @@ ACT.anatomy = {
 };
 
 /* 分光カーブ・リーダー */
+const CURVE_NEAR = { "赤": ["橙", "紫"], "橙": ["赤", "黄"], "黄": ["橙", "緑"], "緑": ["黄", "青"], "青": ["紫", "緑"], "紫": ["青", "赤"], "白": ["灰色", "黄"], "灰色": ["白", "黒"], "黒": ["灰色", "紫"] };
 ACT.curve = quickDef({
-  rule: "このカーブの物体は何色？", sub: "分光反射率：どの波長の光を多く反射しているか", base: 6.5, min: 2.6,
-  gen() {
+  rule: "このカーブの物体は何色？", sub: "分光反射率：どの波長の光を多く反射しているか", base: 6.5, min: 2.6, memory: 4,
+  unlocks: { 6: "まぎらわしい色が必ず選択肢に入る" },
+  gen(A) {
     const name = pick(Object.keys(CURVES)), [hex, fn, why] = CURVES[name];
-    const opts = shuffle([name, ...shuffle(Object.keys(CURVES).filter(n => n !== name)).slice(0, 3)]);
+    const rest = Object.keys(CURVES).filter(n => n !== name && !CURVE_NEAR[name].includes(n));
+    const opts = shuffle([name, ...((A.n || 1) >= 6 ? [...CURVE_NEAR[name], ...shuffle(rest).slice(0, 1)] : shuffle(Object.keys(CURVES).filter(n => n !== name)).slice(0, 3))]);
     return {
       prompt: `<div style="width:100%;color:#FFFFFF">${curveSVG(fn)}</div>`, cols: 2, hex, label: name,
       options: opts.map(n => ({ html: n, style: `background:${CURVES[n][0]};color:${textOn(CURVES[n][0])};border-color:transparent`, correct: n === name, name: n })),
@@ -2348,7 +2816,7 @@ ACT.curve = quickDef({
 
 /* 錐体シグナル */
 ACT.cones = quickDef({
-  rule: "錐体の反応から色を当てろ！", sub: "L＝長波長・M＝中波長・S＝短波長。反応の比率で色が決まる（簡略図）", base: 6, min: 2.4,
+  rule: "錐体の反応から色を当てろ！", sub: "L＝長波長・M＝中波長・S＝短波長。反応の比率で色が決まる（簡略図）", base: 6, min: 2.4, memory: 4,
   gen() {
     const name = pick(Object.keys(CONE_PAT)), [hex, v] = CONE_PAT[name];
     const jit = v.map(x => Math.max(.03, Math.min(1, x + (Math.random() - .5) * .08)));

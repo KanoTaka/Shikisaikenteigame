@@ -9,7 +9,7 @@ const src = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 const hook = 'renderStrips(); renderHome(); syncSnd();';
 if (!src.includes(hook)) throw new Error('hook not found');
 const test = src.replace(hook, hook + `
-window.__T = { get A() { return A; }, ACT, ALLK, NAMES, GENRES, MODES, ACT_MODES, LEVELS, qKnow, qTone, qHue, qName, qMix, qContrast, qSpec, qCurve, qEye, qCones, dist, makeSet, quickGens: {} };`);
+window.__T = { get A() { return A; }, ACT, ALLK, NAMES, GENRES, MODES, ACT_MODES, LEVELS, qKnow, qTone, qHue, qName, qMix, qContrast, qSpec, qCurve, qEye, qCones, dist, makeSet, noteAnswer, qNotation, qToneClass, qToneCmp, qCompName, qMunsell, qWaveCmp, qKelvin, qNameRev, qYomi, qEyeFunc, qSafety, qPaletteQ, qCoordQ, qRoomQ, qCVD, qAttr, qAfterimage, qSpinMix, qMixRev, qCoordRev, qGogyo, qContrastDir, qRoomVis, setDiff: d => { QDIFF = d; } };`);
 // expose quick-fire generators: wrap quickDef so we can call gen() directly
 const test2 = test.replace('function quickDef(cfg) {\n  return {', 'function quickDef(cfg) {\n  return { __gen: cfg.gen,');
 const file = path.join(SP, 'selftest.html');
@@ -41,18 +41,19 @@ fs.writeFileSync(file, test2);
       });
       // option text that appears as the correct answer AND as a wrong answer in a near-identical question
       // generators
-      const gens = { qKnow: T.qKnow, qTone: T.qTone, qHue: T.qHue, qName: T.qName, qMix: T.qMix, qContrast: T.qContrast, qSpec: T.qSpec, qCurve: T.qCurve, qEye: T.qEye, qCones: T.qCones };
+      const gens = {}; ['qKnow','qTone','qHue','qName','qMix','qContrast','qSpec','qCurve','qEye','qCones','qNotation','qToneClass','qToneCmp','qCompName','qMunsell','qWaveCmp','qKelvin','qNameRev','qYomi','qEyeFunc','qSafety','qPaletteQ','qCoordQ','qRoomQ','qCVD','qAttr','qAfterimage','qSpinMix','qMixRev','qCoordRev','qGogyo','qContrastDir','qRoomVis'].forEach(n => gens[n] = T[n]);
       const colorOf = h => { const m = (h || '').match(/background:(#[0-9A-Fa-f]{6})/); return m && m[1]; };
       const minD = {};
       for (const [name, g] of Object.entries(gens)) {
         let bad = 0, dupLab = 0, md = 1e9;
         for (let i = 0; i < 600; i++) {
+          T.setDiff(i % 3);
           const q = g();
           const nc = q.choices.filter(c => c.correct).length;
           if (nc !== 1) { bad++; if (bad < 3) out.push(`${name}: 正解が${nc}個 → ${strip(q.text)} / ${q.choices.map(c => strip(c.html) || c.cap).join(',')}`); }
-          const labs = q.choices.map(c => strip(c.html) + '|' + (c.cap || ''));
+          const labs = q.choices.map(c => strip(c.html) + '|' + (c.cap || '') + '|' + ((c.html || '').match(/#[0-9A-Fa-f]{6}/g) || []).join(','));
           if (new Set(labs).size !== labs.length) { dupLab++; if (dupLab < 3) out.push(`${name}: 選択肢の表示が重複 → ${labs.join(' / ')}`); }
-          const cols = q.choices.map(c => colorOf(c.html)).filter(Boolean);
+          const cols = q.swatch ? q.choices.map(c => colorOf(c.html)).filter(Boolean) : [];
           for (let a = 0; a < cols.length; a++) for (let z = a + 1; z < cols.length; z++) md = Math.min(md, T.dist(cols[a], cols[z]));
         }
         minD[name] = md === 1e9 ? '-' : md.toFixed(1);
@@ -82,11 +83,23 @@ fs.writeFileSync(file, test2);
         if (len !== 10) out.push(`${m}: 10問そろわない (${len})`);
         if (d) setDup[m] = (d / 40).toFixed(2);
       });
+      // repetition: play 10 sets in a row per mode, answering ~70% correctly
+      const rep = {};
+      modes.forEach(m => {
+        let overlap = 0, all = [];
+        let prev = new Set();
+        for (let n = 0; n < 10; n++) {
+          const set = T.makeSet(m), keys = new Set(set.map(q => q.key));
+          if (n) overlap += [...keys].filter(k => prev.has(k)).length;
+          set.forEach(q => T.noteAnswer(q, Math.random() < .7)); all.push(...keys); prev = keys;
+        }
+        rep[m] = `前回と重複 ${(overlap / 9).toFixed(1)}/10・100問中の種類 ${new Set(all).size}`;
+      });
       // closest colour-name pairs (for reference)
       const pairs = [];
       for (let a = 0; a < T.NAMES.length; a++) for (let z = a + 1; z < T.NAMES.length; z++) pairs.push([T.dist(T.NAMES[a].hex, T.NAMES[z].hex), T.NAMES[a].name, T.NAMES[z].name]);
       pairs.sort((x, y) => x[0] - y[0]);
-      return { out, minD, setDup, closest: pairs.slice(0, 6).map(p => `${p[1]}/${p[2]}=${p[0].toFixed(1)}`), counts: { know: T.ALLK.length, acts: T.ACT_MODES.length } };
+      return { out, minD, setDup, rep, closest: pairs.slice(0, 6).map(p => `${p[1]}/${p[2]}=${p[0].toFixed(1)}`), counts: { know: T.ALLK.length, acts: T.ACT_MODES.length } };
     });
     P('=== 1. 問題データの監査 ===');
     P(`知識問題 ${res.counts.know} 問 / アクション ${res.counts.acts} 種`);
@@ -94,6 +107,7 @@ fs.writeFileSync(file, test2);
     if (!res.out.length) P('  問題なし');
     P('  色の選択肢どうしの最小距離: ' + JSON.stringify(res.minD));
     P('  1セット内の重複（平均）: ' + JSON.stringify(res.setDup));
+    P('  連続10セットの出題の変化:'); Object.entries(res.rep).forEach(([m, v]) => P(`    ${m.padEnd(12)} ${v}`));
     P('  似ている慣用色名ペア: ' + res.closest.join(', '));
     if (errs.length) P('  JS errors: ' + errs.join(' | '));
     await p.close();
