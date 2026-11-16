@@ -317,6 +317,103 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 #w-svg.nonum text { display: none; }
 #w-svg.nonum #w-label { display: block; }
 
+
+/* ================= design pass: header, tabs, icons, nav ================= */
+.ico { width: 20px; height: 20px; display: block; flex: none; }
+[data-ico] { display: grid; place-items: center; }
+.icon-btn { display: grid; place-items: center; color: var(--ink); }
+.home-head { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--paper); padding-block: 8px 10px; margin-bottom: 4px; }
+.head-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.home-head .logo { font-size: clamp(26px, 8vw, 34px); line-height: 1.1; white-space: nowrap; }
+.home-head .eyebrow { display: block; margin-bottom: 2px; }
+#home { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+.tabpanel { display: grid; gap: 12px; animation: tabIn .25s ease-out; }
+@keyframes tabIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.tabpanel .section-h { margin: 14px 0 0; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.tabpanel .section-h small { font-family: var(--font-body); font-size: 12px; color: var(--muted); font-weight: 500; }
+.tabpanel .foot { margin-top: 4px; }
+.lede { font-size: 14px; }
+.bar-title { font-size: 17px; }
+
+.bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; background: var(--card); border-top: 1px solid var(--line);
+  padding-top: 4px; padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+.nav-inner { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
+.bottom-nav button { background: none; border: 0; display: grid; justify-items: center; gap: 3px; font-size: 11px; font-weight: 700; color: var(--muted); padding: 6px 0 4px; cursor: pointer; border-radius: 10px; }
+.bottom-nav button .ico { width: 24px; height: 24px; }
+.bottom-nav button[aria-current="page"] { color: var(--accent); }
+.bottom-nav button[aria-current="page"] [data-ico] { background: color-mix(in srgb, var(--accent) 14%, transparent); border-radius: 999px; padding: 2px 16px; }
+
+/* remix hero card */
+.remix-card { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr; text-align: left; width: 100%; border: 0; cursor: pointer;
+  border-radius: 20px; background: linear-gradient(165deg, #74767C 0%, #45474D 100%); color: #FFFFFF; padding: 0; transition: transform .12s; }
+.remix-card:active { transform: scale(.98); }
+.rx-icons { position: absolute; top: 16px; left: 14px; right: 14px; height: 76px; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(2, 1fr); }
+.rx-icons span { display: grid; place-items: center; color: rgba(255, 255, 255, .9); animation: rxPulse 4.2s ease-in-out infinite; }
+.rx-icons span .ico { width: 22px; height: 22px; }
+@keyframes rxPulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.rx-body { position: relative; display: grid; gap: 6px; padding: 14px 18px 18px; margin-top: 98px; border-top: 1px solid rgba(255, 255, 255, .14); }
+.rx-kicker { font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; opacity: .8; }
+.rx-title { font-family: var(--font-display); font-size: 32px; line-height: 1.1; }
+.rx-desc { font-size: 13px; line-height: 1.5; color: rgba(255, 255, 255, .88); }
+.rx-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.rx-go { background: #FFFFFF; color: #1A1C26; font-weight: 700; border-radius: 999px; padding: 7px 18px; font-size: 14px; }
+.rx-best { font-family: var(--font-mono); font-size: 12px; }
+
+/* minigame tiles with icons */
+.atile .aband { height: 40px; position: relative; }
+.atile .aico { position: absolute; left: 10px; bottom: -16px; width: 36px; height: 36px; border-radius: 10px; background: var(--card); color: var(--ink); display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0, 0, 0, .25); }
+.atile .abody { padding-top: 22px; }
+.mode { grid-template-columns: 44px 1fr auto; }
+.mode-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: #FFFFFF; flex: none; }
+.mode-ico .ico { width: 24px; height: 24px; }
+.mode-ico.danger { background: var(--ng) !important; }
+.chev { width: 20px; height: 20px; border-right: 2.5px solid var(--muted); border-top: 2.5px solid var(--muted); transform: rotate(45deg) scale(.55); }
+.genre-entry .mode-ico { background: var(--ink); color: var(--paper); }
+
+/* learn list */
+.learn-list { display: grid; gap: 8px; }
+.learn-item { display: grid; grid-template-columns: 44px 1fr auto; gap: 14px; align-items: center; width: 100%; text-align: left; cursor: pointer; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.learn-item:hover { border-color: var(--accent); }
+.learn-item b { display: block; font-size: 16px; }
+.learn-item small { color: var(--muted); font-size: 12.5px; line-height: 1.45; display: block; }
+
+/* record tab */
+.stat.wide { font-size: 13px; color: var(--muted); }
+.stat.wide b { display: inline; font-size: 15px; color: var(--ink); }
+.best-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.best-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 7px 10px; font-size: 12.5px; line-height: 1.3; min-width: 0; }
+.best-row span:nth-child(2) { min-width: 0; overflow-wrap: anywhere; }
+.best-row .mode-ico { width: 28px; height: 28px; border-radius: 8px; }
+.best-row .mode-ico .ico { width: 18px; height: 18px; }
+.best-row b { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.settings { display: grid; gap: 8px; }
+.set-row { display: grid; grid-template-columns: 44px 1fr auto; gap: 14px; align-items: center; width: 100%; text-align: left; cursor: pointer; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; font-weight: 700; }
+.set-row .mode-ico { background: var(--accent); color: var(--accent-ink); }
+.confirm { background: var(--ng-bg); border: 1.5px solid var(--ng); border-radius: var(--r); padding: 12px 14px; }
+.confirm p { margin: 0; font-size: 14px; }
+.confirm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.confirm-row button { margin-top: 10px; }
+.danger-btn { background: var(--ng); color: #FFFFFF; }
+.res-ico { display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--ink); color: var(--paper); margin-bottom: 6px; }
+.res-ico .ico { width: 30px; height: 30px; }
+.res-ico:empty { display: none; }
+
+/* remix intro card inside the arena */
+.arena > .remix-intro { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); z-index: 4; width: min(320px, calc(100% - 48px)); margin: 0;
+  background: #FFFFFF; color: #1A1C26; border-radius: 22px; padding: 20px; display: grid; justify-items: center; gap: 6px; text-align: center;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .35); animation: rxIn .35s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes rxIn { from { transform: translate(-50%, -50%) scale(.6); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+.remix-intro .rc-ico { width: 64px; height: 64px; border-radius: 18px; background: var(--arena); color: #FFFFFF; display: grid; place-items: center; }
+.remix-intro .rc-ico .ico { width: 36px; height: 36px; }
+.remix-intro small { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; color: #5E6374; }
+.remix-intro b { font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.2; }
+.remix-intro .rc-rule { font-size: 14px; font-weight: 700; }
+.remix-intro .rc-speed { font-family: var(--font-display); font-size: 20px; color: #FFFFFF; background: #E60033; border-radius: 999px; padding: 2px 14px; animation: pulse .5s 2; }
+.remix-intro .rc-bar { width: 100%; height: 6px; border-radius: 3px; background: #E3E5EA; overflow: hidden; margin-top: 4px; }
+.remix-intro .rc-bar i { display: block; height: 100%; background: #1A1C26; animation: rcBar var(--rc-t, 1s) linear forwards; }
+@keyframes rcBar { from { width: 0; } to { width: 100%; } }
+
 /* ---------- action arena ---------- */
 /* The arena is a fixed neutral grey on purpose: colours are judged on a neutral mid-grey ground (N5 相当), so it does not change with the theme. */
 :root { --arena: #6E7075; --arena-ink: #FFFFFF; --arena-panel: rgba(0, 0, 0, .2); --arena-soft: rgba(255, 255, 255, .14); }
@@ -391,40 +488,76 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 
   <!-- HOME -->
   <section id="home">
-    <div class="strip" id="strip-top" aria-hidden="true"></div>
-    <div class="hero">
-      <span class="eyebrow">色彩検定 3級・2級・UC級レベル</span>
-      <h1 class="logo">いろ検<br>クエスト<span class="dot" id="logo-dot"></span></h1>
-      <p class="lede">10問1セット。色を見て、選んで、解説を読む。トーン・色相環・慣用色名・配色技法をスマホでサクッと覚えよう。</p>
+    <header class="home-head">
+      <div class="strip" id="strip-top" aria-hidden="true"></div>
+      <div class="head-row">
+        <div>
+          <span class="eyebrow">色彩検定 3級・2級・UC級</span>
+          <h1 class="logo">いろ検クエスト<span class="dot" id="logo-dot"></span></h1>
+        </div>
+        <button class="icon-btn" id="snd-toggle" type="button" aria-pressed="true" aria-label="効果音"></button>
+      </div>
+    </header>
+
+    <!-- あそぶ -->
+    <div class="tabpanel" id="tab-play">
+      <button class="remix-card" data-act="remix" type="button">
+        <span class="rx-icons" id="rx-icons" aria-hidden="true"></span>
+        <span class="rx-body">
+          <span class="rx-kicker">ALL 14 GAMES</span>
+          <span class="rx-title">リミックス</span>
+          <span class="rx-desc">14種のミニゲームが次々に登場。1ラウンド1問、5ラウンドごとにスピードアップ。</span>
+          <span class="rx-foot"><span class="rx-go">あそぶ</span><span class="rx-best" id="rx-best">BEST —</span></span>
+        </span>
+      </button>
+      <h2 class="section-h">ミニゲーム<small>好きなゲームをじっくり</small></h2>
+      <div class="act-grid" id="act-modes"></div>
+      <p class="foot">ゲームのフィールドは、色を見比べやすい中性グレー（N5相当）の背景です。</p>
+    </div>
+
+    <!-- クイズ -->
+    <div class="tabpanel" id="tab-quiz" hidden>
+      <p class="lede">10問1セット。★から★★★へだんだん難しくなります。まだ見ていない問題と、間違えた問題の復習が優先して出ます。</p>
+      <button class="mode genre-entry" id="go-genres" type="button">
+        <span class="mode-ico" id="genre-ico" aria-hidden="true"></span>
+        <span><h3>ジャンル別・級別</h3><p>15ジャンル・3級／2級／UC級の範囲から選んで10問。正答率と苦手ジャンルもわかる。</p></span>
+        <span class="chev" aria-hidden="true"></span></button>
+      <div class="modes" id="modes"></div>
+    </div>
+
+    <!-- まなぶ -->
+    <div class="tabpanel" id="tab-learn" hidden>
+      <p class="lede">図や表で見て覚える、色彩検定の要点まとめ。</p>
+      <div class="learn-list" id="learn-list"></div>
+    </div>
+
+    <!-- 記録 -->
+    <div class="tabpanel" id="tab-record" hidden>
       <div class="stats">
-        <div class="stat"><b id="st-total">0</b><small>解いた問題</small></div>
-        <div class="stat"><b id="st-rate">–</b><small>正答率</small></div>
+        <div class="stat"><b id="st-total">0</b><small>解いたクイズ</small></div>
+        <div class="stat"><b id="st-rate">–</b><small>クイズ正答率</small></div>
         <div class="stat"><b id="st-streak">0</b><small>最高コンボ</small></div>
       </div>
+      <div class="stat wide" id="st-hist"></div>
+      <h2 class="section-h">ベストスコア</h2>
+      <div class="best-list" id="best-list"></div>
+      <h2 class="section-h">設定</h2>
+      <div class="settings">
+        <button class="set-row" id="snd-row" type="button"><span class="mode-ico" id="snd-ico" aria-hidden="true"></span><span>効果音</span><b id="snd-state">ON</b></button>
+        <button class="set-row" id="reset-row" type="button"><span class="mode-ico danger" aria-hidden="true" id="reset-ico"></span><span>記録をすべて消す</span><b></b></button>
+        <div class="confirm" id="reset-confirm" hidden>
+          <p>スコア・正答率・出題の記録をすべて消します。元に戻せません。</p>
+          <div class="confirm-row"><button class="ghost" id="reset-no" type="button">やめる</button><button class="primary danger-btn" id="reset-yes" type="button">消す</button></div>
+        </div>
+      </div>
+      <p class="foot">画面の色はPCCS色票・JIS慣用色名の近似値です。端末の画面設定で見え方は変わります。試験対策には公式テキストもあわせて使ってください。</p>
     </div>
-
-    <h2 class="section-h">アクション</h2>
-    <div class="act-grid" id="act-modes"></div>
-    <p class="foot" style="margin-top:8px">アクションのフィールドは、色を見比べやすい中性グレー（N5相当）の背景です。</p>
-
-    <h2 class="section-h">クイズ</h2>
-    <button class="mode genre-entry" id="go-genres" type="button">
-      <span class="mode-swatch" aria-hidden="true" id="genre-sw"></span>
-      <span><h3>ジャンル別・級別</h3><p>13ジャンル・3級／2級／UC級の範囲から選んで10問。ジャンルごとの正答率と苦手もわかる。</p></span>
-      <span class="best" aria-hidden="true"><b>→</b></span></button>
-    <div class="modes" id="modes" style="margin-top:10px"></div>
-    <button class="learn-btn" id="go-learn" type="button">まなぶ ― トーン図・色相環・慣用色名図鑑を見る</button>
-
-    <div class="toggles">
-      <button class="pill" id="snd-toggle" type="button" aria-pressed="true">効果音: ON</button>
-    </div>
-    <p class="foot">画面の色はPCCS色票・JIS慣用色名の近似値です。端末の画面設定で見え方は変わります。試験対策には公式テキストもあわせて使ってください。</p>
   </section>
 
   <!-- QUIZ -->
   <section id="quiz" hidden>
     <div class="topbar">
-      <button class="icon-btn" id="quit" type="button" aria-label="ホームにもどる">←</button>
+      <button class="icon-btn" id="quit" type="button" aria-label="ホームにもどる"><span data-ico="back"></span></button>
       <div class="progress" id="progress" aria-hidden="true"></div>
       <div class="score" id="score" aria-live="polite">0</div>
     </div>
@@ -446,6 +579,7 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
   <section id="result" hidden>
     <div class="strip" id="strip-res" aria-hidden="true"></div>
     <div class="result">
+      <span class="res-ico" id="res-ico" aria-hidden="true"></span>
       <span class="eyebrow" id="res-mode"></span>
       <div class="big" id="res-correct"></div>
       <p class="rank" id="res-rank"></p>
@@ -460,8 +594,8 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
   <!-- GENRES -->
   <section id="genres" hidden>
     <div class="topbar">
-      <button class="icon-btn" id="genres-back" type="button" aria-label="ホームにもどる">←</button>
-      <strong style="font-size:17px">ジャンル別・級別</strong>
+      <button class="icon-btn" id="genres-back" type="button" aria-label="ホームにもどる"><span data-ico="back"></span></button>
+      <strong class="bar-title">ジャンル別・級別</strong>
     </div>
     <div class="weak" id="weak"></div>
     <h2 class="section-h">級別チャレンジ</h2>
@@ -474,7 +608,7 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
   <!-- ACTION -->
   <section id="act" class="arena" hidden>
     <div class="hud">
-      <button class="icon-btn hud-btn" id="act-quit" type="button" aria-label="やめる">✕</button>
+      <button class="icon-btn hud-btn" id="act-quit" type="button" aria-label="やめる"><span data-ico="close"></span></button>
       <div class="hud-stat"><small>SCORE</small><b id="act-score">0</b></div>
       <div class="hud-stat"><small id="act-tlabel">TIME</small><b id="act-time">60</b></div>
       <div class="hud-lives" id="act-lives" aria-label="ライフ"></div>
@@ -482,14 +616,15 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
     <div class="rule" id="act-rule" aria-live="polite"></div>
     <div class="field" id="field"></div>
     <div class="combo-big" id="act-combo" hidden></div>
+    <div class="remix-intro" id="remix-intro" hidden></div>
     <div class="countdown" id="countdown" hidden></div>
   </section>
 
   <!-- LEARN -->
   <section id="learn" hidden>
     <div class="topbar">
-      <button class="icon-btn" id="learn-back" type="button" aria-label="ホームにもどる">←</button>
-      <strong style="font-size:17px">まなぶ</strong>
+      <button class="icon-btn" id="learn-back" type="button" aria-label="ホームにもどる"><span data-ico="back"></span></button>
+      <strong class="bar-title">まなぶ</strong>
     </div>
     <div class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" data-tab="tone" aria-selected="true">PCCSトーン</button>
@@ -504,6 +639,14 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
   </section>
 
 </div>
+<nav class="bottom-nav" id="bottom-nav" aria-label="メニュー">
+  <div class="nav-inner">
+    <button type="button" data-tab="play" aria-current="page"><span data-ico="play"></span>あそぶ</button>
+    <button type="button" data-tab="quiz"><span data-ico="quiz"></span>クイズ</button>
+    <button type="button" data-tab="learn"><span data-ico="learn"></span>まなぶ</button>
+    <button type="button" data-tab="record"><span data-ico="record"></span>記録</button>
+  </div>
+</nav>
 <canvas id="fx" aria-hidden="true"></canvas>
 
 <script>
@@ -1620,10 +1763,46 @@ function makeSet(mode) {
   return out;
 }
 
+/* ================= icons (one stroke style everywhere) ================= */
+const I = d => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const ICONS = {
+  rush: I('<rect x="4" y="3" width="6" height="6" rx="1.5"/><rect x="14" y="7" width="6" height="6" rx="1.5"/><rect x="5" y="14" width="6" height="6" rx="1.5"/><path d="M17 16v5M15 19l2 2 2-2"/>'),
+  map: I('<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><circle cx="17" cy="17" r="1.6" fill="currentColor"/>'),
+  wheel: I('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4"/>'),
+  karuta: I('<rect x="3.5" y="5" width="10" height="14" rx="2" transform="rotate(-9 8.5 12)"/><rect x="10.5" y="4" width="10" height="14" rx="2" transform="rotate(8 15.5 11)"/>'),
+  lab: I('<path d="M9 3h6M10 3v6l-5.2 9.2A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-2.8L14 9V3"/><path d="M7.4 15h9.2"/>'),
+  judge: I('<rect x="2" y="5" width="9" height="14" rx="2"/><rect x="13" y="5" width="9" height="14" rx="2"/><rect x="5" y="10" width="3" height="4" fill="currentColor"/><rect x="16" y="10" width="3" height="4" fill="currentColor"/>'),
+  signal: I('<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/>'),
+  palette: I('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/>'),
+  coord: I('<path d="M8.5 3 3 6l2 4 3-1.2V21h8V8.8l3 1.2 2-4-5.5-3a3.5 3.5 0 0 1-7 0z"/>'),
+  light: I('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.6 1 2.5h6c0-.9.3-1.8 1-2.5A6 6 0 0 0 12 3z"/>'),
+  spectrum: I('<path d="M2 11c2-6 4-6 6 0s4 6 6 0 4-6 6 0"/><path d="M2 20h20"/>'),
+  curve: I('<path d="M3 3v18h18"/><path d="M6 17c4 0 5-10 9-10 2 0 3 2 5 2"/>'),
+  anatomy: I('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>'),
+  cones: I('<path d="M3 21h18"/><rect x="5" y="9" width="3" height="12"/><rect x="10.5" y="4" width="3" height="17"/><rect x="16" y="13" width="3" height="8"/>'),
+  remix: I('<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>'),
+  play: I('<rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M7 10.5v4M5 12.5h4M15.5 11.5h.01M18 13.5h.01"/>'),
+  quiz: I('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.9-1.1 1.6v.5M12 17h.01"/>'),
+  learn: I('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M8 7h8M8 11h5"/>'),
+  record: I('<path d="M8 21h8M12 16v5M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/>'),
+  layers: I('<path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/>'),
+  tag: I('<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>'),
+  mixq: I('<circle cx="9" cy="9.5" r="5.5"/><circle cx="15" cy="9.5" r="5.5"/><circle cx="12" cy="15" r="5.5"/>'),
+  table: I('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/>'),
+  back: I('<path d="M15 18l-6-6 6-6"/>'),
+  close: I('<path d="M6 6l12 12M18 6 6 18"/>'),
+  sound: I('<path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
+  mute: I('<path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M16 9l5 6M21 9l-5 6"/>'),
+  trash: I('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),
+};
+const MODE_ICON = { mix: "remix", know: "learn", tone: "map", hue: "wheel", names: "tag" };
+function paintIcons(root = document) { root.querySelectorAll("[data-ico]").forEach(el => { el.innerHTML = ICONS[el.dataset.ico] || ""; }); }
+
 /* ================= state & screens ================= */
 const screens = ["home", "quiz", "result", "learn", "act", "genres"];
 function show(id) {
   screens.forEach(s => { $("#" + s).hidden = s !== id; });
+  $("#bottom-nav").hidden = id !== "home";
   document.body.style.overflow = id === "act" ? "hidden" : "";
   window.scrollTo(0, 0);
 }
@@ -1702,22 +1881,49 @@ function renderHome() {
   $("#st-total").textContent = lifetime.total;
   $("#st-rate").textContent = lifetime.total ? Math.round(lifetime.correct / lifetime.total * 100) + "%" : "–";
   $("#st-streak").textContent = lifetime.maxCombo;
-  $("#genre-sw").innerHTML = [8, 16, 24, 21].map(h => `<span style="background:${HUES[h].hex}"></span>`).join("");
-  $("#act-modes").innerHTML = ACT_MODES.map(m => {
+  $("#genre-ico").innerHTML = ICONS.layers;
+  $("#rx-icons").innerHTML = REMIX_POOL.map((id, i) => `<span style="animation-delay:${(i * 0.61 % 4.2).toFixed(2)}s">${ICONS[id]}</span>`).join("");
+  $("#rx-best").textContent = "BEST " + (bests.remix ? bests.remix.score : "—");
+  $("#act-modes").innerHTML = ACT_MODES.filter(m => m.id !== "remix").map(m => {
     const b = bests[m.id];
     return `<button class="atile" data-act="${m.id}" type="button">
-      <span class="aband" aria-hidden="true">${m.sw().map(c => `<span style="background:${c}"></span>`).join("")}</span>
+      <span class="aband" aria-hidden="true">${m.sw().map(c => `<span style="background:${c}"></span>`).join("")}<span class="aico">${ICONS[m.id]}</span></span>
       <span class="abody"><span class="agenre">${m.genre}</span><h3>${m.title}</h3><p>${m.desc}</p>
       <span class="abest">BEST ${b ? b.score : "—"}</span></span></button>`;
   }).join("");
   $("#modes").innerHTML = MODES.map(m => {
-    const sw = m.sw || ["v", "lt", "d", "dk"].map(t => toneColor(t, 12));
-    const b = bests[m.id];
+    const b = bests[m.id], col = m.featured ? "var(--accent-ink)" : "#FFFFFF", bg = m.featured ? "rgba(255,255,255,.18)" : (m.sw ? m.sw[0] : toneColor("v", 12));
     return `<button class="mode${m.featured ? " featured" : ""}" data-mode="${m.id}" type="button">
-      <span class="mode-swatch" aria-hidden="true">${sw.map(c => `<span style="background:${c}"></span>`).join("")}</span>
+      <span class="mode-ico" style="background:${bg};color:${col}" aria-hidden="true">${ICONS[MODE_ICON[m.id]]}</span>
       <span><h3>${m.title}</h3><p>${m.desc}</p></span>
       <span class="best">ベスト<b>${b ? b.score : "—"}</b></span></button>`;
   }).join("");
+  // まなぶ
+  $("#learn-list").innerHTML = LEARN_TOPICS.map(([tab, ic, t, d, h]) => `<button class="learn-item" data-learn="${tab}" type="button">
+    <span class="mode-ico" style="background:${HUES[h].hex};color:${textOn(HUES[h].hex)}" aria-hidden="true">${ICONS[ic]}</span><span><b>${t}</b><small>${d}</small></span><span class="chev" aria-hidden="true"></span></button>`).join("");
+  // 記録
+  const seen = Object.keys(QH).length, weak = Object.values(QH).filter(h => h.w > 0 && h.s < 2).length;
+  $("#st-hist").innerHTML = `これまでに出会った問題 <b>${seen}</b> 種類・復習待ち <b>${weak}</b> 問`;
+  const rows = [...ACT_MODES.map(m => [m.id, m.title, ICONS[m.id], "var(--arena)"]), ...MODES.map(m => [m.id, m.title, ICONS[MODE_ICON[m.id]], m.sw ? m.sw[0] : toneColor("v", 12)])];
+  $("#best-list").innerHTML = rows.map(([id, t, ic, bg]) => `<div class="best-row"><span class="mode-ico" style="background:${bg};color:#FFFFFF">${ic}</span><span>${t}</span><b>${bests[id] ? bests[id].score : "—"}</b></div>`).join("");
+  $("#reset-ico").innerHTML = ICONS.trash;
+}
+const LEARN_TOPICS = [
+  ["tone", "map", "PCCSトーン", "トーン図を色相ごとに見比べる。清色と濁色", 2],
+  ["wheel", "wheel", "色相環", "PCCS 24色相・心理四原色・補色・暖色と寒色", 18],
+  ["harmony", "palette", "配色", "色相差による配色・配色技法の一覧", 22],
+  ["mix", "mixq", "混色", "加法混色・減法混色・中間混色", 12],
+  ["names", "tag", "慣用色名", "和名・外来色名42色の図鑑", 1],
+  ["life", "signal", "安全色・照明・インテリア", "JIS安全色・色温度・70:25:5", 6],
+  ["eyes", "anatomy", "光と目のしくみ", "スペクトル・分光反射率・目の構造・錐体と杆体", 16],
+];
+let homeTab = store.get("tab", "play");
+function setTab(t) {
+  homeTab = t; store.set("tab", t);
+  ["play", "quiz", "learn", "record"].forEach(x => { $("#tab-" + x).hidden = x !== t; });
+  document.querySelectorAll("#bottom-nav [data-tab]").forEach(b => b.toggleAttribute("aria-current", b.dataset.tab === t));
+  document.querySelectorAll("#bottom-nav [data-tab]").forEach(b => { if (b.dataset.tab === t) b.setAttribute("aria-current", "page"); });
+  window.scrollTo(0, 0);
 }
 
 function start(mode) {
@@ -1821,6 +2027,7 @@ function finish() {
   const [, rank, sub] = RANKS.find(r => correct >= r[0]);
   $("#res-correct").style.fontSize = "";
   $("#res-mode").textContent = modeTitle(S.mode);
+  $("#res-ico").innerHTML = ICONS[MODE_ICON[S.mode]] || (S.mode.startsWith("g:") || S.mode.startsWith("lv:") ? ICONS.layers : ICONS.quiz);
   S.results.forEach(r => { const g = r.q.genre; if (!g) return; const s = gstat[g] || (gstat[g] = { n: 0, c: 0 }); s.n++; if (r.ok) s.c++; });
   store.set("gstat", gstat);
   saveHist();
@@ -2030,6 +2237,7 @@ const field = $("#field"), arena = $("#act");
 let A = null;
 
 const ACT_MODES = [
+  { id: "remix", title: "リミックス", genre: "全ジャンル", desc: "14種のミニゲームが次々に登場。", sw: () => [HUES[2].hex, HUES[8].hex, HUES[12].hex, HUES[18].hex] },
   { id: "rush",  title: "カラーラッシュ", genre: "PCCS・色の心理", desc: "降ってくる色から、ルールに合う色だけをタップ。暖色・寒色・清色・濁色を目で覚える。",
     sw: () => [HUES[2].hex, toneColor("p", 18), toneColor("dk", 12), HUES[8].hex] },
   { id: "map",   title: "トーンマップ・ダッシュ", genre: "PCCS", desc: "出てきた色がトーン図のどこにあるか、時間内にタップ。",
@@ -2137,7 +2345,7 @@ function startAction(id) {
 function stopAction() {
   if (!A) return;
   A.running = false; clearTimeout(A.cdTimer); clearTimeout(A.ending);
-  $("#countdown").hidden = true;
+  $("#countdown").hidden = true; $("#remix-intro").hidden = true;
   A = null;
 }
 const ACT_RANKS = [[1200, "色彩マスター級！"], [700, "上級者の目"], [350, "いい調子"], [0, "見習いカラリスト"]];
@@ -2149,6 +2357,7 @@ function endAction() {
   if (isBest) { bests[a.id] = { score: a.score }; store.set("best", bests); }
   lifetime.maxCombo = Math.max(lifetime.maxCombo, a.maxCombo); store.set("life", lifetime);
   $("#res-mode").textContent = title;
+  $("#res-ico").innerHTML = ICONS[a.id] || "";
   $("#res-correct").textContent = a.score;
   $("#res-correct").style.fontSize = a.score >= 10000 ? "48px" : "";
   $("#res-rank").textContent = ACT_RANKS.find(r => a.score >= r[0])[1];
@@ -2373,6 +2582,7 @@ const ACT = {
 /* ---- quick-fire engine: one prompt, a few big buttons, a shrinking timer ---- */
 const stripTags = h => h.replace(/<[^>]+>/g, "");
 function levelBanner(A, unlocks, rule, sub) {
+  if (A.remix) return false;
   const msg = unlocks && unlocks[A.n];
   if (msg) {
     setRule(`LEVEL ${A.n}！ 新パターン`, msg); A.ruleBack = A.n + 2;
@@ -2830,6 +3040,87 @@ ACT.cones = quickDef({
   },
 });
 
+/* ================= リミックス：全ミニゲームを1問ずつ連続で ================= */
+const REMIX_POOL = ["rush", "map", "wheel", "karuta", "lab", "judge", "signal", "palette", "coord", "light", "spectrum", "curve", "anatomy", "cones"];
+const REMIX_HINT = {
+  rush: "ルールに合う色だけタップ！（7秒）", map: "色のトーンの場所をタップ", wheel: "同じ色相・補色の位置を撃て", karuta: "読まれた札を取れ",
+  lab: "光やインクでお題の色を作れ", judge: "同じ色？違う色？", signal: "標識の安全色を選べ", palette: "配色技法の名前は？", coord: "コーデのイメージは？",
+  light: "場面に合う光・配色を選べ", spectrum: "スペクトル上の位置をタップ", curve: "カーブの物体は何色？", anatomy: "目のパーツをタッチ", cones: "錐体の反応から色を当てろ",
+};
+// state the sub-game shares with the remix run (score, lives, combo…); everything else is per round
+const SHARED_KEYS = new Set(["score", "combo", "maxCombo", "lives", "hits", "misses", "caught", "mistakes", "running", "ending"]);
+ACT.remix = {
+  setup(A) {
+    A.round = 0; A.speed = 0; A.bag = []; A.stats = {}; A.sid = null;
+    field.className = "field"; field.innerHTML = "";
+    this.nextRound(A);
+  },
+  hud: A => ["ROUND", A.round],
+  extra(A) {
+    const st = Object.entries(A.stats).map(([id, v]) => [id, v.ok / (v.ok + v.ng)]).filter(x => !isNaN(x[1]));
+    const name = id => ACT_MODES.find(m => m.id === id).title;
+    st.sort((a, b) => b[1] - a[1]);
+    const good = st.filter(x => x[1] === st[0][1]).slice(0, 2).map(x => name(x[0]));
+    const weak = st.filter(x => x[1] < 1).slice(-2).map(x => name(x[0]));
+    return `ラウンド ${A.round}・スピード Lv.${A.speed + 1}${st.length ? `<br>得意：${good.join("・")}${weak.length ? `／苦手：${weak.join("・")}` : ""}` : ""}`;
+  },
+  nextRound(A) {
+    A.round++;
+    const sp = Math.min(6, Math.floor((A.round - 1) / 5)), speedUp = sp > A.speed;
+    A.speed = sp;
+    if (!A.bag.length) A.bag = shuffle(REMIX_POOL.filter(x => x !== A.sid));
+    A.sid = A.bag.shift();
+    A.phase = "intro"; A.introT = speedUp ? 1.7 : 1.15;
+    A.hitsAt = A.hits; A.livesAt = A.lives;
+    const m = ACT_MODES.find(x => x.id === A.sid), card = $("#remix-intro");
+    field.className = "field"; field.innerHTML = "";
+    $("#act-combo").hidden = true;
+    card.style.setProperty("--rc-t", A.introT + "s");
+    card.innerHTML = `${speedUp ? `<span class="rc-speed">SPEED UP!</span>` : ""}<span class="rc-ico">${ICONS[A.sid]}</span><small>ROUND ${A.round}・${m.genre}</small><b>${m.title}</b><span class="rc-rule">${REMIX_HINT[A.sid]}</span><span class="rc-bar"><i></i></span>`;
+    card.hidden = false; card.style.animation = "none"; void card.offsetWidth; card.style.animation = "";
+    setRule(`ROUND ${A.round}`, `次は「${m.title}」　スピード Lv.${A.speed + 1}`);
+  },
+  startSub(A) {
+    const id = A.sid, sub = ACT[id], master = A, own = { remix: true, t: 0 };
+    A.sub = new Proxy(own, {
+      get: (t, k) => SHARED_KEYS.has(k) ? master[k] : t[k],
+      set: (t, k, v) => { if (SHARED_KEYS.has(k)) master[k] = v; else t[k] = v; return true; },
+    });
+    field.className = "field field-" + id; field.innerHTML = "";
+    sub.setup.call(sub, A.sub);                     // builds the field and the first question
+    if (id === "rush") { own.t = Math.min(36, A.speed * 7); }
+    else if (A.speed > 0) { own.n = Math.min(12, A.speed * 3); sub.next.call(sub, A.sub); }  // harder patterns as speed rises
+    if (own.limit) { own.limit = Math.max(1.6, own.limit * Math.max(.5, 1 - A.speed * .09)); own.left = own.limit; }
+    A.proxy = Object.create(sub);
+    A.proxy.next = () => { A.roundDone = true; };   // when the sub-game would start its next question, the round is over
+    A.roundDone = false; A.roundT = 0; A.phase = "play";
+  },
+  update(A, dt) {
+    if (A.phase === "intro") {
+      A.introT -= dt;
+      if (A.introT <= 0) { $("#remix-intro").hidden = true; this.startSub(A); }
+      return;
+    }
+    const sub = A.sub;
+    sub.t += dt; A.roundT += dt;
+    sub.waitAge = sub.wait > 0 ? (sub.waitAge || 0) + dt : 0;
+    ACT[A.sid].update.call(A.proxy, sub, dt);
+    if (!A.running) return;
+    if (A.sid === "rush" && A.roundT >= 7) A.roundDone = true;
+    if (A.roundDone) {
+      const st = A.stats[A.sid] || (A.stats[A.sid] = { ok: 0, ng: 0 });
+      if (A.hits > A.hitsAt && A.lives === A.livesAt) st.ok++; else st.ng++;
+      this.nextRound(A);
+    }
+  },
+  tap(A, e) {
+    if (A.phase !== "play") return;
+    const sub = A.sub;
+    if (sub.wait > 0) { if (sub.waitAge > .5 && sub.wait > .15) sub.wait = .01; return; }
+    ACT[A.sid].tap.call(A.proxy, sub, e);
+  },
+};
+
 field.addEventListener("pointerdown", e => {
   if (!(A && A.running && A.def.tap)) return;
   e.preventDefault();
@@ -2849,6 +3140,7 @@ document.addEventListener("click", e => {
   const am = e.target.closest("[data-act]"); if (am) return startAction(am.dataset.act);
   const c = e.target.closest(".choice"); if (c && !c.disabled) return answer(+c.dataset.i);
   const tab = e.target.closest(".tab"); if (tab) { learnTab = tab.dataset.tab; return renderLearn(); }
+  const li = e.target.closest("[data-learn]"); if (li) { learnTab = li.dataset.learn; renderLearn(); show("learn"); const t = document.querySelector(`.tab[data-tab="${learnTab}"]`); if (t) t.scrollIntoView({ inline: "center", block: "nearest" }); return; }
   const hb = e.target.closest("[data-hue]"); if (hb) { learnHue = +hb.dataset.hue; return renderLearn(); }
   const tb = e.target.closest("[data-tone]");
   if (tb) {
@@ -2860,13 +3152,28 @@ $("#next").addEventListener("click", next);
 $("#quit").addEventListener("click", () => { renderHome(); show("home"); });
 $("#again").addEventListener("click", () => lastKind === "act" ? startAction(lastAct) : start(S.mode));
 $("#home-btn").addEventListener("click", () => { renderHome(); show("home"); });
-$("#go-learn").addEventListener("click", () => { renderLearn(); show("learn"); });
+
 $("#go-genres").addEventListener("click", () => { renderGenres(); show("genres"); });
 $("#genres-back").addEventListener("click", () => { renderHome(); show("home"); });
-$("#learn-back").addEventListener("click", () => show("home"));
+$("#learn-back").addEventListener("click", () => { renderHome(); show("home"); });
 const sndBtn = $("#snd-toggle");
-const syncSnd = () => { sndBtn.textContent = "効果音: " + (soundOn ? "ON" : "OFF"); sndBtn.setAttribute("aria-pressed", soundOn); };
-sndBtn.addEventListener("click", () => { soundOn = !soundOn; store.set("sound", soundOn); syncSnd(); });
+const syncSnd = () => {
+  sndBtn.innerHTML = soundOn ? ICONS.sound : ICONS.mute; sndBtn.setAttribute("aria-pressed", soundOn);
+  sndBtn.setAttribute("aria-label", "効果音 " + (soundOn ? "オン" : "オフ"));
+  $("#snd-ico").innerHTML = soundOn ? ICONS.sound : ICONS.mute; $("#snd-state").textContent = soundOn ? "ON" : "OFF";
+};
+const toggleSnd = () => { soundOn = !soundOn; store.set("sound", soundOn); syncSnd(); };
+sndBtn.addEventListener("click", toggleSnd);
+$("#snd-row").addEventListener("click", toggleSnd);
+$("#reset-row").addEventListener("click", () => { $("#reset-confirm").hidden = false; });
+$("#reset-no").addEventListener("click", () => { $("#reset-confirm").hidden = true; });
+$("#reset-yes").addEventListener("click", () => {
+  ["life", "best", "gstat", "qhist", "qcount"].forEach(k => { try { localStorage.removeItem("irokenq:" + k); } catch {} });
+  lifetime = { total: 0, correct: 0, maxCombo: 0 }; bests = {}; gstat = {}; QH = {}; QCOUNT = 0;
+  $("#reset-confirm").hidden = true; renderHome();
+  floatText(innerWidth / 2, innerHeight / 2, "記録を消しました");
+});
+document.querySelectorAll("#bottom-nav [data-tab]").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab)));
 document.addEventListener("keydown", e => {
   if ($("#quiz").hidden) return;
   if (["1", "2", "3", "4"].includes(e.key) && !S.locked) answer(+e.key - 1);
@@ -2877,7 +3184,7 @@ document.addEventListener("keydown", e => {
 let dotHue = 2;
 setInterval(() => { dotHue = wrap24(dotHue + 3); const d = $("#logo-dot"); if (d) d.style.background = HUES[dotHue].hex; }, 1600);
 
-renderStrips(); renderHome(); syncSnd();
+paintIcons(); renderStrips(); renderHome(); syncSnd(); setTab(homeTab);
 })();
 </script>
 </body>

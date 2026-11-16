@@ -9,7 +9,7 @@ const src = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 const hook = 'renderStrips(); renderHome(); syncSnd();';
 if (!src.includes(hook)) throw new Error('hook not found');
 const test = src.replace(hook, hook + `
-window.__T = { get A() { return A; }, ACT, ALLK, NAMES, GENRES, MODES, ACT_MODES, LEVELS, qKnow, qTone, qHue, qName, qMix, qContrast, qSpec, qCurve, qEye, qCones, dist, makeSet, noteAnswer, qNotation, qToneClass, qToneCmp, qCompName, qMunsell, qWaveCmp, qKelvin, qNameRev, qYomi, qEyeFunc, qSafety, qPaletteQ, qCoordQ, qRoomQ, qCVD, qAttr, qAfterimage, qSpinMix, qMixRev, qCoordRev, qGogyo, qContrastDir, qRoomVis, setDiff: d => { QDIFF = d; } };`);
+window.__T = { get A() { return A; }, get cur() { if (!A) return null; if (A.def === ACT.remix) return A.phase === 'play' ? A.sub : null; return A; }, get sid() { return A ? (A.def === ACT.remix ? A.sid : A.id) : null; }, ACT, ALLK, NAMES, GENRES, MODES, ACT_MODES, LEVELS, qKnow, qTone, qHue, qName, qMix, qContrast, qSpec, qCurve, qEye, qCones, dist, makeSet, noteAnswer, qNotation, qToneClass, qToneCmp, qCompName, qMunsell, qWaveCmp, qKelvin, qNameRev, qYomi, qEyeFunc, qSafety, qPaletteQ, qCoordQ, qRoomQ, qCVD, qAttr, qAfterimage, qSpinMix, qMixRev, qCoordRev, qGogyo, qContrastDir, qRoomVis, setDiff: d => { QDIFF = d; } };`);
 // expose quick-fire generators: wrap quickDef so we can call gen() directly
 const test2 = test.replace('function quickDef(cfg) {\n  return {', 'function quickDef(cfg) {\n  return { __gen: cfg.gen,');
 const file = path.join(SP, 'selftest.html');
@@ -116,20 +116,20 @@ fs.writeFileSync(file, test2);
   // ---------- 2. perfect-player bot ----------
   const botTap = {
     async quick(p) {
-      const pt = await p.evaluate(() => { const A = __T.A; if (!A || !A.r || A.wait > 0) return null; const i = A.r.options.findIndex(o => o.correct); const b = document.querySelector(`[data-qi="${i}"]`); const r = b.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, inView: r.bottom <= innerHeight && r.top >= 0 }; });
+      const pt = await p.evaluate(() => { const A = __T.cur; if (!A || !A.r || A.wait > 0) return null; const i = A.r.options.findIndex(o => o.correct); const b = document.querySelector(`[data-qi="${i}"]`); const r = b.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, inView: r.bottom <= innerHeight && r.top >= 0 }; });
       return pt;
     },
-    async map(p) { return p.evaluate(() => { const A = __T.A; if (!A || A.wait > 0) return null; const r = document.querySelector(`[data-mt="${A.cur.t}"]`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }); },
-    async wheel(p) { return p.evaluate(() => { const A = __T.A; if (!A || A.wait > 0) return null; const svg = document.querySelector('#w-svg'); const a = ((A.cur.ans - 1) * 15 + A.rot + A.spd * 0.05) * Math.PI / 180; const pt = svg.createSVGPoint(); pt.x = 170 + 130 * Math.sin(a); pt.y = 170 - 130 * Math.cos(a); const s = pt.matrixTransform(svg.getScreenCTM()); return { x: s.x, y: s.y }; }); },
-    async spectrum(p) { return p.evaluate(() => { const A = __T.A; if (!A || A.wait > 0) return null; const q = A.q, sp = document.querySelector('#spec').getBoundingClientRect(); const X = w => sp.left + (w - 380) / 400 * sp.width; const y = sp.top + sp.height / 2;
+    async map(p) { return p.evaluate(() => { const A = __T.cur; if (!A || A.wait > 0) return null; const r = document.querySelector(`[data-mt="${A.cur.t}"]`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }); },
+    async wheel(p) { return p.evaluate(() => { const A = __T.cur; if (!A || A.wait > 0) return null; const svg = document.querySelector('#w-svg'); const a = ((A.cur.ans - 1) * 15 + A.rot + A.spd * 0.05) * Math.PI / 180; const pt = svg.createSVGPoint(); pt.x = 170 + 130 * Math.sin(a); pt.y = 170 - 130 * Math.cos(a); const s = pt.matrixTransform(svg.getScreenCTM()); return { x: s.x, y: s.y }; }); },
+    async spectrum(p) { return p.evaluate(() => { const A = __T.cur; if (!A || A.wait > 0) return null; const q = A.q, sp = document.querySelector('#spec').getBoundingClientRect(); const X = w => sp.left + (w - 380) / 400 * sp.width; const y = sp.top + sp.height / 2;
       if (q.type === 'chip') return { x: X(q.w), y }; if (q.type === 'band') return { x: X((q.B[0] + q.B[1]) / 2), y }; if (q.type === 'range') return { x: X((q.S[1] + q.S[2]) / 2), y };
       const z = document.querySelector(`[data-zone="${q.z}"]`).getBoundingClientRect(); return { x: z.x + z.width / 2, y }; }); },
-    async anatomy(p) { return p.evaluate(() => { const A = __T.A; if (!A || A.wait > 0) return null; const P = { 角膜: [72, 120], 虹彩: [101, 90], 瞳孔: [101, 120], 水晶体: [121, 120], 毛様体: [118, 67], 硝子体: [175, 120], 網膜: [231.6, 52.6], 中心窩: [262, 118], 盲点: [254, 160], 視神経: [300, 182] };
+    async anatomy(p) { return p.evaluate(() => { const A = __T.cur; if (!A || A.wait > 0) return null; const P = { 角膜: [72, 120], 虹彩: [101, 90], 瞳孔: [101, 120], 水晶体: [121, 120], 毛様体: [118, 67], 硝子体: [175, 120], 網膜: [231.6, 52.6], 中心窩: [262, 118], 盲点: [254, 160], 視神経: [300, 182] };
       const svg = document.querySelector('.eye-svg'); const pt = svg.createSVGPoint(); [pt.x, pt.y] = P[A.q[0]]; const s = pt.matrixTransform(svg.getScreenCTM()); return { x: s.x, y: s.y, part: A.q[0] }; }); },
-    async rush(p) { return p.evaluate(() => { const A = __T.A; if (!A) return null; const H = document.querySelector('#field').getBoundingClientRect(); const c = A.chips.find(c => c.ok && !c.hit && !c.el.classList.contains('gone') && c.y > 10 && c.y < H.height - c.size - 20); if (!c) return null; const r = c.el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }); },
+    async rush(p) { return p.evaluate(() => { const A = __T.cur; if (!A) return null; const H = document.querySelector('#field').getBoundingClientRect(); const c = A.chips.find(c => c.ok && !c.hit && !c.el.classList.contains('gone') && c.y > 10 && c.y < H.height - c.size - 20); if (!c) return null; const r = c.el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }); },
   };
   async function playLab(p) {
-    const st = await p.evaluate(() => { const A = __T.A; if (!A || A.wait > 0) return null; return [...A.need]; });
+    const st = await p.evaluate(() => { const A = __T.cur; if (!A || A.wait > 0) return null; return [...A.need]; });
     if (!st) return false;
     for (const k of st) await p.tap(`[data-lab="${k}"]`);
     await p.tap('[data-go]');
@@ -145,13 +145,15 @@ fs.writeFileSync(file, test2);
       await p.click(`[data-act="${id}"]`);
       await p.waitForTimeout(2900);
       let taps = 0, offscreen = 0, t0 = Date.now(), misses = [];
-      while (Date.now() - t0 < (id === 'rush' ? 20000 : 60000) && taps < rounds) {
+      while (Date.now() - t0 < (id === 'rush' ? 20000 : id === 'remix' ? 150000 : 60000) && taps < (id === 'remix' ? 40 : rounds)) {
         const st = await p.evaluate(() => __T.A ? { lives: __T.A.lives, running: __T.A.running } : null);
         if (!st || !st.running) break;
         let ok;
-        if (id === 'lab') ok = await playLab(p);
+        const sid = id === 'remix' ? await p.evaluate(() => __T.cur ? __T.sid : null) : id;
+        if (!sid) { await p.waitForTimeout(150); continue; }
+        if (sid === 'lab') ok = await playLab(p);
         else {
-          const pt = await (quickIds.includes(id) ? botTap.quick(p) : botTap[id](p));
+          const pt = await (quickIds.includes(sid) ? botTap.quick(p) : botTap[sid](p));
           if (pt) { if (pt.inView === false) offscreen++; await p.touchscreen.tap(pt.x, pt.y); ok = true; }
         }
         if (ok) taps++;
@@ -159,15 +161,15 @@ fs.writeFileSync(file, test2);
         if (lv != null && lv < 3 && !misses.length) misses.push(await p.evaluate(() => (__T.A.mistakes.slice(-1)[0] || {}).text || 'TIME'));
         await p.waitForTimeout(id === 'rush' ? 120 : 260);
       }
-      const fin = await p.evaluate(() => __T.A ? { score: __T.A.score, lives: __T.A.lives, hits: __T.A.hits, misses: __T.A.misses, combo: __T.A.maxCombo } : { ended: true });
+      const fin = await p.evaluate(() => __T.A ? { score: __T.A.score, lives: __T.A.lives, hits: __T.A.hits, misses: __T.A.misses, combo: __T.A.maxCombo, round: __T.A.round } : { ended: true });
       const verdict = fin.ended ? 'NG 途中で終了' : fin.lives === 3 && fin.hits > 0 ? 'OK' : 'NG';
-      P(`  ${verdict.padEnd(4)} ${id.padEnd(9)} 回答${taps} ヒット${fin.hits} ミス${fin.misses} ライフ${fin.lives} スコア${fin.score} 最大コンボ${fin.combo}${offscreen ? ` 画面外のボタン${offscreen}回` : ''}${misses.length ? ' 最初のミス: ' + misses[0] : ''}`);
+      P(`  ${verdict.padEnd(4)} ${id.padEnd(9)} 回答${taps} ヒット${fin.hits} ミス${fin.misses} ライフ${fin.lives} スコア${fin.score} 最大コンボ${fin.combo}${fin.round ? ` ラウンド${fin.round}` : ''}${offscreen ? ` 画面外のボタン${offscreen}回` : ''}${misses.length ? ' 最初のミス: ' + misses[0] : ''}`);
       await p.click('#act-quit');
     }
     if (errs.length) P('  JS errors: ' + errs.join(' | '));
     await p.close();
   }
-  const all = ['rush', 'map', 'wheel', 'karuta', 'lab', 'judge', 'signal', 'palette', 'coord', 'light', 'spectrum', 'curve', 'anatomy', 'cones'];
+  const all = ['remix', 'rush', 'map', 'wheel', 'karuta', 'lab', 'judge', 'signal', 'palette', 'coord', 'light', 'spectrum', 'curve', 'anatomy', 'cones'];
   await botRun(devices['iPhone 13'], 'iPhone 13', all, 14);
 
   // ---------- 3. small screens: are all controls on screen? ----------
@@ -178,7 +180,7 @@ fs.writeFileSync(file, test2);
     const probs = [];
     for (const id of all) {
       await p.click(`[data-act="${id}"]`);
-      await p.waitForTimeout(2900);
+      await p.waitForTimeout(id === 'remix' ? 4300 : 2900);
       for (let r = 0; r < 4; r++) {
         const o = await p.evaluate(() => {
           const H = innerHeight, bad = [];
@@ -188,18 +190,20 @@ fs.writeFileSync(file, test2);
         });
         if (o.bad.length || o.ov) probs.push(`${id}: ${o.bad.slice(0, 3).join(', ')}${o.ov ? ' 横スクロール' : ''}`);
         // advance one round with a correct-ish tap so later rounds (different layouts) get checked
-        await p.evaluate(() => { const A = __T.A; if (A && A.def.next && A.wait <= 0) { A.wait = 0.01; } });
+        await p.evaluate(() => { const A = __T.cur; if (A && A.wait <= 0) { A.wait = 0.01; } });
         await p.waitForTimeout(250);
       }
       await p.click('#act-quit');
     }
     // quiz screens
     for (const m of ['mix', 'names', 'g:eye', 'g:vision', 'g:light']) {
-      await p.click('#go-genres').catch(() => {});
+      await p.click('#bottom-nav [data-tab="quiz"]');
+      await p.click('#go-genres');
       await p.evaluate(mm => document.querySelector(`[data-mode="${mm}"]`).click(), m);
       const ov = await p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
       if (ov) probs.push(`quiz ${m}: 横スクロール`);
       await p.click('#quit');
+      await p.click('#bottom-nav [data-tab="play"]');
     }
     [...new Set(probs)].forEach(x => P('  NG ' + x));
     if (!probs.length) P('  問題なし');
