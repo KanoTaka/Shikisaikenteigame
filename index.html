@@ -265,6 +265,28 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 .lab-btn[aria-pressed="true"] { opacity: 1; border-color: #FFFFFF; transform: scale(1.06); }
 .lab-go { min-height: 54px; border: 0; border-radius: 14px; background: #FFFFFF; color: #1A1C26; font-weight: 700; font-size: 17px; cursor: pointer; }
 
+/* ---------- light & eye ---------- */
+.spec-wrap { display: grid; grid-template-columns: 13% 1fr 13%; height: 120px; border-radius: 14px; overflow: hidden; cursor: crosshair; touch-action: none; }
+.spec { position: relative; }
+.spec-zone { display: grid; place-items: center; text-align: center; font-size: 11px; font-weight: 700; line-height: 1.3; color: rgba(255, 255, 255, .8); background: #2A2433; }
+.spec-zone[data-zone="IR"] { background: #331F1F; }
+.spec-zone.on { outline: 4px solid #FFFFFF; outline-offset: -4px; }
+.spec-mark { position: absolute; top: -2px; bottom: -2px; width: 4px; margin-left: -2px; background: #FFFFFF; box-shadow: 0 0 0 2px rgba(0, 0, 0, .5); }
+.spec-mark.you { background: #1A1C26; box-shadow: 0 0 0 2px #FFFFFF; }
+.spec-hl { position: absolute; top: 0; bottom: 0; border: 4px solid #FFFFFF; box-sizing: border-box; background: rgba(255, 255, 255, .15); }
+.spec-ticks { position: relative; height: 16px; font-family: var(--font-mono); font-size: 11px; opacity: .85; margin-top: -4px; }
+.spec-ticks span { position: absolute; transform: translateX(-50%); }
+.eye-wrap { display: grid; place-items: center; width: 100%; }
+.eye-svg { width: 100%; max-width: 420px; height: auto; }
+.field .eye-svg { flex: 1; min-height: 0; }
+.eye-svg [data-part] { cursor: pointer; }
+.eye-svg .hl { stroke: #FFD400 !important; filter: drop-shadow(0 0 4px #FFD400); }
+.eye-svg ellipse.hl, .eye-svg circle.hl, .eye-svg rect.hl { stroke-width: 4px; }
+.eye-svg .miss { stroke: #E5484D !important; stroke-width: 4px; }
+.learn-spec { height: 40px; border-radius: 8px; border: 1px solid var(--chip-edge); }
+.learn-bands { display: flex; font-size: 11px; font-weight: 700; margin-top: 4px; }
+.learn-bands span { text-align: center; border-left: 1px solid var(--line); }
+
 /* ---------- action arena ---------- */
 /* The arena is a fixed neutral grey on purpose: colours are judged on a neutral mid-grey ground (N5 相当), so it does not change with the theme. */
 :root { --arena: #6E7075; --arena-ink: #FFFFFF; --arena-panel: rgba(0, 0, 0, .2); --arena-soft: rgba(255, 255, 255, .14); }
@@ -445,6 +467,7 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
       <button class="tab" role="tab" data-tab="mix" aria-selected="false">混色</button>
       <button class="tab" role="tab" data-tab="names" aria-selected="false">慣用色名</button>
       <button class="tab" role="tab" data-tab="life" aria-selected="false">安全色・照明・インテリア</button>
+      <button class="tab" role="tab" data-tab="eyes" aria-selected="false">光と目のしくみ</button>
     </div>
     <div class="panel" id="panel"></div>
   </section>
@@ -607,21 +630,21 @@ const KNOW2 = [
   // --- 光と色の基本
   ["basic", "3", "物体に色がついて見えるのはなぜ？", ["物体が特定の波長の光を反射（透過）するから", "物体自体が光を出しているから", "目が物体に色をつけているから", "すべての波長を吸収するから"], "物体は光の一部を<b>吸収</b>し、残りを<b>反射・透過</b>します。その光が目に届いて色として感じられます。"],
   ["basic", "3", "色が見えるために必要な3つの要素は？", ["光源・物体・目（視覚）", "色相・明度・彩度", "赤・緑・青", "白・灰・黒"], "<b>光源</b>から出た光が<b>物体</b>に当たり、その光を<b>目と脳</b>が受け取って色を感じます。"],
-  ["basic", "3", "白色光をプリズムで分け、色の帯を示した人物は？", ["ニュートン", "ゲーテ", "マンセル", "オストワルト"], "17世紀、<b>ニュートン</b>がプリズムで光を分け、白色光がさまざまな色の光の集まりであることを示しました。"],
-  ["basic", "3", "波長がおよそ380nmより短い、目に見えない光は？", ["紫外線", "赤外線", "可視光", "マイクロ波"], "380nmより短いと<b>紫外線</b>、780nmより長いと<b>赤外線</b>です。"],
-  ["basic", "2", "物体が波長ごとにどれだけ光を反射するかを示したグラフは？", ["分光反射率曲線", "xy色度図", "等色相面", "トーン図"], "<b>分光反射率曲線</b>を見ると、その物体が何色に見えるかがわかります。赤い物体は長波長側が高くなります。"],
-  ["basic", "2", "晴れた空が青く見えるおもな理由は？", ["短波長の光が大気中で散乱されやすいから", "海の色が映っているから", "長波長の光だけが届くから", "空気そのものが青いから"], "波長の短い青い光ほど空気の分子で<b>散乱</b>されやすく、空全体に広がって見えます（レイリー散乱）。"],
-  ["basic", "2", "シャボン玉の表面に虹色が見える現象は？", ["干渉", "散乱", "吸収", "回折だけによる屈折"], "薄い膜の表と裏で反射した光が重なり合って強め合ったり弱め合ったりする<b>干渉</b>によるものです。"],
-  ["basic", "3", "ステンドグラスのように、光が物体を通り抜けて見える色を何という？", ["透過色", "表面色", "光源色", "開口色"], "光が通り抜けて見える色が<b>透過色</b>、物体の表面で反射して見える色が<b>表面色</b>です。"],
+  ["light", "3", "白色光をプリズムで分け、色の帯を示した人物は？", ["ニュートン", "ゲーテ", "マンセル", "オストワルト"], "17世紀、<b>ニュートン</b>がプリズムで光を分け、白色光がさまざまな色の光の集まりであることを示しました。"],
+  ["light", "3", "波長がおよそ380nmより短い、目に見えない光は？", ["紫外線", "赤外線", "可視光", "マイクロ波"], "380nmより短いと<b>紫外線</b>、780nmより長いと<b>赤外線</b>です。"],
+  ["light", "2", "物体が波長ごとにどれだけ光を反射するかを示したグラフは？", ["分光反射率曲線", "xy色度図", "等色相面", "トーン図"], "<b>分光反射率曲線</b>を見ると、その物体が何色に見えるかがわかります。赤い物体は長波長側が高くなります。"],
+  ["light", "2", "晴れた空が青く見えるおもな理由は？", ["短波長の光が大気中で散乱されやすいから", "海の色が映っているから", "長波長の光だけが届くから", "空気そのものが青いから"], "波長の短い青い光ほど空気の分子で<b>散乱</b>されやすく、空全体に広がって見えます（レイリー散乱）。"],
+  ["light", "2", "シャボン玉の表面に虹色が見える現象は？", ["干渉", "散乱", "吸収", "回折だけによる屈折"], "薄い膜の表と裏で反射した光が重なり合って強め合ったり弱め合ったりする<b>干渉</b>によるものです。"],
+  ["light", "3", "ステンドグラスのように、光が物体を通り抜けて見える色を何という？", ["透過色", "表面色", "光源色", "開口色"], "光が通り抜けて見える色が<b>透過色</b>、物体の表面で反射して見える色が<b>表面色</b>です。"],
   // --- 目と色の見え方
   ["eye", "3", "同じ橙色が、赤の上では黄みに、黄の上では赤みに見える現象は？", ["色相対比", "明度対比", "彩度対比", "同化"], "周りの色相と反対の方向へずれて見えるのが<b>色相対比</b>です。"],
   ["eye", "3", "小さな色見本で選んだ色を壁一面に塗ると、明るく鮮やかに感じる。これは？", ["面積効果", "色順応", "同化", "縁辺対比"], "面積が大きいほど明度・彩度が高く見えるのが<b>面積効果</b>。外壁やカーテンの色選びで注意が必要です。"],
-  ["eye", "3", "明るい所から映画館に入ると、しばらくして周りが見えてくる。このはたらきは？", ["暗順応", "明順応", "色順応", "恒常性"], "暗さに目が慣れるのが<b>暗順応</b>（時間がかかる）。逆に明るさに慣れるのが<b>明順応</b>（すぐ慣れる）。"],
-  ["eye", "3", "色付きのサングラスをかけてしばらくすると、色の偏りが気にならなくなる。これは？", ["色順応", "暗順応", "色相対比", "リープマン効果"], "目が照明や光の色みに慣れるはたらきが<b>色順応</b>です。"],
-  ["eye", "3", "網膜の中心にあり、錐体が密集して色や形を最もよく見分ける部分は？", ["中心窩", "盲点", "虹彩", "毛様体"], "<b>中心窩</b>には錐体が集まっています。視神経の出口の<b>盲点</b>には視細胞がありません。"],
-  ["eye", "2", "赤・緑・青紫の3種類の受容器を仮定した色覚の説は？", ["ヤング＝ヘルムホルツの三色説", "ヘリングの反対色説", "段階説", "オストワルトの調和論"], "<b>三色説</b>は錐体レベルのしくみをよく説明します。"],
-  ["eye", "2", "赤-緑、黄-青、白-黒の対になった反応で色覚を説明した説は？", ["ヘリングの反対色説", "ヤング＝ヘルムホルツの三色説", "ニュートンの光学", "ジャッドの調和論"], "<b>反対色説</b>。現在は、錐体段階は三色説、その先の神経段階は反対色説とする<b>段階説</b>が有力です。"],
-  ["eye", "2", "錐体は何種類ある？", ["3種類（L・M・S）", "2種類", "4種類", "1種類"], "長波長に反応する<b>L錐体</b>、中波長の<b>M錐体</b>、短波長の<b>S錐体</b>の3種類です。"],
+  ["vision", "3", "明るい所から映画館に入ると、しばらくして周りが見えてくる。このはたらきは？", ["暗順応", "明順応", "色順応", "恒常性"], "暗さに目が慣れるのが<b>暗順応</b>（時間がかかる）。逆に明るさに慣れるのが<b>明順応</b>（すぐ慣れる）。"],
+  ["vision", "3", "色付きのサングラスをかけてしばらくすると、色の偏りが気にならなくなる。これは？", ["色順応", "暗順応", "色相対比", "リープマン効果"], "目が照明や光の色みに慣れるはたらきが<b>色順応</b>です。"],
+  ["vision", "3", "網膜の中心にあり、錐体が密集して色や形を最もよく見分ける部分は？", ["中心窩", "盲点", "虹彩", "毛様体"], "<b>中心窩</b>には錐体が集まっています。視神経の出口の<b>盲点</b>には視細胞がありません。"],
+  ["vision", "2", "赤・緑・青紫の3種類の受容器を仮定した色覚の説は？", ["ヤング＝ヘルムホルツの三色説", "ヘリングの反対色説", "段階説", "オストワルトの調和論"], "<b>三色説</b>は錐体レベルのしくみをよく説明します。"],
+  ["vision", "2", "赤-緑、黄-青、白-黒の対になった反応で色覚を説明した説は？", ["ヘリングの反対色説", "ヤング＝ヘルムホルツの三色説", "ニュートンの光学", "ジャッドの調和論"], "<b>反対色説</b>。現在は、錐体段階は三色説、その先の神経段階は反対色説とする<b>段階説</b>が有力です。"],
+  ["vision", "2", "錐体は何種類ある？", ["3種類（L・M・S）", "2種類", "4種類", "1種類"], "長波長に反応する<b>L錐体</b>、中波長の<b>M錐体</b>、短波長の<b>S錐体</b>の3種類です。"],
   ["eye", "2", "明度を段階的に変えた灰色を並べると、境目で明るい側がより明るく、暗い側がより暗く見える現象は？", ["縁辺対比", "同化", "面積効果", "色陰現象"], "境界部分で対比が強まるのが<b>縁辺対比</b>です。"],
   ["eye", "2", "白黒の模様だけのコマを回すと、うっすら色が見える現象は？", ["主観色（ベンハムのコマ）", "継時加法混色", "残像", "プルキニエ現象"], "白黒しかないのに色を感じる<b>主観色</b>。ベンハムのコマが有名です。"],
   ["eye", "3", "ある色を見た直後に別の色を見たとき、前の色の影響で見え方が変わる対比は？", ["継時対比", "同時対比", "縁辺対比", "面積対比"], "時間をおいて起こるのが<b>継時対比</b>、並べて同時に見るときに起こるのが<b>同時対比</b>です。"],
@@ -733,9 +756,55 @@ const KNOW2 = [
   ["ud", "UC", "色の見え方の違いに配慮した表示で、色の名前を併記する理由は？", ["色について会話するときに伝わりやすいから", "色を鮮やかにするため", "印刷コストを下げるため", "流行に合わせるため"], "「赤いボタンを押して」と言われても見分けにくい場合があるので、<b>色名の表記</b>が役立ちます。"],
 ];
 
+KNOW2.push(...[
+  // --- 色の基本（追加）
+  ["basic", "3", "「色」は最終的にどこで生まれる感覚？", ["脳", "物体の表面", "光そのもの", "水晶体"], "光そのものに色がついているのではなく、目で受け取った信号を<b>脳</b>が処理して「色」として感じます。"],
+  ["basic", "3", "色の三属性のうち、明るさの度合いを表すのは？", ["明度", "彩度", "色相", "色温度"], "<b>明度</b>は明るさ。白に近いほど高く、黒に近いほど低くなります。"],
+  ["basic", "3", "色の三属性のうち、鮮やかさの度合いを表すのは？", ["彩度", "明度", "色相", "トーン"], "<b>彩度</b>は鮮やかさ。無彩色の彩度は0です。"],
+  ["basic", "3", "赤・黄・緑・青のような「色み」の違いを表す属性は？", ["色相", "明度", "彩度", "清色"], "<b>色相</b>は色みの違い。色相を順に円く並べたものが色相環です。"],
+  // --- 光の性質
+  ["light", "3", "光は何の一種？", ["電磁波", "音波", "水の波", "磁石の力"], "光は<b>電磁波</b>の一種。そのうち人の目に見える範囲が可視光です。"],
+  ["light", "3", "可視光のうち、短波長域（約380〜500nm）の光は何色みに見える？", ["青紫〜青", "緑〜黄", "橙〜赤", "白"], "<b>短波長は青み</b>、中波長（約500〜600nm）は緑〜黄、長波長（約600〜780nm）は橙〜赤。"],
+  ["light", "3", "可視光のうち、中波長域（約500〜600nm）の光は何色みに見える？", ["緑〜黄", "青紫〜青", "橙〜赤", "紫"], "中波長は<b>緑〜黄</b>の色みに見えます。"],
+  ["light", "3", "太陽や電球など、光源から出る光の色を何という？", ["光源色", "物体色", "表面色", "透過色"], "光源の光の色が<b>光源色</b>、物体に反射・透過した光の色が<b>物体色</b>です。"],
+  ["light", "3", "鏡のような滑らかな面で、光が一方向へはね返る反射は？", ["正反射（鏡面反射）", "拡散反射", "屈折", "散乱"], "滑らかな面では<b>正反射</b>、凹凸のある面では四方へ散る<b>拡散反射</b>が起こります。"],
+  ["light", "3", "マットな紙のように、光が四方へはね返る反射は？", ["拡散反射", "正反射", "干渉", "回折"], "表面の細かな凹凸で光が四方へ散るのが<b>拡散反射</b>。どの方向から見ても同じような色に見えます。"],
+  ["light", "3", "プリズムを通った白色光が色の帯に分かれるのはなぜ？", ["波長によって屈折する角度が違うから", "プリズムが色を塗るから", "光が吸収されるから", "光が散乱されるから"], "波長が短い光ほど大きく曲がるため、色ごとに分かれます（<b>分散</b>）。"],
+  ["light", "3", "虹が見えるのは、雨粒の中で光がどうなるから？", ["屈折・反射して波長ごとに分かれるから", "干渉して打ち消し合うから", "すべて吸収されるから", "散乱されて白くなるから"], "雨粒がプリズムの役目をして、光を<b>屈折・反射</b>させて波長ごとに分けます。"],
+  ["light", "2", "CDの裏面が虹色に見えるおもな理由は？", ["細かな溝による回折と干渉", "表面に色が塗ってあるから", "光の吸収", "拡散反射"], "細かな溝で光が曲がり（<b>回折</b>）、重なり合って強め合う（<b>干渉</b>）ことで色が見えます。"],
+  ["light", "2", "光源が波長ごとにどれだけのエネルギーを出しているかを表したものは？", ["分光分布", "分光反射率", "色度図", "トーン図"], "光源の性質は<b>分光分布</b>、物体の性質は<b>分光反射率</b>で表します。"],
+  ["light", "3", "白い物体の分光反射率はどうなっている？", ["すべての波長でほぼ高い", "すべての波長でほぼ低い", "長波長だけ高い", "短波長だけ高い"], "白は可視光の<b>どの波長もよく反射</b>します。黒はどの波長もほとんど吸収し、灰色は全体に中くらいです。"],
+  ["light", "3", "赤いりんごが赤く見えるのはなぜ？", ["長波長の光を多く反射し、ほかを吸収するから", "短波長の光を多く反射するから", "すべての光を反射するから", "自分で赤い光を出しているから"], "りんごは<b>長波長（赤）</b>をよく反射し、中・短波長を吸収しています。"],
+  ["light", "3", "白い光の下で青く見える物体に、赤い光だけを当てるとどう見える？", ["暗く（黒っぽく）見える", "赤く見える", "白く見える", "より青く見える"], "青い物体は赤い光をほとんど反射しないので、反射する光がなく<b>暗く</b>見えます。"],
+  ["light", "3", "nm（ナノメートル）とはどれくらいの長さ？", ["10億分の1メートル", "100万分の1メートル", "1000分の1メートル", "1兆分の1メートル"], "1nm＝<b>10⁻⁹m（10億分の1メートル）</b>。可視光の波長はおよそ380〜780nmです。"],
+  // --- 目と脳のしくみ
+  ["vision", "3", "目の中で、光を最も大きく屈折させるのは？", ["角膜", "水晶体", "硝子体", "網膜"], "ピント調節は水晶体ですが、屈折の大部分は前面の<b>角膜</b>が担っています。"],
+  ["vision", "3", "カメラの「絞り」にあたる目の部分は？", ["虹彩", "水晶体", "網膜", "角膜"], "<b>虹彩</b>が瞳孔の大きさを変えて、入る光の量を調節します。"],
+  ["vision", "3", "カメラの「レンズ」にあたる目の部分は？", ["水晶体", "虹彩", "網膜", "視神経"], "<b>水晶体</b>は厚みを変えてピントを合わせます。"],
+  ["vision", "3", "カメラの「フィルム（センサー）」にあたる目の部分は？", ["網膜", "角膜", "虹彩", "毛様体"], "<b>網膜</b>に並ぶ視細胞が光を受けて信号に変えます。"],
+  ["vision", "3", "水晶体の厚みを変えてピントを調節する筋肉があるのは？", ["毛様体", "虹彩", "視神経", "硝子体"], "<b>毛様体</b>の筋肉が水晶体の厚みを変えます。近くを見るときは水晶体が厚くなります。"],
+  ["vision", "3", "明るい場所では、瞳孔の大きさはどうなる？", ["小さくなる", "大きくなる", "変わらない", "形が四角になる"], "明るいと<b>小さく</b>、暗いと大きくなって、入る光の量を調節します。"],
+  ["vision", "2", "網膜の視細胞で、数が多いのはどっち？", ["杆体（約1億2000万個）", "錐体（約600万個）", "どちらも同じくらい", "どちらも約100個"], "<b>杆体</b>が約1億2000万個、錐体は約600万個。錐体は中心窩に集まっています。"],
+  ["vision", "2", "杆体に含まれ、光を受けて変化する視物質は？", ["ロドプシン", "メラニン", "ヘモグロビン", "クロロフィル"], "杆体の視物質は<b>ロドプシン</b>。暗い所では時間をかけて再生されるため、暗順応には時間がかかります。"],
+  ["vision", "2", "明るい所（明所視）で、人の目が最も感度よく感じる波長は？", ["約555nm（黄緑）", "約450nm（青）", "約650nm（赤）", "約380nm（紫）"], "明所視では<b>約555nm</b>、暗所視では<b>約507nm</b>が最も感度が高くなります。このずれがプルキニエ現象の原因です。"],
+  ["vision", "2", "暗い所（暗所視）で、目が最も感度よく感じる波長は？", ["約507nm（青緑寄り）", "約555nm（黄緑）", "約650nm（赤）", "約700nm（赤）"], "暗所視では杆体が働き、<b>約507nm</b>付近の感度が最も高くなります。"],
+  ["vision", "2", "明所視と暗所視の中間の明るさで、錐体と杆体がともに働く状態は？", ["薄明視", "中心視", "周辺視", "立体視"], "夕暮れなどの<b>薄明視</b>では、錐体と杆体の両方が働いています。"],
+  ["vision", "2", "S錐体が最もよく反応する光は？", ["短波長（青紫〜青）", "中波長（緑）", "長波長（赤）", "赤外線"], "S＝Short。<b>短波長</b>に反応します。L錐体は長波長、M錐体は中波長寄りです。"],
+  ["vision", "2", "網膜からの信号が脳に届くまでの順序として正しいものは？", ["網膜→視神経→外側膝状体→大脳の視覚野", "網膜→水晶体→視神経→視覚野", "角膜→網膜→視交叉→小脳", "視覚野→視神経→網膜"], "信号は<b>視神経</b>から<b>外側膝状体</b>を経て、後頭部の<b>視覚野</b>へ届きます。"],
+  ["vision", "2", "左右の目からの視神経が一部交差する場所は？", ["視交叉", "中心窩", "盲点", "毛様体"], "<b>視交叉</b>で、左右の視野の情報がそれぞれ反対側の脳へ送られます。"],
+  ["vision", "3", "盲点があるのに、ふだん視野に穴が見えないのはなぜ？", ["両目で補い合い、脳が補完しているから", "盲点はとても大きいから", "瞳孔がふさいでいるから", "錐体が集まっているから"], "片目の盲点はもう片方の目が補い、さらに<b>脳</b>が周りの情報で埋めています。"],
+  ["vision", "3", "網膜の周辺部（視野の端）で見ると、色がわかりにくいのはなぜ？", ["錐体が少なく杆体が多いから", "水晶体がないから", "網膜がないから", "光が届かないから"], "錐体は中心窩に集まり、周辺部は<b>杆体が中心</b>なので色の区別が苦手です。"],
+  ["vision", "3", "年齢とともに水晶体が硬くなり、近くにピントが合いにくくなる状態は？", ["老視", "近視", "色順応", "暗順応"], "水晶体の弾力が失われる<b>老視</b>。水晶体の黄変も起こり、青系が見えにくくなります。"],
+  ["vision", "2", "分光分布の違う2つの光が同じ色に見えることがあるのはなぜ？", ["3種類の錐体の反応が同じになるから", "目が1種類の細胞しか持たないから", "光の波長が同じだから", "脳が色を無視するから"], "色は3種類の錐体の反応の組み合わせで決まるので、<b>反応が同じなら同じ色</b>に見えます（条件等色）。"],
+  ["vision", "2", "R・G・Bの3色の光だけでたくさんの色を作れるのは、目のどんな性質による？", ["錐体が3種類だから", "杆体が1種類だから", "瞳孔が丸いから", "水晶体が透明だから"], "3種類の錐体（L・M・S）の反応をR・G・Bの光量で調整できるので、さまざまな色が作れます。"],
+  ["vision", "3", "ある色をしばらく見つめた後に補色の残像が見えるのはなぜ？", ["その色に反応した錐体が順応して感度が下がるから", "網膜に色が焼き付くから", "瞳孔が閉じるから", "水晶体が色づくから"], "見つめた色に反応した錐体の<b>感度が下がる</b>ため、白い面を見るとその反対の色みが強く感じられます。"],
+]);
+
 const GENRES = [
-  { id: "basic",    name: "光と色の基本",       hue: 8,  desc: "三属性・光とスペクトル・物体の色" },
-  { id: "eye",      name: "目と色の見え方",     hue: 16, desc: "視細胞・順応・対比・同化・面積効果", gens: ["know", "know", "contrast"] },
+  { id: "basic",    name: "色の基本",           hue: 8,  desc: "色とは何か・三属性・有彩色と無彩色・清色と濁色" },
+  { id: "light",    name: "光の性質",           hue: 9,  desc: "波長とスペクトル・反射と吸収・屈折・散乱・分光反射率", gens: ["know", "know", "spec", "curve"] },
+  { id: "vision",   name: "目と脳のしくみ",     hue: 17, desc: "目の構造・錐体と杆体・明所視と暗所視・順応・色覚説・視覚の経路", gens: ["know", "know", "eyepart", "cones"] },
+  { id: "eye",      name: "色の見え方",         hue: 16, desc: "対比・同化・面積効果・残像・錯視", gens: ["know", "know", "contrast"] },
   { id: "mix",      name: "混色",               hue: 12, desc: "加法混色・減法混色・中間混色", gens: ["know", "mixq"] },
   { id: "pccs",     name: "PCCS",               hue: 2,  desc: "トーン・色相環・明度と彩度の段階", gens: ["know", "tone", "hue"] },
   { id: "system",   name: "表色系と色名",       hue: 19, desc: "マンセル・オストワルト・XYZ・L*a*b*・JIS色名" },
@@ -749,7 +818,7 @@ const GENRES = [
   { id: "names",    name: "慣用色名",           hue: 1,  desc: "和名・外来色名42色", gens: ["names"] },
 ];
 const GENRE = Object.fromEntries(GENRES.map(g => [g.id, g]));
-const TAG2GENRE = { "色の基本": "basic", "光と色": "basic", "目のしくみ": "eye", "色の見え方": "eye", "混色": "mix", "色の心理": "psych", "表色系": "system", "配色技法": "harmony", "照明": "lighting" };
+const TAG2GENRE = { "色の基本": "basic", "光と色": "light", "目のしくみ": "vision", "色の見え方": "eye", "混色": "mix", "色の心理": "psych", "表色系": "system", "配色技法": "harmony", "照明": "lighting" };
 const ALLK = [
   ...KNOW.map(([tag, q, opts, exp]) => ({ g: q.includes("PCCS") ? "pccs" : TAG2GENRE[tag], lv: /プルキニエ|恒常性|ナチュラルハーモニー|演色性/.test(q) ? "2" : "3", q, opts, exp })),
   ...KNOW2.map(([g, lv, q, opts, exp]) => ({ g, lv, q, opts, exp })),
@@ -971,16 +1040,166 @@ function qName() {
   };
 }
 
+
+/* ================= light & eye helpers ================= */
+function wl2rgb(w) {
+  let r = 0, g = 0, b = 0;
+  if (w < 440) { r = -(w - 440) / 60; b = 1; }
+  else if (w < 490) { g = (w - 440) / 50; b = 1; }
+  else if (w < 510) { g = 1; b = -(w - 510) / 20; }
+  else if (w < 580) { r = (w - 510) / 70; g = 1; }
+  else if (w < 645) { r = 1; g = -(w - 645) / 65; }
+  else { r = 1; }
+  const f = w < 420 ? .3 + .7 * (w - 380) / 40 : w > 700 ? .3 + .7 * (780 - w) / 80 : 1;
+  return rgb2hex([r, g, b].map(v => v > 0 ? 255 * Math.pow(v * f, .8) : 0));
+}
+const WL_BANDS = [[380, 450, "青紫"], [450, 495, "青"], [495, 570, "緑"], [570, 590, "黄"], [590, 620, "橙"], [620, 780, "赤"]];
+const bandOf = w => WL_BANDS.find(b => w >= b[0] && w < b[1]) || WL_BANDS[5];
+const specGradient = () => "linear-gradient(90deg," + Array.from({ length: 41 }, (_, i) => `${wl2rgb(380 + i * 10)} ${i * 2.5}%`).join(",") + ")";
+
+// Simplified spectral reflectance curves (400–700nm, 0–100%)
+const sig = (w, c, k) => 1 / (1 + Math.exp(-(w - c) / k));
+const gau = (w, c, k) => Math.exp(-(((w - c) / k) ** 2));
+const CURVES = {
+  "赤":  ["#E60033", w => 6 + 82 * sig(w, 600, 12), "長波長（約600nm〜）だけを多く反射"],
+  "橙":  ["#F7851B", w => 6 + 80 * sig(w, 572, 12), "黄〜赤の波長（約570nm〜）を多く反射"],
+  "黄":  ["#FFE600", w => 6 + 82 * sig(w, 505, 12), "中波長〜長波長（約500nm〜）を反射し、短波長を吸収"],
+  "緑":  ["#00A14B", w => 6 + 64 * gau(w, 530, 40), "中波長（約500〜570nm）を多く反射"],
+  "青":  ["#0068B7", w => 6 + 66 * gau(w, 460, 38), "短波長（約430〜500nm）を多く反射"],
+  "紫":  ["#8B2F8E", w => 6 + 55 * gau(w, 415, 30) + 60 * sig(w, 640, 15), "短波長と長波長の両端を反射し、中波長を吸収"],
+  "白":  ["#FFFFFF", () => 88, "すべての波長をよく反射"],
+  "灰色": ["#8A8A8A", () => 42, "すべての波長を同じくらい中程度に反射"],
+  "黒":  ["#1A1A1A", () => 5, "すべての波長をほとんど吸収"],
+};
+function curveSVG(fn, withSpec = true) {
+  const X = w => 34 + (w - 400) / 300 * 216, Y = v => 112 - v * 1;
+  const pts = Array.from({ length: 61 }, (_, i) => { const w = 400 + i * 5; return `${X(w).toFixed(1)},${Y(fn(w)).toFixed(1)}`; }).join(" ");
+  return `<svg viewBox="0 0 260 150" style="width:100%;max-width:340px;height:auto;color:inherit" role="img" aria-label="分光反射率曲線">
+    ${withSpec ? `<rect x="34" y="118" width="216" height="8" fill="url(#specg)"/>` : ""}
+    <defs><linearGradient id="specg">${[400, 450, 500, 550, 600, 650, 700].map(w => `<stop offset="${(w - 400) / 3}%" stop-color="${wl2rgb(w)}"/>`).join("")}</linearGradient></defs>
+    <path d="M34,10 V112 H250" fill="none" stroke="currentColor" stroke-opacity=".5"/>
+    ${[400, 500, 600, 700].map(w => `<text x="${X(w)}" y="140" text-anchor="middle" font-size="9" fill="currentColor">${w}</text>`).join("")}
+    <text x="30" y="16" text-anchor="end" font-size="8" fill="currentColor">100%</text><text x="30" y="114" text-anchor="end" font-size="8" fill="currentColor">0</text>
+    <text x="250" y="150" text-anchor="end" font-size="8" fill="currentColor" opacity=".7">波長 nm</text>
+    <polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>`;
+}
+
+// Cone responses (simplified ratios L, M, S → perceived colour)
+const CONE_PAT = {
+  "赤": ["#E60033", [.9, .25, .05]], "橙": ["#F7851B", [.95, .55, .05]], "黄": ["#FFE600", [.95, .9, .08]], "緑": ["#00A14B", [.5, .9, .12]],
+  "青": ["#0068B7", [.15, .35, .8]], "青紫": ["#4C3A96", [.12, .08, .95]], "白": ["#FFFFFF", [.95, .95, .95]], "黒": ["#1A1A1A", [.04, .04, .04]],
+};
+function coneBars([l, m, s]) {
+  const bar = (x, v, c, lab) => `<rect x="${x}" y="${10 + (1 - v) * 90}" width="46" height="${v * 90}" rx="5" fill="${c}"/><text x="${x + 23}" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">${lab}</text>`;
+  return `<svg viewBox="0 0 200 124" style="width:100%;max-width:260px;height:auto" role="img" aria-label="錐体の反応の強さ"><path d="M8,100 H192" stroke="currentColor" stroke-opacity=".4"/>${bar(18, l, "#E8605A", "L")}${bar(77, m, "#5CC46E", "M")}${bar(136, s, "#5B6EE0", "S")}</svg>`;
+}
+
+// Eye cross-section
+const EYE_PARTS = {
+  "角膜": "目のいちばん前にある透明な膜。光を最も大きく屈折させる",
+  "虹彩": "瞳孔の大きさを変えて、目に入る光の量を調節する（カメラの絞り）",
+  "瞳孔": "光が目の中へ入る入り口。明るいと小さく、暗いと大きくなる",
+  "水晶体": "厚みを変えてピントを合わせるレンズ（カメラのレンズ）",
+  "毛様体": "水晶体の厚みを調節する筋肉を含む組織",
+  "硝子体": "眼球の内部を満たす透明なゼリー状の組織",
+  "網膜": "錐体・杆体が並び、光を信号に変える膜（カメラのセンサー）",
+  "中心窩": "網膜の中心。錐体が密集し、色や形を最もよく見分ける",
+  "盲点": "視神経の出口（視神経乳頭）。視細胞がなく光を感じない",
+  "視神経": "網膜からの信号を脳へ送る神経の束",
+};
+const EYE_ASK = [
+  ["角膜", "目のいちばん前の透明な膜は？"], ["角膜", "光を最も大きく屈折させるのは？"],
+  ["虹彩", "カメラの「絞り」にあたるのは？"], ["虹彩", "光の量を調節する、色のついた膜は？"],
+  ["瞳孔", "光の入り口になる穴は？"],
+  ["水晶体", "カメラの「レンズ」にあたるのは？"], ["水晶体", "厚みを変えてピントを合わせるのは？"],
+  ["毛様体", "水晶体の厚みを変える筋肉があるのは？"],
+  ["硝子体", "眼球の中を満たす透明なゼリー状の部分は？"],
+  ["網膜", "カメラの「センサー」にあたるのは？"], ["網膜", "錐体と杆体が並んでいる膜は？"],
+  ["中心窩", "錐体が密集して、いちばんよく見える場所は？"],
+  ["盲点", "視細胞がなく、光を感じない場所は？"],
+  ["視神経", "網膜の信号を脳へ送るのは？"],
+];
+function eyeSVG(o = {}) {
+  const c = p => p === o.hl ? ' class="hl"' : "";
+  const L = [["角膜", 30, 40, 72, 104], ["虹彩", 86, 24, 101, 78], ["毛様体", 146, 24, 120, 54], ["水晶体", 150, 100, 128, 110], ["瞳孔", 52, 222, 100, 128],
+    ["硝子体", 182, 150], ["網膜", 284, 40, 252, 62], ["中心窩", 300, 110, 269, 119], ["盲点", 300, 140, 262, 155], ["視神経", 290, 228, 298, 184]];
+  const labels = o.labels ? L.map(([n, x, y, tx, ty]) => `${tx ? `<line x1="${x}" y1="${y + 3}" x2="${tx}" y2="${ty}" stroke="currentColor" stroke-opacity=".55"/>` : ""}<text x="${x}" y="${y}" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">${n}</text>`).join("") : "";
+  return `<svg class="eye-svg" viewBox="0 0 330 240" role="img" aria-label="目の断面図">
+    <g pointer-events="none" stroke="#FFD86B" stroke-width="1.5" stroke-dasharray="4 4" opacity=".8"><line x1="0" y1="92" x2="70" y2="100"/><line x1="0" y1="148" x2="70" y2="140"/></g>
+    <path data-part="視神経"${c("視神経")} d="M250,160 L318,190" stroke="#E2B95C" stroke-width="20" stroke-linecap="round" fill="none"/>
+    <circle cx="175" cy="120" r="96" fill="#F4F1EA" stroke="#C9C1B2" stroke-width="3" pointer-events="none"/>
+    <circle data-part="硝子体"${c("硝子体")} cx="175" cy="120" r="85" fill="#E3EEF2"/>
+    <path data-part="網膜"${c("網膜")} d="M197.8,35 A88,88 0 0 1 197.8,205" fill="none" stroke="#E2826F" stroke-width="9"/>
+    <circle data-part="中心窩"${c("中心窩")} cx="262" cy="120" r="7.5" fill="#A93C30"/>
+    <circle data-part="盲点"${c("盲点")} cx="255" cy="157" r="8.5" fill="#F1CF6E"/>
+    <ellipse data-part="毛様体"${c("毛様体")} cx="118" cy="67" rx="9" ry="15" fill="#C27A6E"/>
+    <ellipse data-part="毛様体"${c("毛様体")} cx="118" cy="173" rx="9" ry="15" fill="#C27A6E"/>
+    <ellipse data-part="水晶体"${c("水晶体")} cx="121" cy="120" rx="12" ry="30" fill="#F5E2A0" stroke="#D2B25A" stroke-width="2"/>
+    <rect data-part="虹彩"${c("虹彩")} x="98" y="76" width="7" height="32" fill="#6B4A2B" stroke="rgba(0,0,0,0)" stroke-width="10"/>
+    <rect data-part="虹彩"${c("虹彩")} x="98" y="132" width="7" height="32" fill="#6B4A2B" stroke="rgba(0,0,0,0)" stroke-width="10"/>
+    <rect data-part="瞳孔"${c("瞳孔")} x="96" y="108" width="11" height="24" fill="#16161A"/>
+    <path data-part="角膜"${c("角膜")} d="M96,72 Q48,120 96,168" fill="rgba(160,210,235,.35)" stroke="#6FAED0" stroke-width="5"/>
+    ${labels}</svg>`;
+}
+
+function qSpec() {
+  const [a, b, name] = pick(WL_BANDS);
+  const w = Math.round((a + (b - a) * (.25 + Math.random() * .5)) / 5) * 5;
+  const opts = shuffle([name, ...shuffle(WL_BANDS.map(x => x[2]).filter(n => n !== name)).slice(0, 3)]);
+  const hexOf = n => { const B = WL_BANDS.find(x => x[2] === n); return wl2rgb((B[0] + Math.min(B[1], 700)) / 2); };
+  return {
+    tag: "光の性質・波長", genre: "light", text: `波長 <b>約${w}nm</b> の光は、何色に見える？`,
+    visual: `<div class="notation">${w} nm</div>`, swatch: true,
+    choices: opts.map(n => ({ html: chip(hexOf(n), "", n), cap: n, correct: n === name })),
+    explain: `${mini(wl2rgb(w))} 約${w}nm は <b>${name}</b>（${a}〜${b}nm あたり）。短波長ほど青紫、長波長ほど赤に見えます。`,
+    key: "s:" + name, short: `${w}nm`,
+  };
+}
+function qCurve() {
+  const name = pick(Object.keys(CURVES)), [hex, fn, why] = CURVES[name];
+  const opts = shuffle([name, ...shuffle(Object.keys(CURVES).filter(n => n !== name)).slice(0, 3)]);
+  return {
+    tag: "光の性質・分光反射率", genre: "light", text: "この分光反射率曲線をもつ物体は、何色に見える？",
+    visual: curveSVG(fn), swatch: true,
+    choices: opts.map(n => ({ html: chip(CURVES[n][0], "", n), cap: n, correct: n === name })),
+    explain: `${mini(hex)} <b>${name}</b>：${why}。反射された波長の光が目に届いて、その色に見えます。`,
+    key: "cv:" + name, short: name,
+  };
+}
+function qEye() {
+  const part = pick(Object.keys(EYE_PARTS));
+  const opts = shuffle([part, ...shuffle(Object.keys(EYE_PARTS).filter(n => n !== part)).slice(0, 3)]);
+  return {
+    tag: "目と脳のしくみ・目の構造", genre: "vision", text: "黄色く光っている部分の名前は？",
+    visual: `<div class="eye-wrap">${eyeSVG({ hl: part })}</div>`,
+    choices: opts.map(n => ({ html: n, correct: n === part })),
+    explain: `<b>${part}</b>：${EYE_PARTS[part]}。`,
+    key: "e:" + part, short: part,
+  };
+}
+function qCones() {
+  const name = pick(Object.keys(CONE_PAT)), [hex, v] = CONE_PAT[name];
+  const opts = shuffle([name, ...shuffle(Object.keys(CONE_PAT).filter(n => n !== name)).slice(0, 3)]);
+  return {
+    tag: "目と脳のしくみ・錐体", genre: "vision", text: "3種類の錐体がこの強さで反応したとき、何色に見える？（簡略図）",
+    visual: coneBars(v), swatch: true,
+    choices: opts.map(n => ({ html: chip(CONE_PAT[n][0], "", n), cap: n, correct: n === name })),
+    explain: `${mini(hex)} <b>${name}</b>。色は L（長波長）・M（中波長）・S（短波長）の3種類の錐体の<b>反応の比率</b>で決まります。3つとも強ければ白、すべて弱ければ黒。`,
+    key: "cn:" + name, short: name,
+  };
+}
+
 function genFromGenre(gid) {
   const kind = pick(GENRE[gid].gens || ["know"]);
   const q = kind === "know" ? qKnow(k => k.g === gid)
     : kind === "tone" ? qTone() : kind === "hue" ? qHue() : kind === "names" ? qName()
-    : kind === "mixq" ? qMix() : qContrast();
+    : kind === "mixq" ? qMix() : kind === "spec" ? qSpec() : kind === "curve" ? qCurve()
+    : kind === "eyepart" ? qEye() : kind === "cones" ? qCones() : qContrast();
   q.genre = gid;
   return q;
 }
 function genFromLevel(lv) {
-  if (lv === "3" && Math.random() < .3) return genFromGenre(pick(["pccs", "pccs", "names", "mix", "eye"]));
+  if (lv === "3" && Math.random() < .3) return genFromGenre(pick(["pccs", "pccs", "names", "mix", "eye", "light", "vision"]));
   const q = qKnow(k => k.lv === lv);
   return q;
 }
@@ -1261,6 +1480,41 @@ const PANELS = {
       <h3>減法混色（色料の三原色 C・M・Y）</h3>
       <p>C＋M＝B（青紫）／M＋Y＝R（赤）／Y＋C＝G（緑）／C＋M＋Y＝黒。混ぜるほど<b>暗く</b>なる。絵の具・印刷インク・フィルターの重ね合わせ。</p>`;
   },
+  eyes() {
+    const X = w => 30 + (w - 400) / 300 * 260, Y = v => 120 - v * 100;
+    const curve = (c, k, col, dash = "") => `<polyline points="${Array.from({ length: 61 }, (_, i) => { const w = 400 + i * 5; return `${X(w).toFixed(1)},${Y(Math.exp(-(((w - c) / k) ** 2))).toFixed(1)}`; }).join(" ")}" fill="none" stroke="${col}" stroke-width="2.5" ${dash}/>`;
+    return `
+      <h3>可視光とスペクトル</h3>
+      <div class="learn-spec" style="background:${specGradient()}"></div>
+      <div class="learn-bands">${WL_BANDS.map(([a, b, n]) => `<span style="flex:${b - a}">${n}</span>`).join("")}</div>
+      <div class="kticks" style="display:grid;grid-template-columns:120fr 100fr 180fr"><span>380nm</span><span>500</span><span style="display:flex;justify-content:space-between">600<span>780nm</span></span></div>
+      <p><b>短波長</b>（約380〜500nm）＝青み、<b>中波長</b>（約500〜600nm）＝緑〜黄、<b>長波長</b>（約600〜780nm）＝橙〜赤。380nmより短いと紫外線、780nmより長いと赤外線。</p>
+      <h3>物体の色が見えるしくみ</h3>
+      <p>光源の光が物体に当たり、一部の波長が<b>吸収</b>され、残りが<b>反射・透過</b>して目に届く。どの波長をどれだけ反射するかを表すのが<b>分光反射率曲線</b>。</p>
+      <div style="color:var(--ink)">${curveSVG(CURVES["赤"][1])}</div>
+      <p style="font-size:13px;color:var(--muted)">例：赤い物体は長波長だけを多く反射する。</p>
+      <h3>目の構造</h3>
+      <div class="eye-wrap" style="color:var(--ink)">${eyeSVG({ labels: true })}</div>
+      <p>光は <b>角膜 → 瞳孔 → 水晶体 → 硝子体 → 網膜</b> と進み、視細胞で信号になって <b>視神経 → 外側膝状体 → 大脳の視覚野</b> へ届く。カメラにたとえると、虹彩＝絞り、水晶体＝レンズ、網膜＝センサー。</p>
+      <h3>錐体と杆体</h3>
+      <svg viewBox="0 0 300 150" style="width:100%;max-width:420px;height:auto;color:var(--ink)" role="img" aria-label="視細胞の感度のめやす">
+        <path d="M30,15 V120 H290" fill="none" stroke="currentColor" stroke-opacity=".4"/>
+        ${curve(440, 35, "#5B6EE0")}${curve(535, 45, "#3FAF5C")}${curve(565, 50, "#E8605A")}${curve(500, 45, "currentColor", 'stroke-dasharray="4 4"')}
+        ${[400, 500, 600, 700].map(w => `<text x="${X(w)}" y="136" text-anchor="middle" font-size="9" fill="currentColor">${w}</text>`).join("")}
+        <text x="${X(440)}" y="12" text-anchor="middle" font-size="10" font-weight="700" fill="#5B6EE0">S</text><text x="${X(528)}" y="12" text-anchor="middle" font-size="10" font-weight="700" fill="#3FAF5C">M</text><text x="${X(575)}" y="12" text-anchor="middle" font-size="10" font-weight="700" fill="#E8605A">L</text>
+        <text x="${X(488)}" y="40" text-anchor="end" font-size="9" fill="currentColor">杆体</text></svg>
+      <p style="font-size:13px;color:var(--muted)">感度のめやすを簡略化した図です。</p>
+      <div class="table-wrap"><table><thead><tr><th></th><th>錐体</th><th>杆体</th></tr></thead><tbody>
+        <tr><td>数</td><td>約600万個</td><td>約1億2000万個</td></tr>
+        <tr><td>働く明るさ</td><td>明るい所（明所視）</td><td>暗い所（暗所視）</td></tr>
+        <tr><td>色の区別</td><td>できる（L・M・Sの3種類）</td><td>できない（明暗だけ）</td></tr>
+        <tr><td>多い場所</td><td>中心窩</td><td>網膜の周辺部</td></tr>
+        <tr><td>最も感度が高い波長</td><td>約555nm（明所視）</td><td>約507nm（暗所視）</td></tr>
+      </tbody></table></div>
+      <p>明所視と暗所視で感度のピークがずれるため、夕方には赤が暗く、青が明るく見える（<b>プルキニエ現象</b>）。中間の明るさは<b>薄明視</b>。</p>
+      <h3>色覚の説</h3>
+      <p><b>三色説</b>（ヤング＝ヘルムホルツ）：3種類の受容器の反応の比率で色が決まる。<b>反対色説</b>（ヘリング）：赤−緑・黄−青・白−黒の対で処理される。現在は、錐体の段階は三色説、その先は反対色説とする<b>段階説</b>が有力。</p>`;
+  },
   life() {
     const safety = [["#E60012", "赤", "防火・禁止・停止・高度の危険"], ["#F08300", "黄赤", "危険・航海／航空の保安施設"], ["#FFD400", "黄", "注意・警告"],
       ["#00A15F", "緑", "安全状態・進行"], ["#0068B7", "青", "指示・誘導"], ["#A5248A", "赤紫", "放射能"]];
@@ -1357,6 +1611,14 @@ const ACT_MODES = [
     sw: () => [toneColor("p", 16), toneColor("s", 16), toneColor("dk", 16), "#FFFFFF"] },
   { id: "coord", title: "コーデ診断", genre: "ファッション", desc: "コーディネートの配色から、ロマンティック・モダンなどのイメージを当てる。",
     sw: () => [toneColor("p", 2), toneColor("sf", 22), "#111111", toneColor("ltg", 6)] },
+  { id: "spectrum", title: "波長チューナー", genre: "光の性質", desc: "色や「短波長域」などのお題に合う波長を、スペクトル上でタップ。",
+    sw: () => [wl2rgb(450), wl2rgb(520), wl2rgb(580), wl2rgb(650)] },
+  { id: "curve", title: "分光カーブ・リーダー", genre: "光の性質", desc: "分光反射率曲線から、その物体が何色に見えるかを見抜く。",
+    sw: () => ["#E60033", "#FFE600", "#00A14B", "#0068B7"] },
+  { id: "anatomy", title: "目のパーツタッチ", genre: "目と脳のしくみ", desc: "「カメラのレンズにあたるのは？」など、目の断面図のパーツをタッチ。",
+    sw: () => ["#6FAED0", "#6B4A2B", "#F5E2A0", "#E2826F"] },
+  { id: "cones", title: "錐体シグナル", genre: "目と脳のしくみ", desc: "L・M・S 3種類の錐体の反応グラフから、見える色を当てる。",
+    sw: () => ["#E8605A", "#5CC46E", "#5B6EE0", "#FFFFFF"] },
   { id: "light", title: "ライト＆ルーム", genre: "照明・インテリア", desc: "場面に合う色温度や、部屋の配色の役割を素早く選ぶ。",
     sw: () => ["#FF9A3C", "#FFC98A", "#FFF4E5", "#DDE6FF"] },
 ];
@@ -1936,6 +2198,138 @@ ACT.lab = {
     }
   },
 };
+
+/* 波長チューナー */
+ACT.spectrum = {
+  setup(A) {
+    field.className = "field field-lab";
+    field.innerHTML = `<div class="qf-prompt" id="qf-prompt"></div><div class="tbar"><i id="qf-bar"></i></div>
+      <div class="spec-wrap" id="spec-wrap"><div class="spec-zone" data-zone="UV">紫外線<br>UV</div><div class="spec" id="spec" style="background:${specGradient()}"><i class="spec-hl" id="spec-hl" hidden></i><i class="spec-mark" id="spec-ans" hidden></i><i class="spec-mark you" id="spec-you" hidden></i></div><div class="spec-zone" data-zone="IR">赤外線<br>IR</div></div>
+      <div class="spec-ticks">${[400, 500, 600, 700].map(w => `<span style="left:${13 + 74 * (w - 380) / 400}%">${w}</span>`).join("")}<span style="left:94%">nm</span></div>
+      <div class="qf-info" id="qf-info"></div>`;
+    A.n = 0; setRule("光の波長をタップ！", "可視光はおよそ380〜780nm。短いほど青紫、長いほど赤"); this.next(A);
+  },
+  hud: A => ["LEVEL", A.n],
+  extra: A => `レベル ${A.n}`,
+  next(A) {
+    A.n++; A.wait = 0;
+    const r = Math.random();
+    if (r < .4) { const w = 410 + rnd(58) * 5; A.q = { type: "chip", w, hex: wl2rgb(w) }; $("#qf-prompt").innerHTML = `<span class="lab-ball" style="background:${wl2rgb(w)}"></span><b>この色の光は何nm？</b>`; }
+    else if (r < .7) { const B = pick(WL_BANDS); A.q = { type: "band", B, hex: wl2rgb((B[0] + Math.min(B[1], 700)) / 2) }; $("#qf-prompt").innerHTML = `<div class="qf-big">「${B[2]}」に見える光</div><small>その波長のあたりをタップ</small>`; }
+    else if (r < .85) { const S = pick([["短波長域", 380, 500, "青紫〜青"], ["中波長域", 500, 600, "緑〜黄"], ["長波長域", 600, 780, "橙〜赤"]]); A.q = { type: "range", S, hex: wl2rgb((S[1] + Math.min(S[2], 700)) / 2) }; $("#qf-prompt").innerHTML = `<div class="qf-big">${S[0]}</div><small>（約${S[1]}〜${S[2]}nm）をタップ</small>`; }
+    else { const z = pick(["UV", "IR"]); A.q = { type: "zone", z, hex: z === "UV" ? "#7A4FD0" : "#B03030" }; $("#qf-prompt").innerHTML = `<div class="qf-big">${z === "UV" ? "紫外線" : "赤外線"}はどっち？</div><small>目に見えない光</small>`; }
+    ["#spec-hl", "#spec-ans", "#spec-you"].forEach(id => $(id).hidden = true);
+    field.querySelectorAll(".spec-zone").forEach(z => z.classList.remove("on"));
+    $("#qf-info").textContent = "";
+    A.limit = Math.max(2.6, 6.5 - A.n * .15); A.left = A.limit;
+  },
+  pos: w => (w - 380) / 400 * 100,
+  reveal(A) {
+    const q = A.q;
+    if (q.type === "chip") { const a = $("#spec-ans"); a.style.left = this.pos(q.w) + "%"; a.hidden = false; return `正解は <b>約${q.w}nm</b>（${bandOf(q.w)[2]}）`; }
+    if (q.type === "band" || q.type === "range") { const [a, b] = q.type === "band" ? q.B : [q.S[1], q.S[2]]; const h = $("#spec-hl"); h.style.left = this.pos(a) + "%"; h.style.width = this.pos(b) - this.pos(a) + "%"; h.hidden = false; return q.type === "band" ? `<b>${q.B[2]}</b>はおよそ ${a}〜${b}nm` : `<b>${q.S[0]}</b>（${a}〜${b}nm）は${q.S[3]}に見える`; }
+    field.querySelector(`[data-zone="${q.z}"]`).classList.add("on");
+    return q.z === "UV" ? "<b>紫外線</b>は約380nmより短い光（青紫の外側）" : "<b>赤外線</b>は約780nmより長い光（赤の外側）";
+  },
+  update(A, dt) {
+    if (A.wait > 0) { A.wait -= dt; if (A.wait <= 0) this.next(A); return; }
+    A.left -= dt;
+    const bar = $("#qf-bar"), f = Math.max(0, A.left / A.limit);
+    bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
+    if (A.left <= 0) { const t = this.reveal(A); $("#qf-info").innerHTML = t; A.wait = 1.8; const [x, y] = centerOf($("#spec")); bad(x, y, "TIME UP", { hex: A.q.hex, text: stripTags(t) + "（時間切れ）", why: "短波長（約380〜500nm）は青み、中波長（約500〜600nm）は緑〜黄、長波長（約600〜780nm）は橙〜赤" }); }
+  },
+  tap(A, e) {
+    if (A.wait > 0) return;
+    const wrap = e.target.closest("#spec-wrap"); if (!wrap) return;
+    const sp = $("#spec").getBoundingClientRect(), q = A.q;
+    let nm = null, zone = null;
+    if (e.clientX < sp.left) zone = "UV"; else if (e.clientX > sp.right) zone = "IR"; else nm = Math.round(380 + (e.clientX - sp.left) / sp.width * 400);
+    if (nm != null) { const y = $("#spec-you"); y.style.left = this.pos(nm) + "%"; y.hidden = false; }
+    let ok = false, perfect = false;
+    if (q.type === "chip") { ok = nm != null && Math.abs(nm - q.w) <= 30; perfect = ok && Math.abs(nm - q.w) <= 12; }
+    else if (q.type === "band") ok = nm != null && nm >= q.B[0] - 5 && nm <= q.B[1] + 5;
+    else if (q.type === "range") ok = nm != null && nm >= q.S[1] - 5 && nm <= q.S[2] + 5;
+    else ok = zone === q.z;
+    const t = this.reveal(A), you = nm != null ? `${nm}nm` : zone === "UV" ? "紫外線側" : "赤外線側";
+    $("#qf-info").innerHTML = `${t}　あなた：${you}`;
+    if (ok) { A.wait = .8; good(e.clientX, e.clientY, q.hex, perfect ? `PERFECT ${you}` : you, perfect ? 30 : 10 + Math.round(A.left / A.limit * 15)); }
+    else { A.wait = 1.9; bad(e.clientX, e.clientY, `× ${you}`, { hex: q.hex, text: `${stripTags(t)}。あなたの答え：${you}`, why: "短波長（約380〜500nm）は青み、中波長（約500〜600nm）は緑〜黄、長波長（約600〜780nm）は橙〜赤" }); }
+  },
+};
+
+/* 目のパーツタッチ */
+ACT.anatomy = {
+  setup(A) {
+    field.className = "field field-lab";
+    field.innerHTML = `<div class="qf-prompt" id="qf-prompt" style="min-height:84px"></div><div class="tbar"><i id="qf-bar"></i></div>
+      <div class="eye-wrap" id="eye-wrap"></div><div class="qf-info" id="qf-info"></div>`;
+    A.n = 0; setRule("目のパーツをタッチ！", "光は左から入る。角膜→瞳孔→水晶体→硝子体→網膜→視神経→脳"); this.next(A);
+  },
+  hud: A => ["LEVEL", A.n],
+  extra: A => `レベル ${A.n}`,
+  next(A) {
+    A.n++; A.wait = 0;
+    let q; do { q = pick(EYE_ASK); } while (q === A.q);
+    A.q = q;
+    $("#qf-prompt").innerHTML = `<div class="qf-big" style="font-size:22px">${q[1]}</div>`;
+    $("#eye-wrap").innerHTML = eyeSVG();
+    $("#qf-info").textContent = "";
+    A.limit = Math.max(2.6, 6.5 - A.n * .15); A.left = A.limit;
+  },
+  mark(part, cls) { field.querySelectorAll(`[data-part="${part}"]`).forEach(el => el.classList.add(cls)); },
+  update(A, dt) {
+    if (A.wait > 0) { A.wait -= dt; if (A.wait <= 0) this.next(A); return; }
+    A.left -= dt;
+    const bar = $("#qf-bar"), f = Math.max(0, A.left / A.limit);
+    bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
+    if (A.left <= 0) {
+      const p = A.q[0]; this.mark(p, "hl"); A.wait = 1.8;
+      $("#qf-info").innerHTML = `正解：<b>${p}</b>　${EYE_PARTS[p]}`;
+      const [x, y] = centerOf(field.querySelector(`[data-part="${p}"]`));
+      bad(x, y, "TIME UP", { hex: "#E2826F", text: `「${A.q[1]}」→ <b>${p}</b>（時間切れ）`, why: EYE_PARTS[p] });
+    }
+  },
+  tap(A, e) {
+    if (A.wait > 0) return;
+    const el = e.target.closest("[data-part]"); if (!el) return;
+    const you = el.dataset.part, p = A.q[0];
+    this.mark(p, "hl");
+    $("#qf-info").innerHTML = `<b>${p}</b>：${EYE_PARTS[p]}`;
+    if (you === p) { A.wait = .8; good(e.clientX, e.clientY, "#FFD400", p, 10 + Math.round(A.left / A.limit * 20)); }
+    else { this.mark(you, "miss"); A.wait = 1.9; bad(e.clientX, e.clientY, `× ${you}`, { hex: "#E2826F", text: `「${A.q[1]}」→ <b>${p}</b>。あなたの答え：${you}`, why: EYE_PARTS[p] }); }
+  },
+};
+
+/* 分光カーブ・リーダー */
+ACT.curve = quickDef({
+  rule: "このカーブの物体は何色？", sub: "分光反射率：どの波長の光を多く反射しているか", base: 6.5, min: 2.6,
+  gen() {
+    const name = pick(Object.keys(CURVES)), [hex, fn, why] = CURVES[name];
+    const opts = shuffle([name, ...shuffle(Object.keys(CURVES).filter(n => n !== name)).slice(0, 3)]);
+    return {
+      prompt: `<div style="width:100%;color:#FFFFFF">${curveSVG(fn)}</div>`, cols: 2, hex, label: name,
+      options: opts.map(n => ({ html: n, style: `background:${CURVES[n][0]};color:${textOn(CURVES[n][0])};border-color:transparent`, correct: n === name, name: n })),
+      reveal: `<b>${name}</b>：${why}`,
+      mistake: you => ({ hex, text: `このカーブは <b>${name}</b>${youSaid(you)}`, why }),
+    };
+  },
+});
+
+/* 錐体シグナル */
+ACT.cones = quickDef({
+  rule: "錐体の反応から色を当てろ！", sub: "L＝長波長・M＝中波長・S＝短波長。反応の比率で色が決まる（簡略図）", base: 6, min: 2.4,
+  gen() {
+    const name = pick(Object.keys(CONE_PAT)), [hex, v] = CONE_PAT[name];
+    const jit = v.map(x => Math.max(.03, Math.min(1, x + (Math.random() - .5) * .08)));
+    const opts = shuffle([name, ...shuffle(Object.keys(CONE_PAT).filter(n => n !== name)).slice(0, 3)]);
+    return {
+      prompt: `<div style="width:100%;color:#FFFFFF">${coneBars(jit)}</div>`, cols: 2, hex, label: name,
+      options: opts.map(n => ({ html: n, style: `background:${CONE_PAT[n][0]};color:${textOn(CONE_PAT[n][0])};border-color:transparent`, correct: n === name, name: n })),
+      reveal: `<b>${name}</b>：L ${Math.round(jit[0] * 100)}・M ${Math.round(jit[1] * 100)}・S ${Math.round(jit[2] * 100)} の組み合わせ`,
+      mistake: you => ({ hex, text: `この反応の組み合わせは <b>${name}</b>${youSaid(you)}`, why: "LとMが強いと黄、Lだけ強いと赤、Sだけ強いと青紫、すべて強いと白" }),
+    };
+  },
+});
 
 field.addEventListener("pointerdown", e => { if (A && A.running && A.def.tap) { e.preventDefault(); A.def.tap(A, e); } });
 $("#act-quit").addEventListener("click", () => { stopAction(); renderHome(); show("home"); });
