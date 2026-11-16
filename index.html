@@ -205,6 +205,69 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
 .mixbox svg { width: 150px; height: 140px; }
 .mixbox figcaption { text-align: center; font-size: 13px; font-weight: 700; }
 
+/* ---------- action arena ---------- */
+/* The arena is a fixed neutral grey on purpose: colours are judged on a neutral mid-grey ground (N5 相当), so it does not change with the theme. */
+:root { --arena: #6E7075; --arena-ink: #FFFFFF; --arena-panel: rgba(0, 0, 0, .2); --arena-soft: rgba(255, 255, 255, .14); }
+.mode.action { background: var(--arena); color: var(--arena-ink); border-color: transparent; }
+.mode.action p { color: rgba(255, 255, 255, .86); }
+.mode.action .best, .mode.action .best b { color: var(--arena-ink); }
+.mode.action .badge { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; background: var(--arena-ink); color: var(--arena); border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
+.arena {
+  position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column;
+  background: var(--arena); color: var(--arena-ink); user-select: none; -webkit-user-select: none; touch-action: manipulation;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 8px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.arena > * { width: 100%; max-width: 560px; margin-inline: auto; }
+.hud { display: grid; grid-template-columns: 40px 1fr 1fr auto; gap: 12px; align-items: center; }
+.hud-btn { background: var(--arena-panel); border: 0; color: var(--arena-ink); }
+.hud-stat small { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; opacity: .75; line-height: 1; }
+.hud-stat b { font-family: var(--font-mono); font-size: 24px; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.hud-lives { display: flex; gap: 5px; }
+.hud-lives i { width: 18px; height: 18px; border-radius: 5px; transition: background .2s, transform .2s; }
+.rule { margin: 10px auto; padding: 10px 14px; border-radius: 14px; background: var(--arena-panel); min-height: 64px; }
+.rule b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.3; }
+.rule small { font-size: 13px; opacity: .88; }
+.rule.flash { animation: flash .5s; }
+@keyframes flash { 0% { background: rgba(255, 255, 255, .7); transform: scale(1.04); } 100% { background: var(--arena-panel); transform: scale(1); } }
+.field { flex: 1; position: relative; overflow: hidden; border-radius: 18px; background: rgba(0, 0, 0, .08); touch-action: none; min-height: 0; }
+.fchip { position: absolute; left: 0; top: 0; border-radius: 14px; box-shadow: 0 6px 14px rgba(0, 0, 0, .28); will-change: transform; cursor: pointer; }
+.fchip.gone { transition: opacity .25s, transform .25s; opacity: 0; }
+.combo-big { position: absolute; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 150px); transform: translateX(-50%); font-family: var(--font-display); font-size: 26px; white-space: nowrap; text-shadow: 0 3px 10px rgba(0, 0, 0, .35); pointer-events: none; z-index: 3; }
+.combo-big.pulse { animation: pulse .35s; }
+@keyframes pulse { 0% { transform: translateX(-50%) scale(1.5); } 100% { transform: translateX(-50%) scale(1); } }
+.countdown { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-display); font-size: 96px; background: rgba(0, 0, 0, .28); z-index: 5; text-shadow: 0 6px 20px rgba(0, 0, 0, .35); }
+.countdown.cd { animation: cd .55s ease-out; }
+@keyframes cd { 0% { font-size: 150px; opacity: 0; } 30% { opacity: 1; } 100% { font-size: 96px; } }
+.shake-big { animation: shakeBig .35s; }
+@keyframes shakeBig { 15% { transform: translate(-8px, 3px); } 35% { transform: translate(7px, -4px); } 55% { transform: translate(-5px, 2px); } 75% { transform: translate(3px, -1px); } }
+.ftext { position: fixed; z-index: 61; transform: translate(-50%, -50%); font-family: var(--font-display); font-size: 24px; color: #FFFFFF; text-shadow: 0 2px 8px rgba(0, 0, 0, .55); pointer-events: none; text-align: center; line-height: 1.1; animation: rise .9s ease-out forwards; white-space: nowrap; }
+.ftext small { display: block; font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
+.ftext.bad { color: #FFD6D6; }
+@keyframes rise { 0% { opacity: 0; margin-top: 10px; } 15% { opacity: 1; } 100% { opacity: 0; margin-top: -50px; } }
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+
+.field-map { display: flex; flex-direction: column; gap: 12px; background: transparent; }
+.map-top { display: flex; gap: 14px; align-items: center; }
+.target { width: 96px; height: 96px; flex: none; border-radius: 18px; box-shadow: 0 8px 18px rgba(0, 0, 0, .3); transition: background .15s; }
+.map-side { flex: 1; display: grid; gap: 8px; font-size: 13px; }
+.tbar { height: 12px; background: rgba(0, 0, 0, .25); border-radius: 6px; overflow: hidden; }
+.tbar i { display: block; height: 100%; width: 100%; background: #FFFFFF; border-radius: 6px; }
+.tbar i.low { background: #FFB3B3; }
+.mapgrid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(8, minmax(26px, 1fr)); gap: 6px; min-height: 0; }
+.mcell { border-radius: 10px; border: 1.5px solid rgba(255, 255, 255, .3); background: var(--arena-soft); color: var(--arena-ink); cursor: pointer; display: grid; place-content: center; gap: 0; padding: 2px; line-height: 1.15; transition: background .15s, transform .1s; }
+.mcell:active { transform: scale(.96); }
+.mcell b { font-family: var(--font-mono); font-size: 16px; }
+.mcell small { font-size: 10px; opacity: .85; }
+.mcell.wrongc { border-color: #FFB3B3; background: rgba(201, 52, 52, .55); }
+.mcell.reveal { border-color: #FFFFFF; border-width: 3px; }
+.field-wheel { display: grid; place-items: center; background: transparent; }
+.field-wheel svg { width: 100%; height: 100%; max-width: 100%; touch-action: none; }
+.field-wheel text { font-family: var(--font-mono); font-size: 10px; font-weight: 600; pointer-events: none; }
+.seg { stroke: var(--arena); stroke-width: 1; }
+.seg.ans { stroke: #FFFFFF; stroke-width: 5; }
+.seg.miss { stroke: #1A1C26; stroke-width: 5; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -227,7 +290,11 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
       </div>
     </div>
 
-    <h2 class="section-h">あそぶ</h2>
+    <h2 class="section-h">アクション</h2>
+    <div class="modes" id="act-modes"></div>
+    <p class="foot" style="margin-top:8px">アクションのフィールドは、色を見比べやすい中性グレー（N5相当）の背景です。</p>
+
+    <h2 class="section-h">クイズ</h2>
     <div class="modes" id="modes"></div>
     <button class="learn-btn" id="go-learn" type="button">まなぶ ― トーン図・色相環・慣用色名図鑑を見る</button>
 
@@ -273,6 +340,20 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
     <div class="review" id="review"></div>
   </section>
 
+  <!-- ACTION -->
+  <section id="act" class="arena" hidden>
+    <div class="hud">
+      <button class="icon-btn hud-btn" id="act-quit" type="button" aria-label="やめる">✕</button>
+      <div class="hud-stat"><small>SCORE</small><b id="act-score">0</b></div>
+      <div class="hud-stat"><small id="act-tlabel">TIME</small><b id="act-time">60</b></div>
+      <div class="hud-lives" id="act-lives" aria-label="ライフ"></div>
+    </div>
+    <div class="rule" id="act-rule" aria-live="polite"></div>
+    <div class="field" id="field"></div>
+    <div class="combo-big" id="act-combo" hidden></div>
+    <div class="countdown" id="countdown" hidden></div>
+  </section>
+
   <!-- LEARN -->
   <section id="learn" hidden>
     <div class="topbar">
@@ -290,6 +371,7 @@ th { font-size: 12px; color: var(--muted); font-weight: 500; }
   </section>
 
 </div>
+<canvas id="fx" aria-hidden="true"></canvas>
 
 <script>
 (() => {
@@ -614,8 +696,13 @@ function makeSet(mode) {
 }
 
 /* ================= state & screens ================= */
-const screens = ["home", "quiz", "result", "learn"];
-function show(id) { screens.forEach(s => { $("#" + s).hidden = s !== id; }); window.scrollTo(0, 0); }
+const screens = ["home", "quiz", "result", "learn", "act"];
+function show(id) {
+  screens.forEach(s => { $("#" + s).hidden = s !== id; });
+  document.body.style.overflow = id === "act" ? "hidden" : "";
+  window.scrollTo(0, 0);
+}
+let lastKind = "quiz", lastAct = "rush";
 
 let S = null; // current game
 let lifetime = store.get("life", { total: 0, correct: 0, maxCombo: 0 });
@@ -629,6 +716,13 @@ function renderHome() {
   $("#st-total").textContent = lifetime.total;
   $("#st-rate").textContent = lifetime.total ? Math.round(lifetime.correct / lifetime.total * 100) + "%" : "–";
   $("#st-streak").textContent = lifetime.maxCombo;
+  $("#act-modes").innerHTML = ACT_MODES.map(m => {
+    const b = bests[m.id];
+    return `<button class="mode action" data-act="${m.id}" type="button">
+      <span class="mode-swatch" aria-hidden="true">${m.sw().map(c => `<span style="background:${c}"></span>`).join("")}</span>
+      <span><h3>${m.title}<span class="badge">ACTION</span></h3><p>${m.desc}</p></span>
+      <span class="best">ベスト<b>${b ? b.score : "—"}</b></span></button>`;
+  }).join("");
   $("#modes").innerHTML = MODES.map(m => {
     const sw = m.sw || ["v", "lt", "d", "dk"].map(t => toneColor(t, 12));
     const b = bests[m.id];
@@ -640,6 +734,7 @@ function renderHome() {
 }
 
 function start(mode) {
+  lastKind = "quiz";
   S = { mode, qs: makeSet(mode), i: 0, score: 0, combo: 0, maxCombo: 0, results: [], t0: 0 };
   $("#progress").innerHTML = "<i></i>".repeat(10);
   show("quiz");
@@ -694,6 +789,9 @@ function answer(idx) {
     sc.textContent = S.score;
     const p = document.createElement("span"); p.className = "pop"; p.textContent = "+" + gained;
     sc.appendChild(p); setTimeout(() => p.remove(), 900);
+    const rb = btns[idx], swc = rb.querySelector(".chip");
+    const [bx, by] = centerOf(rb);
+    burst(bx, by, swc ? swc.style.background : HUES[rnd(24) + 1].hex, 12 + Math.min(16, S.combo * 2));
   } else {
     S.combo = 0;
     btns[idx].classList.add("shake");
@@ -733,6 +831,7 @@ function finish() {
   const isBest = !prev || S.score > prev.score;
   if (isBest) { bests[S.mode] = { score: S.score, correct }; store.set("best", bests); }
   const [, rank, sub] = RANKS.find(r => correct >= r[0]);
+  $("#res-correct").style.fontSize = "";
   $("#res-mode").textContent = MODES.find(m => m.id === S.mode).title;
   $("#res-correct").textContent = `${correct}/10`;
   $("#res-rank").textContent = rank;
@@ -753,11 +852,7 @@ function finish() {
 let learnHue = 2;
 const PANELS = {
   tone() {
-    // [tone, column, first row, row span] on an 8-row map (top = high lightness)
-    const order = [["p", 1, 1, 2], ["ltg", 1, 3, 2], ["g", 1, 5, 2], ["dkg", 1, 7, 2],
-                   ["lt", 2, 1, 2], ["sf", 2, 3, 2], ["d", 2, 5, 2], ["dk", 2, 7, 2],
-                   ["b", 3, 2, 2], ["s", 3, 4, 2], ["dp", 3, 6, 2], ["v", 4, 3, 4]];
-    const cells = order.map(([k, c, r, sp]) => {
+    const cells = TONE_GRID.map(([k, c, r, sp]) => {
       const hex = toneColor(k, learnHue);
       return `<button class="t" data-tone="${k}" type="button" style="grid-column:${c + 1};grid-row:${r} / span ${sp};background:${hex};color:${textOn(hex)}">${k}${learnHue}</button>`;
     }).join("");
@@ -840,9 +935,380 @@ function renderLearn() {
   $("#panel").innerHTML = PANELS[learnTab]();
 }
 
+/* ================= FX: particles, floating text, shake ================= */
+const fxc = $("#fx"), fxx = fxc.getContext("2d");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let parts = [], fxOn = false;
+function sizeFx() { const d = Math.min(2, devicePixelRatio || 1); fxc.width = innerWidth * d; fxc.height = innerHeight * d; fxx.setTransform(d, 0, 0, d, 0, 0); }
+sizeFx(); addEventListener("resize", sizeFx);
+function burst(x, y, color, n = 16) {
+  if (reduceMotion) return;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = 120 + Math.random() * 280;
+    parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 80, life: 1, c: color, r: 3 + Math.random() * 5, sq: Math.random() < .5 });
+  }
+  parts.push({ ring: true, x, y, life: 1, c: color });
+  if (fxOn) return;
+  fxOn = true;
+  let last = performance.now();
+  const step = now => {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    fxx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(p => (p.life -= dt * 1.5) > 0);
+    for (const p of parts) {
+      fxx.globalAlpha = Math.max(0, p.life);
+      if (p.ring) { fxx.strokeStyle = p.c; fxx.lineWidth = 5 * p.life; fxx.beginPath(); fxx.arc(p.x, p.y, (1 - p.life) * 80 + 12, 0, 7); fxx.stroke(); continue; }
+      p.vy += 600 * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+      fxx.fillStyle = p.c;
+      if (p.sq) fxx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+      else { fxx.beginPath(); fxx.arc(p.x, p.y, p.r, 0, 7); fxx.fill(); }
+    }
+    fxx.globalAlpha = 1;
+    if (parts.length) requestAnimationFrame(step); else { fxOn = false; fxx.clearRect(0, 0, innerWidth, innerHeight); }
+  };
+  requestAnimationFrame(step);
+}
+function floatText(x, y, html, cls = "") {
+  const el = document.createElement("div");
+  el.className = "ftext " + cls; el.innerHTML = html;
+  el.style.left = Math.max(60, Math.min(innerWidth - 60, x)) + "px"; el.style.top = y + "px";
+  document.body.appendChild(el); setTimeout(() => el.remove(), 900);
+}
+function shakeEl(el) { if (reduceMotion) return; el.classList.remove("shake-big"); void el.offsetWidth; el.classList.add("shake-big"); }
+function centerOf(el) { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }
+function buzz(ms) { try { navigator.vibrate && navigator.vibrate(ms); } catch {} }
+
+/* ================= ACTION engine ================= */
+// tone-map layout shared by the learn panel and トーンマップ・ダッシュ: [tone, column, first row, row span]
+const TONE_GRID = [["p", 1, 1, 2], ["ltg", 1, 3, 2], ["g", 1, 5, 2], ["dkg", 1, 7, 2],
+                   ["lt", 2, 1, 2], ["sf", 2, 3, 2], ["d", 2, 5, 2], ["dk", 2, 7, 2],
+                   ["b", 3, 2, 2], ["s", 3, 4, 2], ["dp", 3, 6, 2], ["v", 4, 3, 4]];
+const field = $("#field"), arena = $("#act");
+let A = null;
+
+const ACT_MODES = [
+  { id: "rush",  title: "カラーラッシュ", desc: "降ってくる色から、ルールに合う色だけをタップ。暖色・寒色・清色・濁色を目で覚える。",
+    sw: () => [HUES[2].hex, toneColor("p", 18), toneColor("dk", 12), HUES[8].hex] },
+  { id: "map",   title: "トーンマップ・ダッシュ", desc: "出てきた色がトーン図のどこにあるか、時間内にタップ。",
+    sw: () => ["lt", "v", "d", "dp"].map(t => toneColor(t, 20)) },
+  { id: "wheel", title: "色相環スナイプ", desc: "回る色相環で、同じ色相や補色の位置を撃ち抜く。",
+    sw: () => [HUES[2].hex, HUES[14].hex, HUES[8].hex, HUES[20].hex] },
+];
+
+const mult = () => Math.min(3, 1 + Math.floor(A.combo / 5) * 0.5);
+function renderLives() {
+  $("#act-lives").innerHTML = [2, 8, 18].map((h, i) => `<i style="background:${i < A.lives ? HUES[h].hex : "rgba(255,255,255,.18)"}"></i>`).join("");
+}
+function renderHud() {
+  $("#act-score").textContent = A.score;
+  const [l, v] = A.def.hud(A);
+  $("#act-tlabel").textContent = l; $("#act-time").textContent = v;
+}
+function showCombo() {
+  const el = $("#act-combo");
+  if (A.combo >= 3) {
+    el.textContent = `${A.combo} COMBO ×${mult().toFixed(1)}`;
+    el.hidden = false; el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse");
+  } else el.hidden = true;
+}
+function setRule(main, sub) {
+  const r = $("#act-rule");
+  r.innerHTML = `<b>${main}</b><small>${sub}</small>`;
+  r.classList.remove("flash"); void r.offsetWidth; r.classList.add("flash");
+}
+function good(x, y, color, label, base) {
+  A.combo++; A.maxCombo = Math.max(A.maxCombo, A.combo); A.hits++;
+  const g = Math.round(base * mult());
+  A.score += g; A.caught.push(color);
+  burst(x, y, color, 14 + Math.min(24, A.combo * 2));
+  floatText(x, y, `+${g}<small>${label}</small>`);
+  beep(true); showCombo(); renderHud();
+}
+function bad(x, y, label, mistake) {
+  A.combo = 0; A.misses++; A.lives--;
+  shakeEl(arena); buzz(80); beep(false);
+  floatText(x, y, label, "bad");
+  if (mistake) A.mistakes.push(mistake);
+  showCombo(); renderLives(); renderHud();
+  if (A.lives <= 0) { A.running = false; A.ending = setTimeout(endAction, 800); }
+}
+
+function countdown(done) {
+  const el = $("#countdown"), seq = ["3", "2", "1", "GO!"];
+  let i = 0;
+  el.hidden = false;
+  const step = () => {
+    if (!A) return;
+    if (i === seq.length) { el.hidden = true; done(); return; }
+    el.textContent = seq[i++];
+    el.classList.remove("cd"); void el.offsetWidth; el.classList.add("cd");
+    A.cdTimer = setTimeout(step, i === seq.length ? 450 : 620);
+  };
+  step();
+}
+function resume() { if (!A) return; A.running = true; A.last = performance.now(); requestAnimationFrame(tick); }
+function tick(now) {
+  if (!A || !A.running) return;
+  const dt = Math.min(.05, (now - A.last) / 1000); A.last = now;
+  A.t += dt;
+  A.def.update(A, dt);
+  if (A && A.running) { renderHud(); requestAnimationFrame(tick); }
+}
+function startAction(id) {
+  stopAction();
+  lastKind = "act"; lastAct = id;
+  A = { id, def: ACT[id], score: 0, combo: 0, maxCombo: 0, lives: 3, hits: 0, misses: 0, t: 0, mistakes: [], caught: [], running: false };
+  show("act");
+  field.innerHTML = ""; field.className = "field field-" + id;
+  $("#act-combo").hidden = true;
+  A.def.setup(A);
+  renderLives(); renderHud();
+  countdown(resume);
+}
+function stopAction() {
+  if (!A) return;
+  A.running = false; clearTimeout(A.cdTimer); clearTimeout(A.ending);
+  $("#countdown").hidden = true;
+  A = null;
+}
+const ACT_RANKS = [[1200, "色彩マスター級！"], [700, "上級者の目"], [350, "いい調子"], [0, "見習いカラリスト"]];
+function endAction() {
+  if (!A) return;
+  const a = A; stopAction();
+  const title = ACT_MODES.find(m => m.id === a.id).title;
+  const prev = bests[a.id], isBest = !prev || a.score > prev.score;
+  if (isBest) { bests[a.id] = { score: a.score }; store.set("best", bests); }
+  lifetime.maxCombo = Math.max(lifetime.maxCombo, a.maxCombo); store.set("life", lifetime);
+  $("#res-mode").textContent = title;
+  $("#res-correct").textContent = a.score;
+  $("#res-correct").style.fontSize = a.score >= 10000 ? "48px" : "";
+  $("#res-rank").textContent = ACT_RANKS.find(r => a.score >= r[0])[1];
+  const acc = a.hits + a.misses ? Math.round(a.hits / (a.hits + a.misses) * 100) : 0;
+  $("#res-sub").innerHTML = `ヒット ${a.hits}・ミス ${a.misses}（${acc}%）・最大 ${a.maxCombo} コンボ${a.def.extra ? "・" + a.def.extra(a) : ""}${isBest ? "・<b>ベスト更新！</b>" : ""}<br>${a.caught.length ? "今回つかまえた色" : ""}`;
+  $("#res-chips").innerHTML = a.caught.slice(-20).map(c => `<i style="background:${c}"></i>`).join("");
+  $("#review").innerHTML = a.mistakes.length
+    ? `<h2 class="section-h" style="margin:8px 0 0">見直しポイント</h2>` + a.mistakes.slice(-8).map(m => `<div class="review-item">${mini(m.hex)} ${m.text}<br><small style="color:var(--muted)">${m.why}</small></div>`).join("")
+    : "";
+  renderHome();
+  show("result");
+}
+
+/* ---- カラーラッシュ ---- */
+const VIVIDISH = ["v", "b", "s", "dp", "lt"];
+const RUSH_RULES = [
+  { label: "暖色をタップ！", hint: "暖色＝色相 1〜8（赤〜黄）", short: "暖色", test: c => c.h <= 8, tones: VIVIDISH },
+  { label: "寒色をタップ！", hint: "寒色＝色相 13〜19（青緑〜青）", short: "寒色", test: c => c.h >= 13 && c.h <= 19, tones: VIVIDISH },
+  { label: "中性色をタップ！", hint: "中性色＝緑系 9〜12 と 紫系 20〜24", short: "中性色", test: c => (c.h >= 9 && c.h <= 12) || c.h >= 20, tones: ["v", "b", "s", "dp"] },
+  { label: "純色（v）をタップ！", hint: "その色相でいちばん鮮やかな色", short: "純色 v", test: c => c.t === "v" },
+  { label: "明清色をタップ！", hint: "純色＋白 → p・lt・b", short: "明清色", test: c => ["p", "lt", "b"].includes(c.t) },
+  { label: "暗清色をタップ！", hint: "純色＋黒 → dp・dk", short: "暗清色", test: c => ["dp", "dk"].includes(c.t) },
+  { label: "グレイッシュをタップ！", hint: "灰みの濁色 → ltg・g・dkg", short: "グレイッシュ系", test: c => ["ltg", "g", "dkg"].includes(c.t) },
+  { label: "p（ペール）をタップ！", hint: "白をたっぷり含む、うすい色", short: "p トーン", test: c => c.t === "p" },
+  { label: "dk（ダーク）をタップ！", hint: "純色＋黒の暗い色。dkg より色みが残る", short: "dk トーン", test: c => c.t === "dk" },
+  { label: "sf（ソフト）をタップ！", hint: "明るい灰が混ざった、柔らかい色", short: "sf トーン", test: c => c.t === "sf" },
+];
+function rushChip(rule, want) {
+  for (let i = 0; i < 80; i++) {
+    const c = { h: rnd(24) + 1, t: pick(rule.tones || TONE_KEYS) };
+    if (rule.test(c) === want) return c;
+  }
+  return { h: 2, t: "v" };
+}
+function rushRule(A) {
+  if (!A.queue.length) A.queue = shuffle(RUSH_RULES.slice(2));
+  A.rule = A.queue.shift();
+  A.ruleT = 9; A.spawnT = .35; A.ruleNo++;
+  A.chips.forEach(c => { c.el.classList.add("gone"); setTimeout(() => c.el.remove(), 260); });
+  A.chips = [];
+  setRule(A.rule.label, A.rule.hint);
+}
+const ACT = {
+  rush: {
+    setup(A) { A.chips = []; A.dur = 60; A.ruleNo = 0; A.queue = [RUSH_RULES[0], RUSH_RULES[1]]; rushRule(A); },
+    hud: A => ["TIME", Math.max(0, Math.ceil(A.dur - A.t))],
+    extra: A => `ルール ${A.ruleNo} 種`,
+    update(A, dt) {
+      const W = field.clientWidth, H = field.clientHeight, prog = Math.min(1, A.t / A.dur);
+      A.ruleT -= dt; if (A.ruleT <= 0) rushRule(A);
+      A.spawnT -= dt;
+      if (A.spawnT <= 0) {
+        A.spawnT = .9 - .45 * prog;
+        const c = rushChip(A.rule, Math.random() < .45);
+        const size = W < 380 ? 58 : 66;
+        const el = document.createElement("div");
+        el.className = "fchip"; el.style.width = el.style.height = size + "px";
+        c.hex = toneColor(c.t, c.h); el.style.background = c.hex;
+        Object.assign(c, { el, size, x: 8 + Math.random() * Math.max(1, W - size - 16), y: -size, v: (85 + 150 * prog) * (.8 + Math.random() * .4), ok: A.rule.test(c), rule: A.rule, sway: Math.random() * 6 });
+        el._c = c; field.appendChild(el); A.chips.push(c);
+      }
+      A.chips = A.chips.filter(c => {
+        c.y += c.v * dt;
+        const x = c.x + Math.sin(A.t * 2 + c.sway) * 6;
+        c.el.style.transform = `translate(${x}px, ${c.y}px)`;
+        if (c.y > H) {
+          c.el.remove();
+          if (c.ok) { A.combo = 0; showCombo(); const r = field.getBoundingClientRect(); floatText(r.left + x + c.size / 2, r.bottom - 24, "MISS", "bad"); }
+          return false;
+        }
+        return true;
+      });
+      if (A.t >= A.dur) { A.running = false; endAction(); }
+    },
+    tap(A, e) {
+      const el = e.target.closest(".fchip"); if (!el) return;
+      const c = el._c; if (!c || c.hit) return;
+      c.hit = true;
+      const [x, y] = centerOf(el);
+      el.remove(); A.chips = A.chips.filter(o => o !== c);
+      const tag = `${c.t}${c.h}`;
+      if (c.ok) good(x, y, c.hex, tag, 10);
+      else bad(x, y, `× ${tag}`, { hex: c.hex, text: `${tag}（${TONES[c.t].jp}・${HUES[c.h].name}）は「${c.rule.short}」ではない`, why: c.rule.hint });
+    },
+  },
+
+  /* ---- トーンマップ・ダッシュ ---- */
+  map: {
+    setup(A) {
+      field.innerHTML = `<div class="map-top"><div class="target" id="m-target"></div>
+        <div class="map-side"><span id="m-info">この色のトーンはどこ？</span><div class="tbar"><i id="m-bar"></i></div></div></div>
+        <div class="mapgrid">${TONE_GRID.map(([k, c, r, sp]) => `<button class="mcell" type="button" data-mt="${k}" style="grid-column:${c};grid-row:${r} / span ${sp}"><b>${k}</b><small>${TONES[k].jp}</small></button>`).join("")}</div>`;
+      A.n = 0;
+      setRule("この色のトーンはどこ？", "縦＝明度（上が明るい）・横＝彩度（右が鮮やか）");
+      this.next(A);
+    },
+    hud: A => ["LEVEL", A.n],
+    extra: A => `レベル ${A.n}`,
+    next(A) {
+      A.n++;
+      let t; do { t = pick(TONE_KEYS); } while (t === A.cur?.t);
+      A.cur = { h: rnd(24) + 1, t };
+      A.cur.hex = toneColor(t, A.cur.h);
+      A.limit = Math.max(1.8, 5 - A.n * .12); A.left = A.limit; A.wait = 0;
+      field.querySelectorAll(".mcell").forEach(b => { b.className = "mcell"; b.style.background = ""; b.style.color = ""; });
+      $("#m-target").style.background = A.cur.hex;
+      $("#m-info").textContent = `Lv.${A.n}　この色のトーンはどこ？`;
+    },
+    reveal(A) {
+      const cell = field.querySelector(`[data-mt="${A.cur.t}"]`);
+      cell.classList.add("reveal"); cell.style.background = A.cur.hex; cell.style.color = textOn(A.cur.hex);
+      $("#m-info").innerHTML = `正解は <b>${toneLabel(A.cur.t)}</b>`;
+      return cell;
+    },
+    update(A, dt) {
+      if (A.wait > 0) { A.wait -= dt; if (A.wait <= 0) this.next(A); return; }
+      A.left -= dt;
+      const bar = $("#m-bar"), f = Math.max(0, A.left / A.limit);
+      bar.style.width = f * 100 + "%"; bar.classList.toggle("low", f < .3);
+      if (A.left <= 0) {
+        const [x, y] = centerOf(this.reveal(A));
+        A.wait = 1.1;
+        bad(x, y, "TIME UP", { hex: A.cur.hex, text: `${A.cur.t}${A.cur.h} は ${toneLabel(A.cur.t)}（時間切れ）`, why: TONES[A.cur.t].kind });
+      }
+    },
+    tap(A, e) {
+      const b = e.target.closest("[data-mt]"); if (!b || A.wait > 0) return;
+      const k = b.dataset.mt, [x, y] = centerOf(b);
+      if (k === A.cur.t) {
+        b.style.background = A.cur.hex; b.style.color = textOn(A.cur.hex);
+        A.wait = .35;
+        good(x, y, A.cur.hex, `${A.cur.t}${A.cur.h}`, 10 + Math.round(A.left / A.limit * 20));
+      } else {
+        b.classList.add("wrongc"); this.reveal(A); A.wait = 1.2;
+        bad(x, y, `× ${k}`, { hex: A.cur.hex, text: `${A.cur.t}${A.cur.h} は ${toneLabel(A.cur.t)}。${k} を選んだ`, why: TONES[A.cur.t].kind });
+      }
+    },
+  },
+
+  /* ---- 色相環スナイプ ---- */
+  wheel: {
+    setup(A) {
+      const cx = 170, cy = 170, R = 160, r = 98;
+      const segs = HUES.slice(1).map((h, i) => {
+        const a0 = (i - .5) / 24 * Math.PI * 2 - Math.PI / 2, a1 = (i + .5) / 24 * Math.PI * 2 - Math.PI / 2, am = (a0 + a1) / 2;
+        const p = (rad, a) => `${(cx + rad * Math.cos(a)).toFixed(1)},${(cy + rad * Math.sin(a)).toFixed(1)}`;
+        return `<path class="seg" data-h="${h.n}" d="M${p(r, a0)} L${p(R, a0)} A${R},${R} 0 0 1 ${p(R, a1)} L${p(r, a1)} A${r},${r} 0 0 0 ${p(r, a0)}Z" fill="${h.hex}"/>
+          <text x="${(cx + (R - 16) * Math.cos(am)).toFixed(1)}" y="${(cy + (R - 16) * Math.sin(am) + 3.5).toFixed(1)}" text-anchor="middle" fill="${textOn(h.hex)}">${h.n}</text>`;
+      }).join("");
+      field.innerHTML = `<svg viewBox="0 0 340 340" id="w-svg" role="img" aria-label="回転する色相環">
+        <g id="w-rot">${segs}</g>
+        <circle cx="170" cy="170" r="88" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="6"/>
+        <circle id="w-timer" cx="170" cy="170" r="88" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" transform="rotate(-90 170 170)" stroke-dasharray="552.9" stroke-dashoffset="0"/>
+        <circle id="w-target" cx="170" cy="170" r="76" fill="#808080"/>
+        <text id="w-label" x="170" y="174" text-anchor="middle" style="font-size:14px"></text></svg>`;
+      A.rot = 0; A.n = 0; A.dir = 1;
+      this.next(A);
+    },
+    hud: A => ["LEVEL", A.n],
+    extra: A => `レベル ${A.n}`,
+    next(A) {
+      A.n++;
+      if (A.n % 4 === 0) A.dir *= -1;
+      A.spd = (16 + A.n * 2.8) * A.dir;
+      const h = rnd(24) + 1;
+      A.kind = A.n <= 2 ? "hue" : pick(["hue", "comp"]);
+      A.cur = A.kind === "hue"
+        ? { h, t: pick(["b", "lt", "s", "dp", "sf", "d", "dk", "p"]), ans: h }
+        : { h, t: "v", ans: wrap24(h + 12) };
+      A.cur.hex = toneColor(A.cur.t, A.cur.h);
+      A.limit = Math.max(2.6, 7 - A.n * .18); A.left = A.limit; A.wait = 0;
+      field.querySelectorAll(".seg").forEach(s => s.classList.remove("ans", "miss"));
+      $("#w-target").setAttribute("fill", A.cur.hex);
+      const lab = $("#w-label"); lab.textContent = A.kind === "hue" ? `${A.cur.t}?` : "v?"; lab.setAttribute("fill", textOn(A.cur.hex));
+      if (A.kind === "hue") setRule("同じ色相をタップ！", "トーンが変わっても色相番号は同じ。真ん中の色の「純色」を探そう");
+      else setRule("補色をタップ！", "補色＝色相環の正反対（色相番号 ±12）");
+    },
+    update(A, dt) {
+      A.rot = (A.rot + A.spd * dt) % 360;
+      $("#w-rot").setAttribute("transform", `rotate(${A.rot.toFixed(2)} 170 170)`);
+      if (A.wait > 0) { A.wait -= dt; if (A.wait <= 0) this.next(A); return; }
+      A.left -= dt;
+      $("#w-timer").setAttribute("stroke-dashoffset", (552.9 * (1 - Math.max(0, A.left / A.limit))).toFixed(1));
+      if (A.left <= 0) {
+        const seg = field.querySelector(`.seg[data-h="${A.cur.ans}"]`); seg.classList.add("ans");
+        const [x, y] = centerOf(seg); A.wait = 1.2;
+        bad(x, y, "TIME UP", this.mistake(A, null));
+      }
+    },
+    mistake(A, tapped) {
+      const c = A.cur, you = tapped ? `。${hueLabel(tapped)} をタップした` : "（時間切れ）";
+      return A.kind === "hue"
+        ? { hex: c.hex, text: `${c.t}${c.h} の色相は ${hueLabel(c.h)}${you}`, why: "トーンが違っても色相番号は同じ（例：p2・dk2 はどちらも 2:R の仲間）" }
+        : { hex: c.hex, text: `${hueLabel(c.h)} の補色は ${hueLabel(c.ans)}${you}`, why: "PCCSでは色相番号に12を足し引きした色が補色" };
+    },
+    tap(A, e) {
+      if (A.wait > 0) return;
+      const svg = $("#w-svg"), r = svg.getBoundingClientRect();
+      const s = Math.min(r.width, r.height) / 340;
+      const ox = r.left + (r.width - 340 * s) / 2, oy = r.top + (r.height - 340 * s) / 2;
+      const dx = (e.clientX - ox) / s - 170, dy = (e.clientY - oy) / s - 170, d = Math.hypot(dx, dy);
+      if (d < 92 || d > 175) return;
+      let ang = Math.atan2(dy, dx) * 180 / Math.PI + 90 - A.rot;
+      ang = ((ang % 360) + 360) % 360;
+      const hue = Math.round(ang / 15) % 24 + 1, diff = hueDiff(hue, A.cur.ans);
+      const ansSeg = field.querySelector(`.seg[data-h="${A.cur.ans}"]`);
+      ansSeg.classList.add("ans");
+      if (diff === 0) { A.wait = .45; good(e.clientX, e.clientY, HUES[hue].hex, `PERFECT ${hueLabel(hue)}`, 20 + Math.round(A.left / A.limit * 15)); }
+      else if (diff === 1) { A.wait = .7; good(e.clientX, e.clientY, HUES[hue].hex, `NEAR → 正解 ${A.cur.ans}`, 8); }
+      else {
+        field.querySelector(`.seg[data-h="${hue}"]`).classList.add("miss");
+        A.wait = 1.2;
+        bad(e.clientX, e.clientY, `× ${hue}`, this.mistake(A, hue));
+      }
+    },
+  },
+};
+field.addEventListener("pointerdown", e => { if (A && A.running && A.def.tap) { e.preventDefault(); A.def.tap(A, e); } });
+$("#act-quit").addEventListener("click", () => { stopAction(); renderHome(); show("home"); });
+document.addEventListener("visibilitychange", () => {
+  if (!A) return;
+  if (document.hidden && A.running) { A.running = false; A.paused = true; }
+  else if (!document.hidden && A.paused) { A.paused = false; countdown(resume); }
+});
+
 /* ================= events ================= */
 document.addEventListener("click", e => {
   const m = e.target.closest("[data-mode]"); if (m) return start(m.dataset.mode);
+  const am = e.target.closest("[data-act]"); if (am) return startAction(am.dataset.act);
   const c = e.target.closest(".choice"); if (c && !c.disabled) return answer(+c.dataset.i);
   const tab = e.target.closest(".tab"); if (tab) { learnTab = tab.dataset.tab; return renderLearn(); }
   const hb = e.target.closest("[data-hue]"); if (hb) { learnHue = +hb.dataset.hue; return renderLearn(); }
@@ -854,7 +1320,7 @@ document.addEventListener("click", e => {
 });
 $("#next").addEventListener("click", next);
 $("#quit").addEventListener("click", () => { renderHome(); show("home"); });
-$("#again").addEventListener("click", () => start(S.mode));
+$("#again").addEventListener("click", () => lastKind === "act" ? startAction(lastAct) : start(S.mode));
 $("#home-btn").addEventListener("click", () => { renderHome(); show("home"); });
 $("#go-learn").addEventListener("click", () => { renderLearn(); show("learn"); });
 $("#learn-back").addEventListener("click", () => show("home"));
